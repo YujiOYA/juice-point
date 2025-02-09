@@ -31,7 +31,6 @@ function getAuthority (user:string, users:PageObjectResponse[]) {
 
 export default function Index({users, points, totals}: Props) {
     const [user, setUser] = useState<string | null>(null);
-    const [authority, setAuthority] = useState<string | null>(null);
 
         return (
             <div className="container">

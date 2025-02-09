@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
-import { GetServerSideProps } from "next";
-import { NotionAPI } from "@/NotionAPI";
 
 interface Props {
   totals: PageObjectResponse[];
