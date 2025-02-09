@@ -80,7 +80,7 @@ export default function Manager({ totals }: Props) {
                     onClick={() => handleApprove(total.id)}
                     className="approve-button"
                   >
-                    {isDoing ? <span className="spinner"></span> : <span>承認</span>}
+                    <span>承認</span>
                   </button>
                 )}
               </td>
@@ -91,7 +91,7 @@ export default function Manager({ totals }: Props) {
                     onClick={() => handleDisapprove(total.id)}
                     className="disapprove-button"
                   >
-                    {isDoing ? <span className="spinner"></span> : <span>却下</span>}
+                    <span>却下</span>
                   </button>
                 )}
               </td>
