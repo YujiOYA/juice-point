@@ -11,10 +11,7 @@ interface LoginProps {
 const calcUserPoint = (user: string, totals: PageObjectResponse[]): number => {
     return totals
         .filter(p => 
-            {
-
-                console.log(p.properties.whoDid?.rich_text?.[0]?.plain_text === user,p.properties.status?.rich_text?.[0]?.plain_text === "承認" ,p.properties.isUsed.status.name === "未使用");
-                
+            {                
                 return(
                     p.properties.whoDid?.rich_text?.[0]?.plain_text === user &&
                     p.properties.status?.rich_text?.[0]?.plain_text === "承認" &&
