@@ -1,14 +1,16 @@
 import React, { useState } from "react";
-import { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 
 interface LoginProps {
-    users: PageObjectResponse[];
-    user: string | null;
-    setUser: (user: string | null) => void;
-    totals: PageObjectResponse[];
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+users: any[];
+user: string | null;
+setUser: (user: string | null) => void;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+totals: any[];
 }
 
-const calcUserPoint = (user: string, totals: PageObjectResponse[]): number => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const calcUserPoint = (user: string, totals: any[]): number => {
     return totals
         .filter(p => 
             {                

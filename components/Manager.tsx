@@ -1,17 +1,14 @@
-import React, { useState } from "react";
-import { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
+import React, { ReactNode, useState } from "react";
 
 interface Props {
-  totals: PageObjectResponse[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  totals: any[];
+  children: ReactNode
 }
 
 export default function Manager({ totals }: Props) {
-  const [updatedTotals, setUpdatedTotals] = useState(totals);
-
 
   const handleDisapprove = async (id: string) => {
-    const updated = updatedTotals.filter(total => total.id !== id)
-    setUpdatedTotals(updated);
     // APIでNotionのデータを更新
     try {
       await fetch("/api/post-notion", {
@@ -32,37 +29,8 @@ export default function Manager({ totals }: Props) {
 
   // 承認ボタンが押されたときにステータスを変更する関数
   const handleApprove = async (id: string) => {
+    // APIでNotionのデータを更新
     try {
-      const updated = updatedTotals.map((total) =>
-        total.id === id
-          ? {
-            ...total,
-            properties: {
-              ...total.properties,
-              status: {
-                ...total.properties.status,
-                rich_text: [
-                  {
-                    type: "text",
-                    text: { content: "承認" },
-                    annotations: {
-                      bold: false,
-                      italic: false,
-                      strikethrough: false,
-                      underline: false,
-                      code: false,
-                    },
-                    plain_text: "承認",
-                  },
-                ],
-              },
-            },
-          }
-          : total
-      );
-      setUpdatedTotals(updated);
-
-      // APIでNotionのデータを更新
       await fetch("/api/post-notion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -78,8 +46,6 @@ export default function Manager({ totals }: Props) {
       location.reload();
     }
   };
-  console.log(updatedTotals[0].properties.status);
-
 
   return (
     <div className="container">
@@ -96,7 +62,7 @@ export default function Manager({ totals }: Props) {
           </tr>
         </thead>
         <tbody>
-          {updatedTotals.map((total) => (
+          {totals.map((total) => (
             <tr key={total.id}>
               <td>{total.properties.whatYouDid?.rich_text?.[0]?.plain_text || "未定義"}</td>
               <td>{total.properties.whoDid?.rich_text?.[0]?.plain_text || "未定義"}</td>

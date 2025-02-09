@@ -1,14 +1,15 @@
 import React, { useState } from "react";
-import { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 
 interface TaskFormProps {
     user: string;
-    points: PageObjectResponse[];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    points: any[];
 }
 
 export default function TaskForm({ user, points }: TaskFormProps) {
     const [point, setPoint] = useState("");
-    const [pObj, setPObj] = useState<PageObjectResponse | null>(null);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const [pObj, setPObj] = useState<any | null>(null);
     const [isSubmitButtonDisable, setIsSubmitButtonDisable] = useState(false)
 
     function handleOnChangeSelect(e: React.ChangeEvent<HTMLSelectElement>) {
@@ -60,7 +61,8 @@ export default function TaskForm({ user, points }: TaskFormProps) {
             <label htmlFor="task">🎯 タスクを選んでね</label>
             <select id="task" name="task" onChange={handleOnChangeSelect} className="input">
                 <option disabled selected>タスクを選んでね！</option>
-                {points.map((r: PageObjectResponse) => (
+                {/* // eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                {points.map((r: any) => (
                     <option key={r.id} value={r.id}>
                         {r.properties.task.rich_text?.[0]?.plain_text || "未定義"}
                     </option>

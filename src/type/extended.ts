@@ -1,4 +1,4 @@
-import { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
+import { any } from "@notionhq/client/build/src/api-endpoints";
 
 // rich_text型を定義
 interface RichTextItemResponse {
@@ -30,15 +30,15 @@ interface NotionProperty {
   // 他にもプロパティに応じて型を追加
 }
 
-// PageObjectResponseを拡張した型
-interface ExtendedPageObjectResponse extends PageObjectResponse {
+// anyを拡張した型
+interface Extendedany extends any {
   properties: {
     [key: string]: NotionProperty;
   };
 }
 
 // 使用例
-const page: ExtendedPageObjectResponse = {
+const page: Extendedany = {
   object: "page",
   id: "some-page-id",
   properties: {

@@ -1,7 +1,6 @@
 import { GetServerSideProps } from "next";
 import { NotionAPI } from "../src/NotionAPI";
 import React, { useState } from "react";
-import { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 import Login from "../components/Login";
 import TaskForm from "../components/TaskForm";
 import Manager from "../components/Manager";
@@ -17,12 +16,16 @@ export const getServerSideProps: GetServerSideProps = async () => {
 };
 
 interface Props {
-    users: PageObjectResponse[];
-    points: PageObjectResponse[];
-    totals: PageObjectResponse[];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    users: any[];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    points: any[];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    totals: any[];
 }
 
-function getAuthority (user:string, users:PageObjectResponse[]) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function getAuthority (user:string, users:any[]) {
     const authority = users.find(u => u.properties.name.rich_text?.[0]?.plain_text === user)!.properties.authority.rich_text?.[0]?.plain_text
     console.log(authority);
     
