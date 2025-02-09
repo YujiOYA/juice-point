@@ -60,7 +60,7 @@ export default function TaskForm({ user, points }: TaskFormProps) {
         <form id="point-form" onSubmit={handleSubmit}>
             <label htmlFor="task">🎯 タスクを選んでね</label>
             <select id="task" name="task" onChange={handleOnChangeSelect} className="input">
-                <option disabled selected>タスクを選んでね！</option>
+                <option disabled selected>タスクを<ruby>選<rt>えら</rt></ruby>んでね！</option>
                 {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 points.map((r: any) => (
@@ -73,7 +73,7 @@ export default function TaskForm({ user, points }: TaskFormProps) {
             <label htmlFor="points">💰 もらえるポイント</label>
             <input type="number" id="points" name="points" value={point} readOnly className="input highlight" />
 
-            <button id="register" className="submit-button" disabled={isSubmitButtonDisable}>✅ 申請する</button>
+            <button id="register" className="submit-button" disabled={isSubmitButtonDisable}>✅ <ruby>申請<rt>しんせい</rt></ruby>する</button>
         </form>
     );
 }

@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, useState } from "react";
 
 interface Props {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -7,8 +7,10 @@ interface Props {
 }
 
 export default function Manager({ totals }: Props) {
+  const [isDoing, setIsDoing] = useState(false)
 
   const handleDisapprove = async (id: string) => {
+    setIsDoing(true)
     // APIでNotionのデータを更新
     try {
       await fetch("/api/post-notion", {
@@ -23,12 +25,14 @@ export default function Manager({ totals }: Props) {
       alert("却下に失敗しました");
     }
     finally {
+      setIsDoing(false)
       location.reload();
     }
   }
 
   // 承認ボタンが押されたときにステータスを変更する関数
   const handleApprove = async (id: string) => {
+    setIsDoing(true)
     // APIでNotionのデータを更新
     try {
       await fetch("/api/post-notion", {
@@ -43,6 +47,7 @@ export default function Manager({ totals }: Props) {
       alert("ステータスの変更に失敗しました");
     }
     finally {
+      setIsDoing(false)
       location.reload();
     }
   };
@@ -71,20 +76,22 @@ export default function Manager({ totals }: Props) {
               <td>
                 {total.properties.status?.rich_text?.[0]?.plain_text === "未承認" && (
                   <button
+                    disabled={isDoing}
                     onClick={() => handleApprove(total.id)}
                     className="approve-button"
                   >
-                    承認
+                    {isDoing ? <span className="spinner"></span> : <span>承認</span>}
                   </button>
                 )}
               </td>
               <td>
                 {total.properties.status?.rich_text?.[0]?.plain_text === "未承認" && (
                   <button
+                    disabled={isDoing}
                     onClick={() => handleDisapprove(total.id)}
                     className="disapprove-button"
                   >
-                    却下
+                    {isDoing ? <span className="spinner"></span> : <span>却下</span>}
                   </button>
                 )}
               </td>
