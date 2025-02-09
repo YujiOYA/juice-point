@@ -61,8 +61,9 @@ export default function TaskForm({ user, points }: TaskFormProps) {
             <label htmlFor="task">🎯 タスクを選んでね</label>
             <select id="task" name="task" onChange={handleOnChangeSelect} className="input">
                 <option disabled selected>タスクを選んでね！</option>
-                {/* // eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                {points.map((r: any) => (
+                {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                points.map((r: any) => (
                     <option key={r.id} value={r.id}>
                         {r.properties.task.rich_text?.[0]?.plain_text || "未定義"}
                     </option>
