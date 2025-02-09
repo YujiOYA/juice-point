@@ -58,9 +58,9 @@ export default function TaskForm({ user, points }: TaskFormProps) {
 
     return (
         <form id="point-form" onSubmit={handleSubmit}>
-            <label htmlFor="task">🎯 タスクを選んでね</label>
+            <label htmlFor="task">🎯 タスクを<ruby>選<rt>えら</rt></ruby>んでね</label>
             <select id="task" name="task" onChange={handleOnChangeSelect} className="input">
-                <option disabled selected>タスクを<ruby>選<rt>えら</rt></ruby>んでね！</option>
+                <option disabled selected>タスクを選んでね！</option>
                 {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 points.map((r: any) => (
