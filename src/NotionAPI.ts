@@ -1,7 +1,7 @@
 import { QueryDatabaseResponse } from '@notionhq/client/build/src/api-endpoints';
 import { notion } from './client'
 
-export async function useNotionAPI(usage: string) {
+export async function NotionAPI(usage: string) {
     if (usage == "user") {
         return getRows(await notion.databases.query({
             database_id: process.env.USER_DB_ID as string
@@ -87,7 +87,7 @@ export async function postNotionAPI(body:body) {
         }
     }
     if (body.type === "disapprove") {
-        const { id, status } = body;
+        const { id } = body;
 
         try {
             return await notion.pages.update({

@@ -1,5 +1,5 @@
 import { GetServerSideProps } from "next";
-import { useNotionAPI } from "../src/useNotionAPI";
+import { NotionAPI } from "../src/NotionAPI";
 import React, { useState } from "react";
 import { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 import Login from "../components/Login";
@@ -7,9 +7,9 @@ import TaskForm from "../components/TaskForm";
 import Manager from "../components/Manager";
 
 export const getServerSideProps: GetServerSideProps = async () => {
-    const users = await useNotionAPI("user");
-    const points = await useNotionAPI("point");
-    const totals = await useNotionAPI("totalling");
+    const users = await NotionAPI("r");
+    const points = await NotionAPI("point");
+    const totals = await NotionAPI("totalling");
 
     return {
         props: { users, points, totals },

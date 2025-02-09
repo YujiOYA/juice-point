@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { postNotionAPI } from "../../src/useNotionAPI";
+import { postNotionAPI } from "../../src/NotionAPI";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method !== "POST") {
