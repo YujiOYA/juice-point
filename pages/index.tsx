@@ -6,9 +6,11 @@ import TaskForm from "../components/TaskForm";
 import Manager from "../components/Manager";
 
 export const getServerSideProps: GetServerSideProps = async () => {
-    const users = await NotionAPI("user");
-    const points = await NotionAPI("point");
-    const totals = await NotionAPI("totalling");
+    const [users, points, totals] = await Promise.all([
+        NotionAPI("user"),
+        NotionAPI("point"),
+        NotionAPI("totalling"),
+    ]);
 
     return {
         props: { users, points, totals },
