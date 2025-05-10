@@ -45,7 +45,7 @@ export default function Index({users, points, totals}: Props) {
                 <Login users={users} user={user} setUser={setUser} totals={totals}/>
 
                 {/* ユーザーログインしたらフォームを表示 */}
-                {user && (getAuthority(user, users) === "ユーザー") && <TaskForm user={user} points={points} />}
+                {user && (getAuthority(user, users) === "ユーザー") && <TaskForm user={user} users={users} points={points} />}
                 {/* ユーザーが管理者の場合したらフォームを表示 */}
                 {user && (getAuthority(user, users) === "マネージャー") && <Manager totals={totals}>管理者ページ</Manager>}
             </div>

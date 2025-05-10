@@ -4,9 +4,10 @@ interface TaskFormProps {
     user: string;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     points: any[];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    users: any[];
 }
-
-export default function TaskForm({ user, points }: TaskFormProps) {
+export default function TaskForm({ user, points, users }: TaskFormProps) {
     const [point, setPoint] = useState("");
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [pObj, setPObj] = useState<any | null>(null);
@@ -55,7 +56,7 @@ export default function TaskForm({ user, points }: TaskFormProps) {
             location.reload();
         }
     }
-
+    
     return (
         <form id="point-form" onSubmit={handleSubmit}>
             <label htmlFor="task">🎯 タスクを<ruby>選<rt>えら</rt></ruby>んでね</label>
@@ -63,10 +64,16 @@ export default function TaskForm({ user, points }: TaskFormProps) {
                 <option disabled selected>タスクを選んでね！</option>
                 {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                points.map((r: any) => (
-                    <option key={r.id} value={r.id}>
+                points.map((r: any) => (<>
+                    {users?.find(u => u.properties.name.rich_text?.[0]?.plain_text === user).properties.id.title[0].plain_text ===  r.properties.whose.rich_text?.[0]?.plain_text ?
+                         
+                         <option key={r.id} value={r.id}>
                         {r.properties.task.rich_text?.[0]?.plain_text || "未定義"}
                     </option>
+                    :
+                    <></>
+                }
+                </>
                 ))}
             </select>
 
