@@ -7,10 +7,10 @@ interface Props {
 }
 
 export default function Manager({ totals }: Props) {
-  const [isDoing, setIsDoing] = useState(false)
+  const [isDoing, setIsDoing] = useState(false);
 
   const handleDisapprove = async (id: string) => {
-    setIsDoing(true)
+    setIsDoing(true);
     // APIでNotionのデータを更新
     try {
       await fetch("/api/post-notion", {
@@ -25,14 +25,14 @@ export default function Manager({ totals }: Props) {
       alert("却下に失敗しました");
     }
     finally {
-      setIsDoing(false)
+      setIsDoing(false);
       location.reload();
     }
-  }
+  };
 
   // 承認ボタンが押されたときにステータスを変更する関数
   const handleApprove = async (id: string) => {
-    setIsDoing(true)
+    setIsDoing(true);
     // APIでNotionのデータを更新
     try {
       await fetch("/api/post-notion", {
@@ -47,7 +47,7 @@ export default function Manager({ totals }: Props) {
       alert("ステータスの変更に失敗しました");
     }
     finally {
-      setIsDoing(false)
+      setIsDoing(false);
       location.reload();
     }
   };
