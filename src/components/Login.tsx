@@ -1,57 +1,77 @@
 import React, { useState } from "react";
 
+import { User } from "../types/api/user";
+import { Submission } from "../types/api/submission";
+
 interface LoginProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  users: any[];
-  user: string | null;
-  setUser: (user: string | null) => void;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  totals: any[];
+  users: User[];
+  loggedInUser: User | null;
+  setLoggedInUser: (user: User | null) => void;
+  submissions: Submission[];
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const calcUserPoint = (user: string, totals: any[]): number => {
-  return totals
-    .filter(p => {
-      return (
-        p.properties.whoDid?.rich_text?.[0]?.plain_text === user &&
-        p.properties.status?.rich_text?.[0]?.plain_text === "承認" &&
-        p.properties.isUsed.status.name === "未使用"
-      );
-    },
+const calcUserPoint = (userName: string, submissions: Submission[]): number => {
+  return submissions
+    .filter(
+      (s) =>
+        s.whoDid === userName &&
+        s.status === "承認" &&
+        s.isUsed === "未使用",
     )
-    .map(p => Number(p.properties.point?.rich_text?.[0]?.plain_text) || 0) // 数値に変換
-    .reduce((sum, point) => sum + point, 0); // 合計を計算
+    .map((s) => Number(s.point) || 0)
+    .reduce((sum, point) => sum + point, 0);
 };
 
-export default function Login({ users, user, setUser, totals }: LoginProps) {
+export default function Login({
+  users,
+  loggedInUser,
+  setLoggedInUser,
+  submissions,
+}: LoginProps) {
   const [userPoint, setUserPoint] = useState(0);
 
   const handleOnchangeUser = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedUser = e.target.value;
-    setUser(selectedUser);
-    setUserPoint(calcUserPoint(selectedUser, totals)); // `selectedUser` を直接使う
+    const selected = users.find((u) => u.id === e.target.value) || null;
+    setLoggedInUser(selected);
+    if (selected) {
+      setUserPoint(calcUserPoint(selected.user, submissions));
+    }
   };
-
-  const familyNames = users.map(u => u.properties.name.rich_text?.[0]?.plain_text);
 
   return (
     <div>
-      {!user ? (
+      {!loggedInUser ? (
         <div>
-          <h2>👤 ログイン</h2>
-          <select onChange={handleOnchangeUser} className="input" defaultValue="">
-            <option value="" disabled>ユーザーを選んでね</option>
-            {familyNames.map(name => (
-              <option value={name} key={name}>{name}</option>
+          <label className="login-label">👤 だれがつかうの？</label>
+          <select
+            onChange={handleOnchangeUser}
+            className="login-select"
+            defaultValue=""
+          >
+            <option value="" disabled>
+              えらんでね
+            </option>
+            {users.map((u) => (
+              <option value={u.id} key={u.id}>
+                {u.user}
+              </option>
             ))}
           </select>
         </div>
       ) : (
-        <div>
-          <h2>👤 {user} としてログイン中</h2>
-          {user !== "おかあさん" && <h2>💰️ {userPoint}</h2>}
-          <button onClick={() => setUser(null)} className="logout-button">ログアウト</button>
+        <div className="user-info">
+          <p className="user-name">👤 {loggedInUser.user} でログイン中</p>
+          {loggedInUser.authority !== "admin" && (
+            <div className="points-badge">
+              💰 {userPoint} <span className="points-label">ポイント</span>
+            </div>
+          )}
+          <button
+            onClick={() => setLoggedInUser(null)}
+            className="logout-button"
+          >
+            ログアウト
+          </button>
         </div>
       )}
     </div>
