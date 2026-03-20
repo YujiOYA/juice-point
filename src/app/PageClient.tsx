@@ -51,7 +51,7 @@ export default function PageClient({ users, tasks, submissions: initialSubmissio
       )}
       {loggedInUser && !isAdmin && (
         <div className="card">
-          <TaskForm user={loggedInUser} tasks={tasks} onRefresh={refreshSubmissions} />
+          <TaskForm user={loggedInUser} tasks={tasks} submissions={submissions} onRefresh={refreshSubmissions} />
         </div>
       )}
     </div>
