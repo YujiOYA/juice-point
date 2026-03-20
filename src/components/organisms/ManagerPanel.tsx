@@ -4,6 +4,7 @@ import { useState } from "react";
 import Button from "@/components/atoms/Button";
 import SubmissionCard from "@/components/molecules/SubmissionCard";
 import { Submission } from "@/types/submission";
+import { getSubmissions } from "@/lib/dynamoDbApi";
 
 interface Props {
   submissions: Submission[];
@@ -12,7 +13,7 @@ interface Props {
 export default function ManagerPanel({ submissions }: Props) {
   const [isDoing, setIsDoing] = useState(false);
 
-  const pending = submissions.filter((s) => s.status === "未承認");
+  const [pending,setPending] =useState(submissions.filter((s) => s.status === "未承認"));
 
   const handleApprove = async (id: string) => {
     setIsDoing(true);
@@ -22,6 +23,8 @@ export default function ManagerPanel({ submissions }: Props) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ type: "approve", id }),
       });
+      const submissions = await getSubmissions()
+      setPending(submissions.filter((s) => s.status === "未承認"))
       alert("ステータスが承認に変更されました！");
     } catch {
       alert("承認に失敗しました");
@@ -38,12 +41,13 @@ export default function ManagerPanel({ submissions }: Props) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ type: "disapprove", id }),
       });
+      const submissions = await getSubmissions()
+      setPending(submissions.filter((s) => s.status === "未承認"))
       alert("却下しました！");
     } catch {
       alert("却下に失敗しました");
     } finally {
       setIsDoing(false);
-      location.reload();
     }
   };
 
