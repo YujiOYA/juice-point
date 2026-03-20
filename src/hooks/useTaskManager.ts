@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { Task } from "@/types/task";
+import { Task } from "@type/task";
 
 const emptyForm = { task: "", point: "", whose: "" };
 

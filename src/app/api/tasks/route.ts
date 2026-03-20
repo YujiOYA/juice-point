@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { createTask, deleteTask, getTasks, updateTask } from "@/lib/dynamoDbApi";
+import { createTask, deleteTask, getTasks, updateTask } from "@lib/dynamoDbApi";
 
 export async function GET() {
   const tasks = await getTasks();

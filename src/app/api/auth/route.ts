@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { verifyUserPin } from "@/lib/dynamoDbApi";
+import { verifyUserPin } from "@lib/dynamoDbApi";
 
 export async function POST(req: NextRequest) {
   const { id, pin } = await req.json();

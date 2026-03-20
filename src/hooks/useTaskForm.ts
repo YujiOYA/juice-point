@@ -1,8 +1,8 @@
 import { useState } from "react";
 
-import { Submission } from "@/types/submission";
-import { Task } from "@/types/task";
-import { User } from "@/types/user";
+import { Submission } from "@type/submission";
+import { Task } from "@type/task";
+import { User } from "@type/user";
 
 export function useTaskForm(
   user: User,
