@@ -20,6 +20,7 @@ export default function SubmissionCard({
       <div className="submission-card__meta">
         <span>👤 {s.whoDid}</span>
         <span>💰 {s.point}pt</span>
+        <span>🕐 {new Date(s.createdAt).toLocaleString("ja-JP")}</span>
       </div>
       <div className="submission-card__actions">
         <Button

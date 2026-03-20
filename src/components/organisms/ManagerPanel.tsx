@@ -81,6 +81,7 @@ export default function ManagerPanel({ submissions, onRefresh }: Props) {
                 <th>実施者</th>
                 <th>ポイント</th>
                 <th>ステータス</th>
+                <th>申請日時</th>
                 <th>承認</th>
                 <th>却下</th>
               </tr>
@@ -92,6 +93,7 @@ export default function ManagerPanel({ submissions, onRefresh }: Props) {
                   <td>{s.whoDid}</td>
                   <td>{s.point}</td>
                   <td>{s.status}</td>
+                  <td>{new Date(s.createdAt).toLocaleString("ja-JP")}</td>
                   <td>
                     <Button
                       variant="approve"
