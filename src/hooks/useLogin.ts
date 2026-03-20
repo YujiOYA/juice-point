@@ -1,7 +1,7 @@
 import { useState } from "react";
 
-import { Submission } from "@/types/submission";
-import { User } from "@/types/user";
+import { Submission } from "@type/submission";
+import { User } from "@type/user";
 
 const calcUserPoint = (userName: string, submissions: Submission[]): number =>
   submissions

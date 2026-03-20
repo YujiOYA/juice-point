@@ -1,9 +1,9 @@
 "use client";
 
-import Button from "@/components/atoms/Button";
-import SubmissionCard from "@/components/molecules/SubmissionCard";
-import { useManagerPanel } from "@/hooks/useManagerPanel";
-import { Submission } from "@/types/submission";
+import Button from "@atom/Button";
+import SubmissionCard from "@molecule/SubmissionCard";
+import { useManagerPanel } from "@hook/useManagerPanel";
+import { Submission } from "@type/submission";
 
 interface Props {
   submissions: Submission[];

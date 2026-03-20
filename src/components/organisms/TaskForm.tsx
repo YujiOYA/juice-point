@@ -1,13 +1,13 @@
 "use client";
 
-import Button from "@/components/atoms/Button";
-import SelectInput from "@/components/atoms/SelectInput";
-import TextInput from "@/components/atoms/TextInput";
-import FormField from "@/components/molecules/FormField";
-import { useTaskForm } from "@/hooks/useTaskForm";
-import { Submission } from "@/types/submission";
-import { Task } from "@/types/task";
-import { User } from "@/types/user";
+import Button from "@atom/Button";
+import SelectInput from "@atom/SelectInput";
+import TextInput from "@atom/TextInput";
+import FormField from "@molecule/FormField";
+import { useTaskForm } from "@hook/useTaskForm";
+import { Submission } from "@type/submission";
+import { Task } from "@type/task";
+import { User } from "@type/user";
 
 interface Props {
   user: User;

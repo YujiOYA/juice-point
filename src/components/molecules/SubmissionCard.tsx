@@ -1,5 +1,5 @@
-import Button from "@/components/atoms/Button";
-import { Submission } from "@/types/submission";
+import Button from "@atom/Button";
+import { Submission } from "@type/submission";
 
 interface Props {
   submission: Submission;

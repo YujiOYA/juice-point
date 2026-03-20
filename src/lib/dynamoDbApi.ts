@@ -8,10 +8,10 @@ import {
   DeleteItemCommand,
 } from "@aws-sdk/client-dynamodb";
 
-import { dynamo } from "@/lib/dynamoClient";
-import { Submission } from "@/types/submission";
-import { Task } from "@/types/task";
-import { User } from "@/types/user";
+import { dynamo } from "@lib/dynamoClient";
+import { Submission } from "@type/submission";
+import { Task } from "@type/task";
+import { User } from "@type/user";
 
 const TABLE_USER = process.env.TABLE_MASTER_USER!;
 const TABLE_TASK = process.env.TABLE_MASTER_TASK!;

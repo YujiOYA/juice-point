@@ -1,11 +1,11 @@
 "use client";
 
-import Button from "@/components/atoms/Button";
-import SelectInput from "@/components/atoms/SelectInput";
-import PointsBadge from "@/components/molecules/PointsBadge";
-import { useLogin } from "@/hooks/useLogin";
-import { Submission } from "@/types/submission";
-import { User } from "@/types/user";
+import Button from "@atom/Button";
+import SelectInput from "@atom/SelectInput";
+import PointsBadge from "@molecule/PointsBadge";
+import { useLogin } from "@hook/useLogin";
+import { Submission } from "@type/submission";
+import { User } from "@type/user";
 
 interface Props {
   users: User[];
