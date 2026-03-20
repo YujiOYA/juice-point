@@ -1,6 +1,10 @@
 "use client";
 import Link from "next/link";
 
+import Button from "@/components/atoms/Button";
+import SelectInput from "@/components/atoms/SelectInput";
+import TextInput from "@/components/atoms/TextInput";
+import TaskCard from "@/components/molecules/TaskCard";
 import { useTaskManager } from "@/hooks/useTaskManager";
 import { Task } from "@/types/task";
 import { User } from "@/types/user";
@@ -29,7 +33,7 @@ export default function TaskManagerClient({ users, initialTasks }: Props) {
   return (
     <div className="task-admin-wrap">
       <Link href="/">
-        <button className="logout-button" style={{ marginBottom: "1rem" }}>← 戻る</button>
+        <Button variant="logout" style={{ marginBottom: "1rem" }}>← 戻る</Button>
       </Link>
       <h1 style={{ marginBottom: "1.5rem" }}>🛠 タスク管理</h1>
 
@@ -37,33 +41,27 @@ export default function TaskManagerClient({ users, initialTasks }: Props) {
       <section style={{ marginBottom: "2rem" }}>
         <h2 style={{ marginBottom: "1rem" }}>タスクを追加</h2>
         <form onSubmit={handleCreate} className="task-add-form">
-          <input
+          <TextInput
             placeholder="タスク名"
             value={form.task}
             onChange={(e) => setForm({ ...form, task: e.target.value })}
-            className="input"
           />
-          <input
+          <TextInput
             placeholder="ポイント"
             type="number"
             value={form.point}
             onChange={(e) => setForm({ ...form, point: e.target.value })}
-            className="input"
             style={{ maxWidth: "120px" }}
           />
-          <select
-            value={form.whose}
-            onChange={(e) => setForm({ ...form, whose: e.target.value })}
-            className="input"
-          >
+          <SelectInput value={form.whose} onChange={(e) => setForm({ ...form, whose: e.target.value })}>
             <option value="" disabled>担当者を選択</option>
             {users.map((u) => (
               <option key={u.id} value={u.user}>{u.user}</option>
             ))}
-          </select>
-          <button type="submit" disabled={isLoading} className="submit-button">
+          </SelectInput>
+          <Button type="submit" variant="primary" disabled={isLoading}>
             追加
-          </button>
+          </Button>
         </form>
       </section>
 
@@ -73,60 +71,30 @@ export default function TaskManagerClient({ users, initialTasks }: Props) {
 
         {/* スマホ: カード */}
         <div className="task-list">
-          {tasks.map((t) => (
-            <div key={t.id} className="task-card">
-              {editingId === t.id ? (
-                <div className="task-card__edit-form">
-                  <input
-                    value={editForm.task}
-                    onChange={(e) => setEditForm({ ...editForm, task: e.target.value })}
-                    className="input"
-                    placeholder="タスク名"
-                  />
-                  <input
-                    type="number"
-                    value={editForm.point}
-                    onChange={(e) => setEditForm({ ...editForm, point: e.target.value })}
-                    className="input"
-                    placeholder="ポイント"
-                  />
-                  <select
-                    value={editForm.whose}
-                    onChange={(e) => setEditForm({ ...editForm, whose: e.target.value })}
-                    className="input"
-                  >
-                    {users.map((u) => (
-                      <option key={u.id} value={u.user}>{u.user}</option>
-                    ))}
-                  </select>
-                  <div className="task-card__actions">
-                    <button onClick={() => handleUpdate(t.id)} disabled={isLoading} className="approve-button">
-                      保存
-                    </button>
-                    <button onClick={() => setEditingId(null)} className="logout-button">
-                      キャンセル
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <>
-                  <p className="task-card__name">{t.task}</p>
-                  <div className="task-card__meta">
-                    <span>💰 {t.point}pt</span>
-                    <span>👤 {t.whose}</span>
-                  </div>
-                  <div className="task-card__actions">
-                    <button onClick={() => startEdit(t)} disabled={isLoading} className="submit-button">
-                      編集
-                    </button>
-                    <button onClick={() => handleDelete(t.id)} disabled={isLoading} className="disapprove-button">
-                      削除
-                    </button>
-                  </div>
-                </>
-              )}
-            </div>
-          ))}
+          {tasks.map((t) =>
+            editingId === t.id ? (
+              <TaskCard
+                key={t.id}
+                isEditing={true}
+                task={t}
+                editForm={editForm}
+                users={users}
+                isLoading={isLoading}
+                onChangeForm={setEditForm}
+                onSave={handleUpdate}
+                onCancel={() => setEditingId(null)}
+              />
+            ) : (
+              <TaskCard
+                key={t.id}
+                isEditing={false}
+                task={t}
+                isLoading={isLoading}
+                onEdit={startEdit}
+                onDelete={handleDelete}
+              />
+            )
+          )}
         </div>
 
         {/* PC: テーブル */}
@@ -145,39 +113,33 @@ export default function TaskManagerClient({ users, initialTasks }: Props) {
                 {editingId === t.id ? (
                   <>
                     <td>
-                      <input
+                      <TextInput
                         value={editForm.task}
                         onChange={(e) => setEditForm({ ...editForm, task: e.target.value })}
-                        className="input"
                       />
                     </td>
                     <td>
-                      <input
+                      <TextInput
                         type="number"
                         value={editForm.point}
                         onChange={(e) => setEditForm({ ...editForm, point: e.target.value })}
-                        className="input"
                         style={{ width: "80px" }}
                       />
                     </td>
                     <td>
-                      <select
-                        value={editForm.whose}
-                        onChange={(e) => setEditForm({ ...editForm, whose: e.target.value })}
-                        className="input"
-                      >
+                      <SelectInput value={editForm.whose} onChange={(e) => setEditForm({ ...editForm, whose: e.target.value })}>
                         {users.map((u) => (
                           <option key={u.id} value={u.user}>{u.user}</option>
                         ))}
-                      </select>
+                      </SelectInput>
                     </td>
                     <td style={{ display: "flex", gap: "0.5rem" }}>
-                      <button onClick={() => handleUpdate(t.id)} disabled={isLoading} className="approve-button">
+                      <Button variant="approve" disabled={isLoading} onClick={() => handleUpdate(t.id)}>
                         保存
-                      </button>
-                      <button onClick={() => setEditingId(null)} className="logout-button">
+                      </Button>
+                      <Button variant="logout" onClick={() => setEditingId(null)}>
                         キャンセル
-                      </button>
+                      </Button>
                     </td>
                   </>
                 ) : (
@@ -186,12 +148,12 @@ export default function TaskManagerClient({ users, initialTasks }: Props) {
                     <td>{t.point}pt</td>
                     <td>{t.whose}</td>
                     <td style={{ display: "flex", gap: "0.5rem" }}>
-                      <button onClick={() => startEdit(t)} disabled={isLoading} className="submit-button">
+                      <Button variant="primary" disabled={isLoading} onClick={() => startEdit(t)}>
                         編集
-                      </button>
-                      <button onClick={() => handleDelete(t.id)} disabled={isLoading} className="disapprove-button">
+                      </Button>
+                      <Button variant="disapprove" disabled={isLoading} onClick={() => handleDelete(t.id)}>
                         削除
-                      </button>
+                      </Button>
                     </td>
                   </>
                 )}
