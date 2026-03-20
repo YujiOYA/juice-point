@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { Submission } from "@/types/submission";
+import { Submission } from "@type/submission";
 
 export function useSubmissions(initialSubmissions: Submission[]) {
   const [submissions, setSubmissions] = useState<Submission[]>(initialSubmissions);

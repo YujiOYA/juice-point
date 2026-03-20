@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { createSubmission, getSubmissions, updateSubmissionIsUsed, updateSubmissionStatus } from "@/lib/dynamoDbApi";
+import { createSubmission, getSubmissions, updateSubmissionIsUsed, updateSubmissionStatus } from "@lib/dynamoDbApi";
 
 export async function GET() {
   const submissions = await getSubmissions();
