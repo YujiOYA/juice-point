@@ -366,3 +366,126 @@ body {
     box-shadow: none;
   }
 }
+
+/* ===== タスク管理ページ ===== */
+.task-admin-wrap {
+  padding: 1.5rem 1rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.task-add-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.task-add-form .input {
+  width: 100%;
+}
+
+/* スマホ: カードリスト */
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.task-card {
+  background: #fff9f5;
+  border-radius: 16px;
+  border: 1px solid #ffe0b2;
+  border-left: 5px solid #ff9800;
+  padding: 16px;
+}
+
+.task-card__name {
+  font-size: 17px;
+  font-weight: 700;
+  color: #2d2d2d;
+  margin: 0 0 6px;
+}
+
+.task-card__meta {
+  font-size: 14px;
+  color: #757575;
+  margin-bottom: 12px;
+  display: flex;
+  gap: 12px;
+}
+
+.task-card__actions {
+  display: flex;
+  gap: 10px;
+}
+
+.task-card__edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.task-card__edit-form .input {
+  width: 100%;
+}
+
+/* PC: テーブル表示 */
+.task-table {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .task-admin-wrap {
+    padding: 2rem;
+  }
+
+  .task-add-form {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-end;
+  }
+
+  .task-add-form .input {
+    width: auto;
+  }
+
+  .task-list {
+    display: none;
+  }
+
+  .task-table {
+    display: table;
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;
+    background: #fff;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
+  }
+
+  .task-table th {
+    background: #fff3e0;
+    color: #e65100;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 14px 16px;
+    text-align: left;
+    border-bottom: 2px solid #ffe0b2;
+  }
+
+  .task-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f5f5f5;
+    vertical-align: middle;
+  }
+
+  .task-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .task-table tbody tr:hover {
+    background: #fff8f0;
+  }
+}
