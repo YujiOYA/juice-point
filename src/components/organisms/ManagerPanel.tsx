@@ -4,7 +4,6 @@ import { useState } from "react";
 import Button from "@/components/atoms/Button";
 import SubmissionCard from "@/components/molecules/SubmissionCard";
 import { Submission } from "@/types/submission";
-import { getSubmissions } from "@/lib/dynamoDbApi";
 
 interface Props {
   submissions: Submission[];
@@ -23,8 +22,8 @@ export default function ManagerPanel({ submissions }: Props) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ type: "approve", id }),
       });
-      const submissions = await getSubmissions()
-      setPending(submissions.filter((s) => s.status === "未承認"))
+      const submissions = await fetch("/api/submissions").then((r) => r.json());
+      setPending(submissions.filter((s: { status: string }) => s.status === "未承認"))
       alert("ステータスが承認に変更されました！");
     } catch {
       alert("承認に失敗しました");
@@ -41,8 +40,8 @@ export default function ManagerPanel({ submissions }: Props) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ type: "disapprove", id }),
       });
-      const submissions = await getSubmissions()
-      setPending(submissions.filter((s) => s.status === "未承認"))
+      const submissions = await fetch("/api/submissions").then((r) => r.json());
+      setPending(submissions.filter((s: { status: string }) => s.status === "未承認"))
       alert("却下しました！");
     } catch {
       alert("却下に失敗しました");
