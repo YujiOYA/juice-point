@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
 
+import Link from "next/link";
+
 import LoginForm from "@/components/organisms/LoginForm";
 import ManagerPanel from "@/components/organisms/ManagerPanel";
 import TaskForm from "@/components/organisms/TaskForm";
@@ -38,9 +40,14 @@ export default function PageClient({ users, tasks, submissions: initialSubmissio
         />
       </div>
       {loggedInUser && isAdmin && (
-        <div className="card">
-          <ManagerPanel submissions={submissions} onRefresh={refreshSubmissions} />
-        </div>
+        <>
+          <div className="card">
+            <ManagerPanel submissions={submissions} onRefresh={refreshSubmissions} />
+          </div>
+          <Link href="/admin">
+            <button className="logout-button">🛠 タスク管理</button>
+          </Link>
+        </>
       )}
       {loggedInUser && !isAdmin && (
         <div className="card">

@@ -5,6 +5,7 @@ import {
   QueryCommand,
   PutItemCommand,
   UpdateItemCommand,
+  DeleteItemCommand,
 } from "@aws-sdk/client-dynamodb";
 
 import { dynamo } from "@/lib/dynamoClient";
@@ -86,6 +87,52 @@ export async function createSubmission(data: {
         isUsed: { S: "未使用" },
         createdAt: { S: new Date().toISOString() },
       },
+    }),
+  );
+}
+
+export async function createTask(data: {
+  task: string;
+  point: string;
+  whose: string;
+}): Promise<void> {
+  await dynamo.send(
+    new PutItemCommand({
+      TableName: TABLE_TASK,
+      Item: {
+        id: { S: randomUUID() },
+        task: { S: data.task },
+        point: { S: data.point },
+        whose: { S: data.whose },
+      },
+    }),
+  );
+}
+
+export async function updateTask(
+  id: string,
+  data: { task: string; point: string; whose: string },
+): Promise<void> {
+  await dynamo.send(
+    new UpdateItemCommand({
+      TableName: TABLE_TASK,
+      Key: { id: { S: id } },
+      UpdateExpression: "SET #t = :task, point = :point, whose = :whose",
+      ExpressionAttributeNames: { "#t": "task" },
+      ExpressionAttributeValues: {
+        ":task": { S: data.task },
+        ":point": { S: data.point },
+        ":whose": { S: data.whose },
+      },
+    }),
+  );
+}
+
+export async function deleteTask(id: string): Promise<void> {
+  await dynamo.send(
+    new DeleteItemCommand({
+      TableName: TABLE_TASK,
+      Key: { id: { S: id } },
     }),
   );
 }
