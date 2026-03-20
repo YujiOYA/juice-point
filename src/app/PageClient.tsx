@@ -14,8 +14,15 @@ interface Props {
   submissions: Submission[];
 }
 
-export default function PageClient({ users, tasks, submissions }: Props) {
+export default function PageClient({ users, tasks, submissions: initialSubmissions }: Props) {
   const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
+  const [submissions, setSubmissions] = useState<Submission[]>(initialSubmissions);
+
+  const refreshSubmissions = () =>
+    fetch("/api/submissions")
+      .then((r) => r.json())
+      .then(setSubmissions)
+      .catch(() => {});
 
   const isAdmin = loggedInUser?.authority === "admin";
 
@@ -32,12 +39,12 @@ export default function PageClient({ users, tasks, submissions }: Props) {
       </div>
       {loggedInUser && isAdmin && (
         <div className="card">
-          <ManagerPanel submissions={submissions} />
+          <ManagerPanel submissions={submissions} onRefresh={refreshSubmissions} />
         </div>
       )}
       {loggedInUser && !isAdmin && (
         <div className="card">
-          <TaskForm user={loggedInUser} tasks={tasks} />
+          <TaskForm user={loggedInUser} tasks={tasks} onRefresh={refreshSubmissions} />
         </div>
       )}
     </div>
