@@ -27,7 +27,6 @@ export default function ManagerPanel({ submissions }: Props) {
       alert("承認に失敗しました");
     } finally {
       setIsDoing(false);
-      location.reload();
     }
   };
 
