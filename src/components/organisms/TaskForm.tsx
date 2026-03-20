@@ -50,7 +50,6 @@ export default function TaskForm({ user, tasks }: Props) {
       alert("エラーが発生しました");
     } finally {
       setIsSubmitting(false);
-      location.reload();
     }
   };
 
