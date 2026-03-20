@@ -1,104 +1,130 @@
-import React, { ReactNode, useState } from "react";
+import React, { useState } from "react";
+
+import { Submission } from "../types/api/submission";
 
 interface Props {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  totals: any[];
-  children: ReactNode
+  submissions: Submission[];
 }
 
-export default function Manager({ totals }: Props) {
+export default function Manager({ submissions }: Props) {
   const [isDoing, setIsDoing] = useState(false);
 
-  const handleDisapprove = async (id: string) => {
+  const pendingSubmissions = submissions.filter((s) => s.status === "未承認");
+
+  const handleApprove = async (id: string) => {
     setIsDoing(true);
-    // APIでNotionのデータを更新
     try {
-      await fetch("/api/post-notion", {
+      await fetch("/api/submissions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "disapprove", id: id }),
+        body: JSON.stringify({ type: "approve", id }),
       });
-
-      alert("却下しました！");
-    } catch (error) {
-      console.error("却下エラー:", error);
-      alert("却下に失敗しました");
-    }
-    finally {
+      alert("ステータスが承認に変更されました！");
+    } catch {
+      alert("承認に失敗しました");
+    } finally {
       setIsDoing(false);
       location.reload();
     }
   };
 
-  // 承認ボタンが押されたときにステータスを変更する関数
-  const handleApprove = async (id: string) => {
+  const handleDisapprove = async (id: string) => {
     setIsDoing(true);
-    // APIでNotionのデータを更新
     try {
-      await fetch("/api/post-notion", {
+      await fetch("/api/submissions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "approve", id: id, status: "承認" }),
+        body: JSON.stringify({ type: "disapprove", id }),
       });
-
-      alert("ステータスが承認に変更されました！");
-    } catch (error) {
-      console.error("ステータス更新エラー:", error);
-      alert("ステータスの変更に失敗しました");
-    }
-    finally {
+      alert("却下しました！");
+    } catch {
+      alert("却下に失敗しました");
+    } finally {
       setIsDoing(false);
       location.reload();
     }
   };
 
   return (
-    <div className="container">
-      <h1>⭐ ポイント管理アプリ (管理者画面) ⭐</h1>
-      <table>
-        <thead>
-          <tr>
-            <th>タスク</th>
-            <th>実施者</th>
-            <th>ポイント</th>
-            <th>ステータス</th>
-            <th>操作</th>
-            <th>却下</th>
-          </tr>
-        </thead>
-        <tbody>
-          {totals.map((total) => (
-            <tr key={total.id}>
-              <td>{total.properties.whatYouDid?.rich_text?.[0]?.plain_text || "未定義"}</td>
-              <td>{total.properties.whoDid?.rich_text?.[0]?.plain_text || "未定義"}</td>
-              <td>{total.properties.point?.rich_text?.[0]?.plain_text || "0"}</td>
-              <td>{total.properties.status.rich_text?.[0]?.plain_text || "未承認"}</td>
-              <td>
-                {total.properties.status?.rich_text?.[0]?.plain_text === "未承認" && (
+    <div>
+      <p className="manager-title">📋 申請一覧</p>
+
+      {pendingSubmissions.length === 0 ? (
+        <p className="no-submissions">申請はありません 🎉</p>
+      ) : (
+        <>
+          {/* スマホ: カード形式 */}
+          <div className="submission-list">
+            {pendingSubmissions.map((s) => (
+              <div key={s.id} className="submission-card">
+                <p className="submission-card__task">{s.whatYouDid}</p>
+                <div className="submission-card__meta">
+                  <span>👤 {s.whoDid}</span>
+                  <span>💰 {s.point}pt</span>
+                </div>
+                <div className="submission-card__actions">
                   <button
                     disabled={isDoing}
-                    onClick={() => handleApprove(total.id)}
+                    onClick={() => handleApprove(s.id)}
                     className="approve-button"
                   >
-                    <span>承認</span>
+                    ✅ 承認
                   </button>
-                )}
-              </td>
-              <td>
-                {total.properties.status?.rich_text?.[0]?.plain_text === "未承認" && (
                   <button
                     disabled={isDoing}
-                    onClick={() => handleDisapprove(total.id)}
+                    onClick={() => handleDisapprove(s.id)}
                     className="disapprove-button"
                   >
-                    <span>却下</span>
+                    ❌ 却下
                   </button>
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* PC: テーブル形式 */}
+          <table className="manager-table">
+            <thead>
+              <tr>
+                <th>タスク</th>
+                <th>実施者</th>
+                <th>ポイント</th>
+                <th>ステータス</th>
+                <th>承認</th>
+                <th>却下</th>
+              </tr>
+            </thead>
+            <tbody>
+              {pendingSubmissions.map((s) => (
+                <tr key={s.id}>
+                  <td>{s.whatYouDid}</td>
+                  <td>{s.whoDid}</td>
+                  <td>{s.point}</td>
+                  <td>{s.status}</td>
+                  <td>
+                    <button
+                      disabled={isDoing}
+                      onClick={() => handleApprove(s.id)}
+                      className="approve-button"
+                    >
+                      承認
+                    </button>
+                  </td>
+                  <td>
+                    <button
+                      disabled={isDoing}
+                      onClick={() => handleDisapprove(s.id)}
+                      className="disapprove-button"
+                    >
+                      却下
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>
+      )}
     </div>
   );
 }
