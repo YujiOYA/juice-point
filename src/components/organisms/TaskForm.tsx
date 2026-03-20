@@ -1,27 +1,32 @@
-import React, { useState } from "react";
+"use client";
+import { useState } from "react";
 
-import { User } from "../types/api/user";
-import { Task } from "../types/api/task";
+import Button from "@/components/atoms/Button";
+import SelectInput from "@/components/atoms/SelectInput";
+import TextInput from "@/components/atoms/TextInput";
+import FormField from "@/components/molecules/FormField";
+import { Task } from "@/types/task";
+import { User } from "@/types/user";
 
-interface TaskFormProps {
+interface Props {
   user: User;
   tasks: Task[];
 }
 
-export default function TaskForm({ user, tasks }: TaskFormProps) {
+export default function TaskForm({ user, tasks }: Props) {
   const [point, setPoint] = useState("");
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const userTasks = tasks.filter((t) => t.whose === user.user);
 
-  function handleOnChangeSelect(e: React.ChangeEvent<HTMLSelectElement>) {
-    const task = tasks.find((t) => t.id === e.target.value) || null;
+  const handleChangeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const task = tasks.find((t) => t.id === e.target.value) ?? null;
     setSelectedTask(task);
     setPoint(task?.point ?? "");
-  }
+  };
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!selectedTask) {
       alert("タスクを選択してください");
@@ -29,7 +34,7 @@ export default function TaskForm({ user, tasks }: TaskFormProps) {
     }
     setIsSubmitting(true);
     try {
-      const response = await fetch("/api/submissions", {
+      const res = await fetch("/api/submissions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -39,7 +44,7 @@ export default function TaskForm({ user, tasks }: TaskFormProps) {
           whoDid: user.user,
         }),
       });
-      if (!response.ok) throw new Error("Failed");
+      if (!res.ok) throw new Error("Failed");
       alert("申請しました！");
     } catch {
       alert("エラーが発生しました");
@@ -47,21 +52,15 @@ export default function TaskForm({ user, tasks }: TaskFormProps) {
       setIsSubmitting(false);
       location.reload();
     }
-  }
+  };
 
   return (
     <form className="task-form" onSubmit={handleSubmit}>
-      <div>
-        <label className="task-label" htmlFor="task">
-          🎯 タスクを<ruby>選<rt>えら</rt></ruby>んでね
-        </label>
-        <select
-          id="task"
-          name="task"
-          onChange={handleOnChangeSelect}
-          className="input"
-          defaultValue=""
-        >
+      <FormField
+        label="🎯 タスクをえらんでね"
+        htmlFor="task"
+      >
+        <SelectInput id="task" defaultValue="" onChange={handleChangeSelect}>
           <option value="" disabled>
             タスクを選んでね！
           </option>
@@ -70,26 +69,23 @@ export default function TaskForm({ user, tasks }: TaskFormProps) {
               {t.task}
             </option>
           ))}
-        </select>
-      </div>
+        </SelectInput>
+      </FormField>
 
-      <div>
-        <label className="task-label" htmlFor="points">
-          💰 もらえるポイント
-        </label>
-        <input
-          type="number"
+      <FormField label="💰 もらえるポイント" htmlFor="points">
+        <TextInput
           id="points"
           name="points"
+          type="number"
           value={point}
           readOnly
           className="input highlight"
         />
-      </div>
+      </FormField>
 
-      <button className="submit-button" disabled={isSubmitting}>
-        ✅ <ruby>申請<rt>しんせい</rt></ruby>する
-      </button>
+      <Button type="submit" variant="primary" disabled={isSubmitting}>
+        ✅ 申請する
+      </Button>
     </form>
   );
 }

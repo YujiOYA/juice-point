@@ -1,15 +1,18 @@
-import React, { useState } from "react";
+"use client";
+import { useState } from "react";
 
-import { Submission } from "../types/api/submission";
+import Button from "@/components/atoms/Button";
+import SubmissionCard from "@/components/molecules/SubmissionCard";
+import { Submission } from "@/types/submission";
 
 interface Props {
   submissions: Submission[];
 }
 
-export default function Manager({ submissions }: Props) {
+export default function ManagerPanel({ submissions }: Props) {
   const [isDoing, setIsDoing] = useState(false);
 
-  const pendingSubmissions = submissions.filter((s) => s.status === "未承認");
+  const pending = submissions.filter((s) => s.status === "未承認");
 
   const handleApprove = async (id: string) => {
     setIsDoing(true);
@@ -49,36 +52,20 @@ export default function Manager({ submissions }: Props) {
     <div>
       <p className="manager-title">📋 申請一覧</p>
 
-      {pendingSubmissions.length === 0 ? (
+      {pending.length === 0 ? (
         <p className="no-submissions">申請はありません 🎉</p>
       ) : (
         <>
           {/* スマホ: カード形式 */}
           <div className="submission-list">
-            {pendingSubmissions.map((s) => (
-              <div key={s.id} className="submission-card">
-                <p className="submission-card__task">{s.whatYouDid}</p>
-                <div className="submission-card__meta">
-                  <span>👤 {s.whoDid}</span>
-                  <span>💰 {s.point}pt</span>
-                </div>
-                <div className="submission-card__actions">
-                  <button
-                    disabled={isDoing}
-                    onClick={() => handleApprove(s.id)}
-                    className="approve-button"
-                  >
-                    ✅ 承認
-                  </button>
-                  <button
-                    disabled={isDoing}
-                    onClick={() => handleDisapprove(s.id)}
-                    className="disapprove-button"
-                  >
-                    ❌ 却下
-                  </button>
-                </div>
-              </div>
+            {pending.map((s) => (
+              <SubmissionCard
+                key={s.id}
+                submission={s}
+                isDoing={isDoing}
+                onApprove={handleApprove}
+                onDisapprove={handleDisapprove}
+              />
             ))}
           </div>
 
@@ -95,29 +82,29 @@ export default function Manager({ submissions }: Props) {
               </tr>
             </thead>
             <tbody>
-              {pendingSubmissions.map((s) => (
+              {pending.map((s) => (
                 <tr key={s.id}>
                   <td>{s.whatYouDid}</td>
                   <td>{s.whoDid}</td>
                   <td>{s.point}</td>
                   <td>{s.status}</td>
                   <td>
-                    <button
+                    <Button
+                      variant="approve"
                       disabled={isDoing}
                       onClick={() => handleApprove(s.id)}
-                      className="approve-button"
                     >
                       承認
-                    </button>
+                    </Button>
                   </td>
                   <td>
-                    <button
+                    <Button
+                      variant="disapprove"
                       disabled={isDoing}
                       onClick={() => handleDisapprove(s.id)}
-                      className="disapprove-button"
                     >
                       却下
-                    </button>
+                    </Button>
                   </td>
                 </tr>
               ))}

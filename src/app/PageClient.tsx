@@ -1,12 +1,12 @@
 "use client";
 import { useState } from "react";
 
-import { User } from "../types/api/user";
-import { Task } from "../types/api/task";
-import { Submission } from "../types/api/submission";
-import Login from "../components/Login";
-import TaskForm from "../components/TaskForm";
-import Manager from "../components/Manager";
+import LoginForm from "@/components/organisms/LoginForm";
+import ManagerPanel from "@/components/organisms/ManagerPanel";
+import TaskForm from "@/components/organisms/TaskForm";
+import { Submission } from "@/types/submission";
+import { Task } from "@/types/task";
+import { User } from "@/types/user";
 
 interface Props {
   users: User[];
@@ -23,7 +23,7 @@ export default function PageClient({ users, tasks, submissions }: Props) {
     <div className={`container${isAdmin ? " container--wide" : ""}`}>
       <h1 className="page-title">⭐ ポイント管理アプリ ⭐</h1>
       <div className="card">
-        <Login
+        <LoginForm
           users={users}
           loggedInUser={loggedInUser}
           setLoggedInUser={setLoggedInUser}
@@ -32,7 +32,7 @@ export default function PageClient({ users, tasks, submissions }: Props) {
       </div>
       {loggedInUser && isAdmin && (
         <div className="card">
-          <Manager submissions={submissions} />
+          <ManagerPanel submissions={submissions} />
         </div>
       )}
       {loggedInUser && !isAdmin && (
