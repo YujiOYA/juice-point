@@ -1,6 +1,5 @@
-import { getUsers, getTasks, getSubmissions } from "src/dynamoDbApi";
-
-import PageClient from "./PageClient";
+import PageClient from "@/app/PageClient";
+import { getUsers, getTasks, getSubmissions } from "@/lib/dynamoDbApi";
 
 export default async function Page() {
   const [users, tasks, submissions] = await Promise.all([
@@ -9,11 +8,5 @@ export default async function Page() {
     getSubmissions(),
   ]);
 
-  return (
-    <PageClient
-      users={users}
-      tasks={tasks}
-      submissions={submissions}
-    />
-  );
+  return <PageClient users={users} tasks={tasks} submissions={submissions} />;
 }

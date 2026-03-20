@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { createSubmission, updateSubmissionStatus } from "src/dynamoDbApi";
+import { createSubmission, updateSubmissionStatus } from "@/lib/dynamoDbApi";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();

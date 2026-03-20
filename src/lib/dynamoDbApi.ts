@@ -7,10 +7,10 @@ import {
   UpdateItemCommand,
 } from "@aws-sdk/client-dynamodb";
 
-import { dynamo } from "./dynamoClient";
-import { Submission } from "./types/api/submission";
-import { Task } from "./types/api/task";
-import { User } from "./types/api/user";
+import { dynamo } from "@/lib/dynamoClient";
+import { Submission } from "@/types/submission";
+import { Task } from "@/types/task";
+import { User } from "@/types/user";
 
 const TABLE_USER = process.env.TABLE_MASTER_USER!;
 const TABLE_TASK = process.env.TABLE_MASTER_TASK!;
@@ -29,10 +29,7 @@ export async function getUsers(id?: string): Promise<User[]> {
     );
   } else {
     res = await dynamo.send(
-      new ScanCommand({
-        TableName: TABLE_USER,
-        Limit: 100,
-      }),
+      new ScanCommand({ TableName: TABLE_USER, Limit: 100 }),
     );
   }
   if (!res.Items) return [];
@@ -45,10 +42,7 @@ export async function getUsers(id?: string): Promise<User[]> {
 
 export async function getTasks(): Promise<Task[]> {
   const res = await dynamo.send(
-    new ScanCommand({
-      TableName: TABLE_TASK,
-      Limit: 100,
-    }),
+    new ScanCommand({ TableName: TABLE_TASK, Limit: 100 }),
   );
   if (!res.Items) return [];
   return res.Items.map((item) => ({
@@ -61,10 +55,7 @@ export async function getTasks(): Promise<Task[]> {
 
 export async function getSubmissions(): Promise<Submission[]> {
   const res = await dynamo.send(
-    new ScanCommand({
-      TableName: TABLE_SUBMISSIONS,
-      Limit: 500,
-    }),
+    new ScanCommand({ TableName: TABLE_SUBMISSIONS, Limit: 500 }),
   );
   if (!res.Items) return [];
   return res.Items.map((item) => ({
