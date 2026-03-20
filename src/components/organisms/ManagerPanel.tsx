@@ -1,8 +1,8 @@
 "use client";
-import { useEffect, useState } from "react";
 
 import Button from "@/components/atoms/Button";
 import SubmissionCard from "@/components/molecules/SubmissionCard";
+import { useManagerPanel } from "@/hooks/useManagerPanel";
 import { Submission } from "@/types/submission";
 
 interface Props {
@@ -11,46 +11,7 @@ interface Props {
 }
 
 export default function ManagerPanel({ submissions, onRefresh }: Props) {
-  const [isDoing, setIsDoing] = useState(false);
-  const [pending, setPending] = useState(submissions.filter((s) => s.status === "未承認"));
-
-  useEffect(() => {
-    setPending(submissions.filter((s) => s.status === "未承認"));
-  }, [submissions]);
-
-  const handleApprove = async (id: string) => {
-    setIsDoing(true);
-    try {
-      await fetch("/api/submissions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "approve", id }),
-      });
-      await onRefresh();
-      alert("ステータスが承認に変更されました！");
-    } catch {
-      alert("承認に失敗しました");
-    } finally {
-      setIsDoing(false);
-    }
-  };
-
-  const handleDisapprove = async (id: string) => {
-    setIsDoing(true);
-    try {
-      await fetch("/api/submissions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "disapprove", id }),
-      });
-      await onRefresh();
-      alert("却下しました！");
-    } catch {
-      alert("却下に失敗しました");
-    } finally {
-      setIsDoing(false);
-    }
-  };
+  const { isDoing, pending, handleApprove, handleDisapprove } = useManagerPanel(submissions, onRefresh);
 
   return (
     <div>
@@ -95,20 +56,12 @@ export default function ManagerPanel({ submissions, onRefresh }: Props) {
                   <td>{s.status}</td>
                   <td>{new Date(s.createdAt).toLocaleString("ja-JP")}</td>
                   <td>
-                    <Button
-                      variant="approve"
-                      disabled={isDoing}
-                      onClick={() => handleApprove(s.id)}
-                    >
+                    <Button variant="approve" disabled={isDoing} onClick={() => handleApprove(s.id)}>
                       承認
                     </Button>
                   </td>
                   <td>
-                    <Button
-                      variant="disapprove"
-                      disabled={isDoing}
-                      onClick={() => handleDisapprove(s.id)}
-                    >
+                    <Button variant="disapprove" disabled={isDoing} onClick={() => handleDisapprove(s.id)}>
                       却下
                     </Button>
                   </td>

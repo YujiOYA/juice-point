@@ -1,11 +1,11 @@
 "use client";
-import { useState } from "react";
-
 import Link from "next/link";
+import { useState } from "react";
 
 import LoginForm from "@/components/organisms/LoginForm";
 import ManagerPanel from "@/components/organisms/ManagerPanel";
 import TaskForm from "@/components/organisms/TaskForm";
+import { useSubmissions } from "@/hooks/useSubmissions";
 import { Submission } from "@/types/submission";
 import { Task } from "@/types/task";
 import { User } from "@/types/user";
@@ -18,13 +18,7 @@ interface Props {
 
 export default function PageClient({ users, tasks, submissions: initialSubmissions }: Props) {
   const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
-  const [submissions, setSubmissions] = useState<Submission[]>(initialSubmissions);
-
-  const refreshSubmissions = () =>
-    fetch("/api/submissions")
-      .then((r) => r.json())
-      .then(setSubmissions)
-      .catch(() => {});
+  const { submissions, refreshSubmissions } = useSubmissions(initialSubmissions);
 
   const isAdmin = loggedInUser?.authority === "admin";
 
