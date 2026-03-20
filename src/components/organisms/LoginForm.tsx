@@ -31,33 +31,94 @@ export default function LoginForm({
   setLoggedInUser,
   submissions,
 }: Props) {
-  const [userPoint, setUserPoint] = useState(0);
+  const [selectedId, setSelectedId] = useState("");
+  const [pin, setPin] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selected = users.find((u) => u.id === e.target.value) ?? null;
-    setLoggedInUser(selected);
-    if (selected) setUserPoint(calcUserPoint(selected.user, submissions));
+  const userPoint = loggedInUser
+    ? calcUserPoint(loggedInUser.user, submissions)
+    : 0;
+
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedId(e.target.value);
+    setPin("");
+    setError("");
+  };
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedId || !pin) return;
+    setIsLoading(true);
+    setError("");
+    try {
+      const res = await fetch("/api/auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: selectedId, pin }),
+      });
+      if (!res.ok) {
+        setError("PINが違います");
+        return;
+      }
+      const user = await res.json();
+      setLoggedInUser(user);
+    } catch {
+      setError("エラーが発生しました");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleLogout = () => {
+    setLoggedInUser(null);
+    setSelectedId("");
+    setPin("");
+    setError("");
   };
 
   if (!loggedInUser) {
     return (
-      <div>
+      <form onSubmit={handleLogin}>
         <label className="login-label">👤 だれがつかうの？</label>
         <SelectInput
           className="login-select"
           defaultValue=""
-          onChange={handleChange}
+          onChange={handleSelectChange}
         >
-          <option value="" disabled>
-            えらんでね
-          </option>
+          <option value="" disabled>えらんでね</option>
           {users.map((u) => (
-            <option key={u.id} value={u.id}>
-              {u.user}
-            </option>
+            <option key={u.id} value={u.id}>{u.user}</option>
           ))}
         </SelectInput>
-      </div>
+
+        {selectedId && (
+          <div style={{ marginTop: "1rem" }}>
+            <label className="login-label">🔑 PIN</label>
+            <input
+              type="password"
+              value={pin}
+              onChange={(e) => setPin(e.target.value)}
+              className="input"
+              placeholder="PINを入力"
+              inputMode="numeric"
+              autoFocus
+            />
+          </div>
+        )}
+
+        {error && (
+          <p style={{ color: "red", marginTop: "0.5rem" }}>{error}</p>
+        )}
+
+        {selectedId && (
+          <div style={{ marginTop: "1rem" }}>
+            <Button type="submit" variant="primary" disabled={isLoading || !pin}>
+              ログイン
+            </Button>
+          </div>
+        )}
+      </form>
     );
   }
 
@@ -67,7 +128,7 @@ export default function LoginForm({
       {loggedInUser.authority !== "admin" && (
         <PointsBadge points={userPoint} />
       )}
-      <Button variant="logout" onClick={() => setLoggedInUser(null)}>
+      <Button variant="logout" onClick={handleLogout}>
         ログアウト
       </Button>
     </div>
