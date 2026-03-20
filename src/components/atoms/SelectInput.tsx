@@ -4,6 +4,7 @@ interface Props {
   id?: string;
   className?: string;
   defaultValue?: string;
+  value?: string;
   onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   children: React.ReactNode;
 }
@@ -12,6 +13,7 @@ export default function SelectInput({
   id,
   className = "input",
   defaultValue,
+  value,
   onChange,
   children,
 }: Props) {
@@ -20,6 +22,7 @@ export default function SelectInput({
       id={id}
       className={className}
       defaultValue={defaultValue}
+      value={value}
       onChange={onChange}
     >
       {children}
