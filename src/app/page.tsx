@@ -1,5 +1,5 @@
-import PageClient from "@/app/PageClient";
-import { getUsers, getTasks, getSubmissions } from "@/lib/dynamoDbApi";
+import PageClient from "@app/PageClient";
+import { getUsers, getTasks, getSubmissions } from "@lib/dynamoDbApi";
 
 export const dynamic = "force-dynamic";
 

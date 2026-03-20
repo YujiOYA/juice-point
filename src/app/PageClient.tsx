@@ -2,13 +2,13 @@
 import Link from "next/link";
 import { useState } from "react";
 
-import LoginForm from "@/components/organisms/LoginForm";
-import ManagerPanel from "@/components/organisms/ManagerPanel";
-import TaskForm from "@/components/organisms/TaskForm";
-import { useSubmissions } from "@/hooks/useSubmissions";
-import { Submission } from "@/types/submission";
-import { Task } from "@/types/task";
-import { User } from "@/types/user";
+import LoginForm from "@organism/LoginForm";
+import ManagerPanel from "@organism/ManagerPanel";
+import TaskForm from "@organism/TaskForm";
+import { useSubmissions } from "@hook/useSubmissions";
+import { Submission } from "@type/submission";
+import { Task } from "@type/task";
+import { User } from "@type/user";
 
 interface Props {
   users: User[];

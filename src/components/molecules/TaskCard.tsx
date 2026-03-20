@@ -1,8 +1,8 @@
-import Button from "@/components/atoms/Button";
-import SelectInput from "@/components/atoms/SelectInput";
-import TextInput from "@/components/atoms/TextInput";
-import { Task } from "@/types/task";
-import { User } from "@/types/user";
+import Button from "@atom/Button";
+import SelectInput from "@atom/SelectInput";
+import TextInput from "@atom/TextInput";
+import { Task } from "@type/task";
+import { User } from "@type/user";
 
 interface ViewProps {
   task: Task;

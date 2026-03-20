@@ -1,4 +1,4 @@
-import { getTasks, getUsers } from "@/lib/dynamoDbApi";
+import { getTasks, getUsers } from "@lib/dynamoDbApi";
 import TaskManagerClient from "./TaskManagerClient";
 
 export const dynamic = "force-dynamic";

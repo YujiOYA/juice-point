@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { Submission } from "@/types/submission";
+import { Submission } from "@type/submission";
 
 export function useManagerPanel(submissions: Submission[], onRefresh: () => Promise<void>) {
   const [isDoing, setIsDoing] = useState(false);
