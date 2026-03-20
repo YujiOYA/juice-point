@@ -1,5 +1,5 @@
 {
-  "name": "notion-app",
+  "name": "family-point-app",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,18 +9,24 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@notionhq/client": "^2.2.15",
-    "next": "15.1.11",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "@aws-sdk/client-dynamodb": "^3.1013.0",
+    "@aws-sdk/lib-dynamodb": "^3.1013.0",
+"@vercel/functions": "^3.4.3",
+    "next": "^16.2.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
-    "@types/node": "^20",
+    "@eslint/js": "^9",
+    "@stylistic/eslint-plugin": "^5.10.0",
+    "@types/node": "^25",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "15.1.6",
-    "typescript": "^5"
+    "eslint-config-next": "16.2.0",
+    "eslint-plugin-import": "^2.32.0",
+    "typescript": "^5",
+    "typescript-eslint": "^8.57.1"
   }
 }
