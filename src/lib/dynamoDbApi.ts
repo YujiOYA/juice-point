@@ -41,6 +41,24 @@ export async function getUsers(id?: string): Promise<User[]> {
   }));
 }
 
+export async function verifyUserPin(id: string, pin: string): Promise<User | null> {
+  const res = await dynamo.send(
+    new QueryCommand({
+      TableName: TABLE_USER,
+      KeyConditionExpression: "id = :id",
+      ExpressionAttributeValues: { ":id": { S: id } },
+      Limit: 1,
+    }),
+  );
+  const item = res.Items?.[0];
+  if (!item || item.pin?.S !== pin) return null;
+  return {
+    id: item.id.S!,
+    user: item.user.S!,
+    authority: item.authority.S!,
+  };
+}
+
 export async function getTasks(): Promise<Task[]> {
   const res = await dynamo.send(
     new ScanCommand({ TableName: TABLE_TASK, Limit: 100 }),
