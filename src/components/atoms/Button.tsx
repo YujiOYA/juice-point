@@ -13,6 +13,7 @@ interface Props {
   variant?: Variant;
   type?: "button" | "submit";
   disabled?: boolean;
+  style?: React.CSSProperties;
   onClick?: () => void;
   children: React.ReactNode;
 }
@@ -21,6 +22,7 @@ export default function Button({
   variant = "primary",
   type = "button",
   disabled,
+  style,
   onClick,
   children,
 }: Props) {
@@ -29,6 +31,7 @@ export default function Button({
       type={type}
       className={variantClass[variant]}
       disabled={disabled}
+      style={style}
       onClick={onClick}
     >
       {children}
