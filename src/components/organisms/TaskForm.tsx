@@ -11,12 +11,14 @@ import { User } from "@/types/user";
 interface Props {
   user: User;
   tasks: Task[];
+  onRefresh: () => Promise<void>;
 }
 
-export default function TaskForm({ user, tasks }: Props) {
+export default function TaskForm({ user, tasks, onRefresh }: Props) {
   const [point, setPoint] = useState("");
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submittedTaskIds, setSubmittedTaskIds] = useState<Set<string>>(new Set());
 
   const userTasks = tasks.filter((t) => t.whose === user.user);
 
@@ -45,6 +47,8 @@ export default function TaskForm({ user, tasks }: Props) {
         }),
       });
       if (!res.ok) throw new Error("Failed");
+      setSubmittedTaskIds((prev) => new Set(prev).add(selectedTask.id));
+      await onRefresh();
       alert("申請しました！");
     } catch {
       alert("エラーが発生しました");
@@ -82,7 +86,7 @@ export default function TaskForm({ user, tasks }: Props) {
         />
       </FormField>
 
-      <Button type="submit" variant="primary" disabled={isSubmitting}>
+      <Button type="submit" variant="primary" disabled={isSubmitting || (!!selectedTask && submittedTaskIds.has(selectedTask.id))}>
         ✅ 申請する
       </Button>
     </form>
