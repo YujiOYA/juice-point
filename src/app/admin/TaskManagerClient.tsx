@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
 
+import { useTaskManager } from "@/hooks/useTaskManager";
 import { Task } from "@/types/task";
 import { User } from "@/types/user";
 
@@ -10,71 +10,21 @@ interface Props {
   initialTasks: Task[];
 }
 
-const emptyForm = { task: "", point: "", whose: "" };
-
 export default function TaskManagerClient({ users, initialTasks }: Props) {
-  const [tasks, setTasks] = useState<Task[]>(initialTasks);
-  const [form, setForm] = useState(emptyForm);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [editForm, setEditForm] = useState(emptyForm);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const refreshTasks = async () => {
-    const res = await fetch("/api/tasks");
-    setTasks(await res.json());
-  };
-
-  const handleCreate = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!form.task || !form.point || !form.whose) return;
-    setIsLoading(true);
-    try {
-      await fetch("/api/tasks", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "create", ...form }),
-      });
-      setForm(emptyForm);
-      await refreshTasks();
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const startEdit = (task: Task) => {
-    setEditingId(task.id);
-    setEditForm({ task: task.task, point: task.point, whose: task.whose });
-  };
-
-  const handleUpdate = async (id: string) => {
-    setIsLoading(true);
-    try {
-      await fetch("/api/tasks", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "update", id, ...editForm }),
-      });
-      setEditingId(null);
-      await refreshTasks();
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleDelete = async (id: string) => {
-    if (!confirm("このタスクを削除しますか？")) return;
-    setIsLoading(true);
-    try {
-      await fetch("/api/tasks", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "delete", id }),
-      });
-      await refreshTasks();
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const {
+    tasks,
+    form,
+    setForm,
+    editingId,
+    setEditingId,
+    editForm,
+    setEditForm,
+    isLoading,
+    handleCreate,
+    startEdit,
+    handleUpdate,
+    handleDelete,
+  } = useTaskManager(initialTasks);
 
   return (
     <div className="task-admin-wrap">
