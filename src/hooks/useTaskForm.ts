@@ -21,7 +21,7 @@ export function useTaskForm(
   const userTasks = tasks.filter((t) => t.whose === user.user);
 
   const userPoint = submissions
-    .filter((s) => s.whoDid === user.user && s.status === "承認" && s.isUsed === "未使用")
+    .filter((s) => s.whoDid === user.user && s.status === "承認")
     .reduce((sum, s) => sum + (Number(s.point) || 0), 0);
 
   const handleChangeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
