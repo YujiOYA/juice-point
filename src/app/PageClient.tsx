@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useState } from "react";
 
+import Card from "@atom/Card";
 import LoginForm from "@organism/LoginForm";
 import ManagerPanel from "@organism/ManagerPanel";
 import TaskForm from "@organism/TaskForm";
@@ -25,28 +26,28 @@ export default function PageClient({ users, tasks, submissions: initialSubmissio
   return (
     <div className={`container${isAdmin ? " container--wide" : ""}`}>
       <h1 className="page-title">⭐ ポイント管理アプリ ⭐</h1>
-      <div className="card">
+      <Card>
         <LoginForm
           users={users}
           loggedInUser={loggedInUser}
           setLoggedInUser={setLoggedInUser}
           submissions={submissions}
         />
-      </div>
+      </Card>
       {loggedInUser && isAdmin && (
         <>
-          <div className="card">
+          <Card>
             <ManagerPanel submissions={submissions} onRefresh={refreshSubmissions} />
-          </div>
+          </Card>
           <Link href="/admin">
             <button className="logout-button">🛠 タスク管理</button>
           </Link>
         </>
       )}
       {loggedInUser && !isAdmin && (
-        <div className="card">
+        <Card>
           <TaskForm user={loggedInUser} tasks={tasks} submissions={submissions} onRefresh={refreshSubmissions} />
-        </div>
+        </Card>
       )}
     </div>
   );
