@@ -30,6 +30,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true });
   }
 
+  if (type === "delete") {
+    await deleteSubmission(body.id);
+    return NextResponse.json({ ok: true });
+  }
+
   if (type === "usePoints") {
     const all = await getSubmissions();
     const usable = all
