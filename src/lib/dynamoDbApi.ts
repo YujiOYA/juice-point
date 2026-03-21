@@ -220,26 +220,68 @@ export async function createReward(data: { name: string; point: string; whose: s
 }
 
 export async function updateReward(id: string, data: { name: string; point: string; whose: string }): Promise<void> {
-  await dynamo.send(
-    new UpdateItemCommand({
+  const res = await dynamo.send(
+    new QueryCommand({
       TableName: TABLE_REWARD,
-      Key: { id: { S: id } },
-      UpdateExpression: "SET #n = :name, point = :point, whose = :whose",
-      ExpressionAttributeNames: { "#n": "name" },
-      ExpressionAttributeValues: {
-        ":name": { S: data.name },
-        ":point": { S: data.point },
-        ":whose": { S: data.whose },
-      },
+      KeyConditionExpression: "id = :id",
+      ExpressionAttributeValues: { ":id": { S: id } },
+      Limit: 1,
     }),
   );
+  const currentItem = res.Items?.[0];
+  if (!currentItem) throw new Error("Reward not found");
+  const currentName = currentItem.name.S!;
+
+  if (currentName === data.name) {
+    await dynamo.send(
+      new UpdateItemCommand({
+        TableName: TABLE_REWARD,
+        Key: { id: { S: id }, name: { S: currentName } },
+        UpdateExpression: "SET point = :point, whose = :whose",
+        ExpressionAttributeValues: {
+          ":point": { S: data.point },
+          ":whose": { S: data.whose },
+        },
+      }),
+    );
+  } else {
+    await dynamo.send(
+      new DeleteItemCommand({
+        TableName: TABLE_REWARD,
+        Key: { id: { S: id }, name: { S: currentName } },
+      }),
+    );
+    await dynamo.send(
+      new PutItemCommand({
+        TableName: TABLE_REWARD,
+        Item: {
+          id: { S: id },
+          name: { S: data.name },
+          point: { S: data.point },
+          whose: { S: data.whose },
+        },
+      }),
+    );
+  }
 }
 
 export async function deleteReward(id: string): Promise<void> {
+  const res = await dynamo.send(
+    new QueryCommand({
+      TableName: TABLE_REWARD,
+      KeyConditionExpression: "id = :id",
+      ExpressionAttributeValues: { ":id": { S: id } },
+      Limit: 1,
+    }),
+  );
+  const currentItem = res.Items?.[0];
+  if (!currentItem) throw new Error("Reward not found");
+  const currentName = currentItem.name.S!;
+
   await dynamo.send(
     new DeleteItemCommand({
       TableName: TABLE_REWARD,
-      Key: { id: { S: id } },
+      Key: { id: { S: id }, name: { S: currentName } },
     }),
   );
 }
