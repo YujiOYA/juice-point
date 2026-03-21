@@ -2,6 +2,7 @@
 import Link from "next/link";
 
 import Button from "@atom/Button";
+import Card from "@atom/Card";
 import SelectInput from "@atom/SelectInput";
 import TextInput from "@atom/TextInput";
 import TaskCard from "@molecule/TaskCard";
@@ -58,7 +59,7 @@ export default function TaskManagerClient({ users, initialTasks }: Props) {
       <h1 style={{ marginBottom: "1.5rem" }}>🛠 タスク管理</h1>
 
       {/* 追加フォーム */}
-      <section style={{ marginBottom: "2rem" }}>
+      <Card variant="add" className="task-add-card">
         <h2 style={{ marginBottom: "1rem" }}>タスクを追加</h2>
         <form onSubmit={handleCreate} className="task-add-form">
           <TextInput
@@ -83,7 +84,7 @@ export default function TaskManagerClient({ users, initialTasks }: Props) {
             追加
           </Button>
         </form>
-      </section>
+      </Card>
 
       {/* タスク一覧 */}
       <section>
