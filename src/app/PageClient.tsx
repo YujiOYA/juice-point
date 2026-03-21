@@ -4,7 +4,6 @@ import { useState } from "react";
 
 import Card from "@atom/Card";
 import LoginForm from "@organism/LoginForm";
-import ManagerPanel from "@organism/ManagerPanel";
 import TaskForm from "@organism/TaskForm";
 import { useSubmissions } from "@hook/useSubmissions";
 import { Reward } from "@type/reward";
@@ -26,7 +25,7 @@ export default function PageClient({ users, tasks, submissions: initialSubmissio
   const isAdmin = loggedInUser?.authority === "admin";
 
   return (
-    <div className={`container${isAdmin ? " container--wide" : ""}`}>
+    <div className="container">
       <h1 className="page-title">⭐ ポイント管理アプリ ⭐</h1>
       <Card>
         <LoginForm
@@ -37,14 +36,9 @@ export default function PageClient({ users, tasks, submissions: initialSubmissio
         />
       </Card>
       {loggedInUser && isAdmin && (
-        <>
-          <Card>
-            <ManagerPanel submissions={submissions} onRefresh={refreshSubmissions} />
-          </Card>
-          <Link href="/admin">
-            <button className="logout-button">🛠 タスク管理</button>
-          </Link>
-        </>
+        <Link href="/admin">
+          <button className="submit-button">🛠 管理画面へ</button>
+        </Link>
       )}
       {loggedInUser && !isAdmin && (
         <Card>
