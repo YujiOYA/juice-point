@@ -35,11 +35,6 @@ export default function PageClient({ users, tasks, submissions: initialSubmissio
           submissions={submissions}
         />
       </Card>
-      {loggedInUser && isAdmin && (
-        <Link href="/admin">
-          <button className="submit-button">🛠 管理画面へ</button>
-        </Link>
-      )}
       {loggedInUser && !isAdmin && (
         <Card>
           <TaskForm user={loggedInUser} tasks={tasks} submissions={submissions} rewards={rewards} onRefresh={refreshSubmissions} />
