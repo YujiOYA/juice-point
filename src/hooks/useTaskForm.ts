@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { toast } from "sonner";
 
 import { Submission } from "@type/submission";
 import { Task } from "@type/task";
@@ -30,7 +31,7 @@ export function useTaskForm(
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!selectedTask) {
-      alert("タスクを選択してください");
+      toast.warning("タスクを選択してください");
       return;
     }
     setIsSubmitting(true);
@@ -48,9 +49,9 @@ export function useTaskForm(
       if (!res.ok) throw new Error("Failed");
       setSubmittedTaskIds((prev) => new Set(prev).add(selectedTask.id));
       await onRefresh();
-      alert("申請しました！");
+      toast.success("申請しました！🎉");
     } catch {
-      alert("エラーが発生しました");
+      toast.error("エラーが発生しました");
     } finally {
       setIsSubmitting(false);
     }
@@ -67,9 +68,9 @@ export function useTaskForm(
       });
       if (!res.ok) throw new Error("Failed");
       await onRefresh();
-      alert("🧃 ジュースと交換しました！");
+      toast.success("🧃 ジュースと交換しました！");
     } catch {
-      alert("交換に失敗しました");
+      toast.error("交換に失敗しました");
     } finally {
       setIsSubmitting(false);
     }

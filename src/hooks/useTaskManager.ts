@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { toast } from "sonner";
 
 import { Task } from "@type/task";
 
@@ -94,8 +95,20 @@ export function useTaskManager(initialTasks: Task[]) {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("このタスクを削除しますか？")) return;
+  const handleDelete = (id: string) => {
+    toast("このタスクを削除しますか？", {
+      action: {
+        label: "削除",
+        onClick: () => performDelete(id),
+      },
+      cancel: {
+        label: "キャンセル",
+        onClick: () => {},
+      },
+    });
+  };
+
+  const performDelete = async (id: string) => {
     setIsLoading(true);
     try {
       await fetch("/api/tasks", {
@@ -104,6 +117,9 @@ export function useTaskManager(initialTasks: Task[]) {
         body: JSON.stringify({ type: "delete", id }),
       });
       await refreshTasks();
+      toast.success("タスクを削除しました");
+    } catch {
+      toast.error("削除に失敗しました");
     } finally {
       setIsLoading(false);
     }
