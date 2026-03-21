@@ -385,6 +385,14 @@ body {
   width: 100%;
 }
 
+/* フィルターバー */
+.task-filter-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  align-items: center;
+}
+
 /* スマホ: ソートバー */
 .task-sort-bar {
   display: flex;
