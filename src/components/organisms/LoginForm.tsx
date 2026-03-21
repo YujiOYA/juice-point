@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef, useEffect } from "react";
 import Button from "@atom/Button";
 import SelectInput from "@atom/SelectInput";
 import PointsBadge from "@molecule/PointsBadge";
@@ -18,6 +19,13 @@ export default function LoginForm({ users, loggedInUser, setLoggedInUser, submis
   const { selectedId, pin, setPin, error, isLoading, userPoint, handleSelectChange, handleLogin, handleLogout } =
     useLogin({ loggedInUser, setLoggedInUser, submissions });
 
+  const pinRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (!selectedId) return;
+    const timer = setTimeout(() => pinRef.current?.focus(), 50);
+    return () => clearTimeout(timer);
+  }, [selectedId]);
+
   if (!loggedInUser) {
     return (
       <form onSubmit={handleLogin}>
@@ -33,13 +41,13 @@ export default function LoginForm({ users, loggedInUser, setLoggedInUser, submis
           <div style={{ marginTop: "1rem" }}>
             <label className="login-label">🔑 PIN</label>
             <input
+              ref={pinRef}
               type="password"
               value={pin}
               onChange={(e) => setPin(e.target.value)}
               className="input"
               placeholder="PINを入力"
               inputMode="numeric"
-              autoFocus
             />
           </div>
         )}
