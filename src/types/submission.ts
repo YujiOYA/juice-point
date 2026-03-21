@@ -4,6 +4,5 @@ export type Submission = {
   whoDid: string;
   point: string;
   status: string;
-  isUsed: string;
   createdAt: string;
 };
