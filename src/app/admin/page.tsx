@@ -21,7 +21,7 @@ export default async function AdminPage() {
         items={[
           { id: "submissions", label: "📋 申請管理", content: <SubmissionManagerClient initialSubmissions={submissions} /> },
           { id: "tasks",       label: "🔧 タスク管理", content: <TaskManagerClient users={users} initialTasks={tasks} /> },
-          { id: "rewards",     label: "🎁 報酬管理",   content: <RewardManagerClient initialRewards={rewards} /> },
+          { id: "rewards",     label: "🎁 報酬管理",   content: <RewardManagerClient users={users} initialRewards={rewards} /> },
         ]}
       />
     </div>

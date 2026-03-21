@@ -1,5 +1,6 @@
 "use client";
 
+import AdminTable from "@molecule/AdminTable";
 import Button from "@atom/Button";
 import Card from "@atom/Card";
 import SelectInput from "@atom/SelectInput";
@@ -39,12 +40,6 @@ export default function TaskManagerClient({ users, initialTasks }: Props) {
   } = useTaskManager(initialTasks);
 
   type SortKey = "task" | "point";
-  const sortIcon = (key: SortKey) => {
-    if (sortKey === key) return ` ¹${sortDir === "asc" ? "↑" : "↓"}`;
-    if (sortKey2 === key) return ` ²${sortDir2 === "asc" ? "↑" : "↓"}`;
-    return " ↕";
-  };
-
   const SORT_OPTIONS: { value: SortKey; label: string }[] = [
     { value: "task", label: "タスク名" },
     { value: "point", label: "ポイント" },
@@ -157,77 +152,64 @@ export default function TaskManagerClient({ users, initialTasks }: Props) {
         </div>
 
         {/* PC: テーブル */}
-        <table className="task-table">
-          <thead>
-            <tr>
-              {SORT_OPTIONS.map((o) => (
-                <th
-                  key={o.value}
-                  onClick={(e) => e.shiftKey ? handleSort2(o.value) : handleSort(o.value)}
-                  style={{ cursor: "pointer", userSelect: "none" }}
-                  title="クリック: 第1優先 / Shift+クリック: 第2優先"
-                >
-                  {o.label}{sortIcon(o.value)}
-                </th>
-              ))}
-              <th>担当者</th>
-              <th></th>
+        <AdminTable
+          columns={[
+            { key: "task",    label: "タスク名", sortable: true },
+            { key: "point",   label: "ポイント", sortable: true },
+            { key: "whose",   label: "担当者" },
+            { key: "actions", label: "" },
+          ]}
+          sortKey={sortKey}
+          sortDir={sortDir}
+          sortKey2={sortKey2}
+          sortDir2={sortDir2}
+          onSort={(k) => handleSort(k as SortKey)}
+          onSort2={(k) => handleSort2(k as SortKey | null)}
+        >
+          {tasks.map((t) => (
+            <tr key={t.id}>
+              {editingId === t.id ? (
+                <>
+                  <td>
+                    <TextInput
+                      value={editForm.task}
+                      onChange={(e) => setEditForm({ ...editForm, task: e.target.value })}
+                    />
+                  </td>
+                  <td>
+                    <TextInput
+                      type="number"
+                      value={editForm.point}
+                      onChange={(e) => setEditForm({ ...editForm, point: e.target.value })}
+                      style={{ width: "80px" }}
+                    />
+                  </td>
+                  <td>
+                    <SelectInput value={editForm.whose} onChange={(e) => setEditForm({ ...editForm, whose: e.target.value })}>
+                      {users.map((u) => (
+                        <option key={u.id} value={u.user}>{u.user}</option>
+                      ))}
+                    </SelectInput>
+                  </td>
+                  <td className="task-table__actions">
+                    <Button variant="approve" disabled={isLoading} onClick={() => handleUpdate(t.id)}>保存</Button>
+                    <Button variant="logout" onClick={() => setEditingId(null)}>キャンセル</Button>
+                  </td>
+                </>
+              ) : (
+                <>
+                  <td>{t.task}</td>
+                  <td>{t.point}pt</td>
+                  <td>{t.whose}</td>
+                  <td className="task-table__actions">
+                    <Button variant="primary" disabled={isLoading} onClick={() => startEdit(t)}>編集</Button>
+                    <Button variant="disapprove" disabled={isLoading} onClick={() => handleDelete(t.id)}>削除</Button>
+                  </td>
+                </>
+              )}
             </tr>
-          </thead>
-          <tbody>
-            {tasks.map((t) => (
-              <tr key={t.id}>
-                {editingId === t.id ? (
-                  <>
-                    <td>
-                      <TextInput
-                        value={editForm.task}
-                        onChange={(e) => setEditForm({ ...editForm, task: e.target.value })}
-                      />
-                    </td>
-                    <td>
-                      <TextInput
-                        type="number"
-                        value={editForm.point}
-                        onChange={(e) => setEditForm({ ...editForm, point: e.target.value })}
-                        style={{ width: "80px" }}
-                      />
-                    </td>
-                    <td>
-                      <SelectInput value={editForm.whose} onChange={(e) => setEditForm({ ...editForm, whose: e.target.value })}>
-                        {users.map((u) => (
-                          <option key={u.id} value={u.user}>{u.user}</option>
-                        ))}
-                      </SelectInput>
-                    </td>
-                    <td className="task-table__actions">
-                      <Button variant="approve" disabled={isLoading} onClick={() => handleUpdate(t.id)}>
-                        保存
-                      </Button>
-                      <Button variant="logout" onClick={() => setEditingId(null)}>
-                        キャンセル
-                      </Button>
-                    </td>
-                  </>
-                ) : (
-                  <>
-                    <td>{t.task}</td>
-                    <td>{t.point}pt</td>
-                    <td>{t.whose}</td>
-                    <td className="task-table__actions">
-                      <Button variant="primary" disabled={isLoading} onClick={() => startEdit(t)}>
-                        編集
-                      </Button>
-                      <Button variant="disapprove" disabled={isLoading} onClick={() => handleDelete(t.id)}>
-                        削除
-                      </Button>
-                    </td>
-                  </>
-                )}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+          ))}
+        </AdminTable>
       </section>
     </div>
   );
