@@ -407,6 +407,8 @@ body {
 
 .toast-backdrop--visible {
   opacity: 1;
+  pointer-events: auto;
+  cursor: pointer;
 }
 
 /* ===== タブ ===== */
