@@ -11,7 +11,7 @@ interface Props {
 }
 
 export default function ManagerPanel({ submissions, onRefresh }: Props) {
-  const { isDoing, pending, rejected, handleApprove, handleDisapprove, handleDelete } = useManagerPanel(submissions, onRefresh);
+  const { isDoing, pending, rejected, handleApprove, handleDisapprove, handleRestore, handleDelete } = useManagerPanel(submissions, onRefresh);
 
   return (
     <div>
@@ -83,6 +83,7 @@ export default function ManagerPanel({ submissions, onRefresh }: Props) {
                 key={s.id}
                 submission={s}
                 isDoing={isDoing}
+                onRestore={handleRestore}
                 onDelete={handleDelete}
               />
             ))}
@@ -97,6 +98,7 @@ export default function ManagerPanel({ submissions, onRefresh }: Props) {
                 <th>ポイント</th>
                 <th>ステータス</th>
                 <th>申請日時</th>
+                <th>戻す</th>
                 <th>削除</th>
               </tr>
             </thead>
@@ -108,6 +110,11 @@ export default function ManagerPanel({ submissions, onRefresh }: Props) {
                   <td>{s.point}</td>
                   <td>{s.status}</td>
                   <td>{new Date(s.createdAt).toLocaleString("ja-JP")}</td>
+                  <td>
+                    <Button variant="approve" disabled={isDoing} onClick={() => handleRestore(s.id)}>
+                      🔄 戻す
+                    </Button>
+                  </td>
                   <td>
                     <Button variant="disapprove" disabled={isDoing} onClick={() => handleDelete(s.id)}>
                       🗑️ 削除

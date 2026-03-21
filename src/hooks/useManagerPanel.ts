@@ -47,6 +47,23 @@ export function useManagerPanel(submissions: Submission[], onRefresh: () => Prom
     }
   };
 
+  const handleRestore = async (id: string) => {
+    setIsDoing(true);
+    try {
+      await fetch("/api/submissions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: "restore", id }),
+      });
+      await onRefresh();
+      toast.success("申請一覧に戻しました");
+    } catch {
+      toast.error("操作に失敗しました");
+    } finally {
+      setIsDoing(false);
+    }
+  };
+
   const handleDelete = async (id: string) => {
     setIsDoing(true);
     try {
@@ -64,5 +81,5 @@ export function useManagerPanel(submissions: Submission[], onRefresh: () => Prom
     }
   };
 
-  return { isDoing, pending, rejected, handleApprove, handleDisapprove, handleDelete };
+  return { isDoing, pending, rejected, handleApprove, handleDisapprove, handleRestore, handleDelete };
 }

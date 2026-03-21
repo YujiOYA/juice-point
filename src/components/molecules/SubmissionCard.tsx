@@ -6,6 +6,7 @@ interface Props {
   isDoing: boolean;
   onApprove?: (id: string) => void;
   onDisapprove?: (id: string) => void;
+  onRestore?: (id: string) => void;
   onDelete?: (id: string) => void;
 }
 
@@ -14,6 +15,7 @@ export default function SubmissionCard({
   isDoing,
   onApprove,
   onDisapprove,
+  onRestore,
   onDelete,
 }: Props) {
   return (
@@ -33,6 +35,11 @@ export default function SubmissionCard({
         {onDisapprove && (
           <Button variant="disapprove" disabled={isDoing} onClick={() => onDisapprove(s.id)}>
             ❌ 却下
+          </Button>
+        )}
+        {onRestore && (
+          <Button variant="approve" disabled={isDoing} onClick={() => onRestore(s.id)}>
+            🔄 戻す
           </Button>
         )}
         {onDelete && (
