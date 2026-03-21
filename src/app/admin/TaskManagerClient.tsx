@@ -1,5 +1,4 @@
 "use client";
-import Link from "next/link";
 
 import Button from "@atom/Button";
 import Card from "@atom/Card";
@@ -52,12 +51,7 @@ export default function TaskManagerClient({ users, initialTasks }: Props) {
   ];
 
   return (
-    <div className="task-admin-wrap">
-      <Link href="/">
-        <Button variant="logout" style={{ marginBottom: "1rem" }}>← 戻る</Button>
-      </Link>
-      <h1 style={{ marginBottom: "1.5rem" }}>🛠 タスク管理</h1>
-
+    <div>
       {/* 追加フォーム */}
       <Card variant="add" className="task-add-card">
         <h2 style={{ marginBottom: "1rem" }}>タスクを追加</h2>
