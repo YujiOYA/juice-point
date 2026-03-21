@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { createSubmission, deleteSubmission, getSubmissions, updateSubmissionStatus } from "@lib/dynamoDbApi";
+import { createSubmission, deleteSubmission, getSubmissions, updateSubmissionPoint, updateSubmissionStatus } from "@lib/dynamoDbApi";
 
 export async function GET() {
   const submissions = await getSubmissions();
@@ -37,18 +37,29 @@ export async function POST(req: NextRequest) {
       .sort((a, b) => a.createdAt.localeCompare(b.createdAt));
 
     let remaining = Number(body.point);
-    const toUse: string[] = [];
+    const toDelete: string[] = [];
+    let toUpdate: { id: string; newPoint: number } | null = null;
+
     for (const s of usable) {
       if (remaining <= 0) break;
-      toUse.push(s.id);
-      remaining -= Number(s.point);
+      const sPoint = Number(s.point);
+      if (sPoint <= remaining) {
+        toDelete.push(s.id);
+        remaining -= sPoint;
+      } else {
+        toUpdate = { id: s.id, newPoint: sPoint - remaining };
+        remaining = 0;
+      }
     }
 
     if (remaining > 0) {
       return NextResponse.json({ error: "ポイントが足りません" }, { status: 400 });
     }
 
-    await Promise.all(toUse.map((id) => deleteSubmission(id)));
+    await Promise.all([
+      ...toDelete.map((id) => deleteSubmission(id)),
+      ...(toUpdate ? [updateSubmissionPoint(toUpdate.id, toUpdate.newPoint)] : []),
+    ]);
     return NextResponse.json({ ok: true });
   }
 
