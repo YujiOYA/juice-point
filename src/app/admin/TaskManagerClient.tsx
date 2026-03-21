@@ -17,6 +17,12 @@ interface Props {
 export default function TaskManagerClient({ users, initialTasks }: Props) {
   const {
     tasks,
+    sortKey,
+    sortDir,
+    handleSort,
+    sortKey2,
+    sortDir2,
+    handleSort2,
     form,
     setForm,
     editingId,
@@ -29,6 +35,19 @@ export default function TaskManagerClient({ users, initialTasks }: Props) {
     handleUpdate,
     handleDelete,
   } = useTaskManager(initialTasks);
+
+  type SortKey = "task" | "point" | "whose";
+  const sortIcon = (key: SortKey) => {
+    if (sortKey === key) return ` ¹${sortDir === "asc" ? "↑" : "↓"}`;
+    if (sortKey2 === key) return ` ²${sortDir2 === "asc" ? "↑" : "↓"}`;
+    return " ↕";
+  };
+
+  const SORT_OPTIONS: { value: SortKey; label: string }[] = [
+    { value: "task", label: "タスク名" },
+    { value: "point", label: "ポイント" },
+    { value: "whose", label: "担当者" },
+  ];
 
   return (
     <div className="task-admin-wrap">
@@ -69,6 +88,39 @@ export default function TaskManagerClient({ users, initialTasks }: Props) {
       <section>
         <h2 style={{ marginBottom: "1rem" }}>タスク一覧</h2>
 
+        {/* スマホ: ソート */}
+        <div className="task-sort-bar">
+          <span className="task-sort-label">第1</span>
+          <SelectInput
+            value={sortKey}
+            onChange={(e) => handleSort(e.target.value as SortKey)}
+          >
+            {SORT_OPTIONS.map((o) => (
+              <option key={o.value} value={o.value}>{o.label}</option>
+            ))}
+          </SelectInput>
+          <Button variant="logout" onClick={() => handleSort(sortKey)}>
+            {sortDir === "asc" ? "↑" : "↓"}
+          </Button>
+        </div>
+        <div className="task-sort-bar">
+          <span className="task-sort-label">第2</span>
+          <SelectInput
+            value={sortKey2 ?? ""}
+            onChange={(e) => handleSort2((e.target.value || null) as SortKey | null)}
+          >
+            <option value="">なし</option>
+            {SORT_OPTIONS.filter((o) => o.value !== sortKey).map((o) => (
+              <option key={o.value} value={o.value}>{o.label}</option>
+            ))}
+          </SelectInput>
+          {sortKey2 && (
+            <Button variant="logout" onClick={() => handleSort2(sortKey2)}>
+              {sortDir2 === "asc" ? "↑" : "↓"}
+            </Button>
+          )}
+        </div>
+
         {/* スマホ: カード */}
         <div className="task-list">
           {tasks.map((t) =>
@@ -101,9 +153,16 @@ export default function TaskManagerClient({ users, initialTasks }: Props) {
         <table className="task-table">
           <thead>
             <tr>
-              <th>タスク名</th>
-              <th>ポイント</th>
-              <th>担当者</th>
+              {SORT_OPTIONS.map((o) => (
+                <th
+                  key={o.value}
+                  onClick={(e) => e.shiftKey ? handleSort2(o.value) : handleSort(o.value)}
+                  style={{ cursor: "pointer", userSelect: "none" }}
+                  title={`クリック: 第1優先 / Shift+クリック: 第2優先`}
+                >
+                  {o.label}{sortIcon(o.value)}
+                </th>
+              ))}
               <th></th>
             </tr>
           </thead>
