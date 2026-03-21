@@ -14,7 +14,10 @@ function Backdrop() {
   useEffect(() => {
     if (!isActive) return;
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Enter") dismissAll();
+      if (e.key === "Enter") {
+        e.preventDefault();
+        dismissAll();
+      }
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
