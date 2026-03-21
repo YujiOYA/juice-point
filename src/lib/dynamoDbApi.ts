@@ -190,10 +190,11 @@ export async function getRewards(): Promise<Reward[]> {
     id: item.id.S!,
     name: item.name.S!,
     point: item.point.S!,
+    whose: item.whose?.S ?? "",
   }));
 }
 
-export async function createReward(data: { name: string; point: string }): Promise<void> {
+export async function createReward(data: { name: string; point: string; whose: string }): Promise<void> {
   await dynamo.send(
     new PutItemCommand({
       TableName: TABLE_REWARD,
@@ -201,21 +202,23 @@ export async function createReward(data: { name: string; point: string }): Promi
         id: { S: randomUUID() },
         name: { S: data.name },
         point: { S: data.point },
+        whose: { S: data.whose },
       },
     }),
   );
 }
 
-export async function updateReward(id: string, data: { name: string; point: string }): Promise<void> {
+export async function updateReward(id: string, data: { name: string; point: string; whose: string }): Promise<void> {
   await dynamo.send(
     new UpdateItemCommand({
       TableName: TABLE_REWARD,
       Key: { id: { S: id } },
-      UpdateExpression: "SET #n = :name, point = :point",
+      UpdateExpression: "SET #n = :name, point = :point, whose = :whose",
       ExpressionAttributeNames: { "#n": "name" },
       ExpressionAttributeValues: {
         ":name": { S: data.name },
         ":point": { S: data.point },
+        ":whose": { S: data.whose },
       },
     }),
   );
