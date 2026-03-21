@@ -19,6 +19,7 @@ export function useTaskForm(
   const [submittedTaskIds, setSubmittedTaskIds] = useState<Set<string>>(new Set());
 
   const userTasks = tasks.filter((t) => t.whose === user.user);
+  const userRewards = rewards.filter((r) => r.whose === user.user);
 
   const userPoint = submissions
     .filter((s) => s.whoDid === user.user && s.status === "承認")
@@ -85,7 +86,7 @@ export function useTaskForm(
     submittedTaskIds,
     userTasks,
     userPoint,
-    rewards,
+    rewards: userRewards,
     handleChangeSelect,
     handleSubmit,
     handleUsePoints,
