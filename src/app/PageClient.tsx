@@ -7,6 +7,7 @@ import LoginForm from "@organism/LoginForm";
 import ManagerPanel from "@organism/ManagerPanel";
 import TaskForm from "@organism/TaskForm";
 import { useSubmissions } from "@hook/useSubmissions";
+import { Reward } from "@type/reward";
 import { Submission } from "@type/submission";
 import { Task } from "@type/task";
 import { User } from "@type/user";
@@ -15,9 +16,10 @@ interface Props {
   users: User[];
   tasks: Task[];
   submissions: Submission[];
+  rewards: Reward[];
 }
 
-export default function PageClient({ users, tasks, submissions: initialSubmissions }: Props) {
+export default function PageClient({ users, tasks, submissions: initialSubmissions, rewards }: Props) {
   const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
   const { submissions, refreshSubmissions } = useSubmissions(initialSubmissions);
 
@@ -46,7 +48,7 @@ export default function PageClient({ users, tasks, submissions: initialSubmissio
       )}
       {loggedInUser && !isAdmin && (
         <Card>
-          <TaskForm user={loggedInUser} tasks={tasks} submissions={submissions} onRefresh={refreshSubmissions} />
+          <TaskForm user={loggedInUser} tasks={tasks} submissions={submissions} rewards={rewards} onRefresh={refreshSubmissions} />
         </Card>
       )}
     </div>

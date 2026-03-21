@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { toast } from "sonner";
 
+import { Reward } from "@type/reward";
 import { Submission } from "@type/submission";
 import { Task } from "@type/task";
 import { User } from "@type/user";
@@ -9,6 +10,7 @@ export function useTaskForm(
   user: User,
   tasks: Task[],
   submissions: Submission[],
+  rewards: Reward[],
   onRefresh: () => Promise<void>,
 ) {
   const [point, setPoint] = useState("");
@@ -57,18 +59,18 @@ export function useTaskForm(
     }
   };
 
-  const handleBuyJuice = async () => {
-    if (userPoint < 10) return;
+  const handleUsePoints = async (reward: Reward) => {
+    if (userPoint < Number(reward.point)) return;
     setIsSubmitting(true);
     try {
       const res = await fetch("/api/submissions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "usePoints", userId: user.user }),
+        body: JSON.stringify({ type: "usePoints", userId: user.user, point: Number(reward.point) }),
       });
       if (!res.ok) throw new Error("Failed");
       await onRefresh();
-      toast.success("🧃 ジュースと交換しました！");
+      toast.success(`🎁 ${reward.name}と交換しました！`);
     } catch {
       toast.error("交換に失敗しました");
     } finally {
@@ -83,8 +85,9 @@ export function useTaskForm(
     submittedTaskIds,
     userTasks,
     userPoint,
+    rewards,
     handleChangeSelect,
     handleSubmit,
-    handleBuyJuice,
+    handleUsePoints,
   };
 }

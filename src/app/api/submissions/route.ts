@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
       .filter((s) => s.whoDid === body.userId && s.status === "承認" && s.isUsed === "未使用")
       .sort((a, b) => a.createdAt.localeCompare(b.createdAt));
 
-    let remaining = 10;
+    let remaining = Number(body.point);
     const toUse: string[] = [];
     for (const s of usable) {
       if (remaining <= 0) break;
