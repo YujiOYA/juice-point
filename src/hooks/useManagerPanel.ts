@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 import { Submission } from "@type/submission";
 
@@ -19,9 +20,9 @@ export function useManagerPanel(submissions: Submission[], onRefresh: () => Prom
         body: JSON.stringify({ type: "approve", id }),
       });
       await onRefresh();
-      alert("ステータスが承認に変更されました！");
+      toast.success("承認しました！");
     } catch {
-      alert("承認に失敗しました");
+      toast.error("承認に失敗しました");
     } finally {
       setIsDoing(false);
     }
@@ -36,9 +37,9 @@ export function useManagerPanel(submissions: Submission[], onRefresh: () => Prom
         body: JSON.stringify({ type: "disapprove", id }),
       });
       await onRefresh();
-      alert("却下しました！");
+      toast.success("却下しました");
     } catch {
-      alert("却下に失敗しました");
+      toast.error("却下に失敗しました");
     } finally {
       setIsDoing(false);
     }
