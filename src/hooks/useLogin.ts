@@ -6,7 +6,7 @@ import { User } from "@type/user";
 
 const calcUserPoint = (userName: string, submissions: Submission[]): number =>
   submissions
-    .filter((s) => s.whoDid === userName && s.status === "承認" && s.isUsed === "未使用")
+    .filter((s) => s.whoDid === userName && s.status === "承認")
     .map((s) => Number(s.point) || 0)
     .reduce((sum, point) => sum + point, 0);
 

@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
   if (type === "usePoints") {
     const all = await getSubmissions();
     const usable = all
-      .filter((s) => s.whoDid === body.userId && s.status === "承認" && s.isUsed === "未使用")
+      .filter((s) => s.whoDid === body.userId && s.status === "承認")
       .sort((a, b) => a.createdAt.localeCompare(b.createdAt));
 
     let remaining = Number(body.point);

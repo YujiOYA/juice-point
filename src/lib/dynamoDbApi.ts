@@ -85,7 +85,6 @@ export async function getSubmissions(): Promise<Submission[]> {
     whoDid: item.whoDid.S!,
     point: item.point.S!,
     status: item.status.S!,
-    isUsed: item.isUsed.S!,
     createdAt: item.createdAt.S!,
   }));
 }
@@ -104,7 +103,6 @@ export async function createSubmission(data: {
         whoDid: { S: data.whoDid },
         point: { S: data.point },
         status: { S: "未承認" },
-        isUsed: { S: "未使用" },
         createdAt: { S: new Date().toISOString() },
       },
     }),
