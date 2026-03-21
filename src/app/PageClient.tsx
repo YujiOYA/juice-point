@@ -6,7 +6,6 @@ import Card from "@atom/Card";
 import LoginForm from "@organism/LoginForm";
 import ManagerPanel from "@organism/ManagerPanel";
 import TaskForm from "@organism/TaskForm";
-import { useSubmissions } from "@hook/useSubmissions";
 import { Submission } from "@type/submission";
 import { Task } from "@type/task";
 import { User } from "@type/user";
@@ -17,9 +16,8 @@ interface Props {
   submissions: Submission[];
 }
 
-export default function PageClient({ users, tasks, submissions: initialSubmissions }: Props) {
+export default function PageClient({ users, tasks, submissions }: Props) {
   const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
-  const { submissions, refreshSubmissions } = useSubmissions(initialSubmissions);
 
   const isAdmin = loggedInUser?.authority === "admin";
 
@@ -37,7 +35,7 @@ export default function PageClient({ users, tasks, submissions: initialSubmissio
       {loggedInUser && isAdmin && (
         <>
           <Card>
-            <ManagerPanel submissions={submissions} onRefresh={refreshSubmissions} />
+            <ManagerPanel submissions={submissions} />
           </Card>
           <Link href="/admin">
             <button className="logout-button">🛠 タスク管理</button>
@@ -46,7 +44,7 @@ export default function PageClient({ users, tasks, submissions: initialSubmissio
       )}
       {loggedInUser && !isAdmin && (
         <Card>
-          <TaskForm user={loggedInUser} tasks={tasks} submissions={submissions} onRefresh={refreshSubmissions} />
+          <TaskForm user={loggedInUser} tasks={tasks} submissions={submissions} />
         </Card>
       )}
     </div>

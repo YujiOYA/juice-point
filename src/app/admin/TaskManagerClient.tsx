@@ -12,12 +12,12 @@ import { User } from "@type/user";
 
 interface Props {
   users: User[];
-  initialTasks: Task[];
+  tasks: Task[];
 }
 
-export default function TaskManagerClient({ users, initialTasks }: Props) {
+export default function TaskManagerClient({ users, tasks }: Props) {
   const {
-    tasks,
+    tasks: sortedTasks,
     sortKey,
     sortDir,
     handleSort,
@@ -37,7 +37,7 @@ export default function TaskManagerClient({ users, initialTasks }: Props) {
     startEdit,
     handleUpdate,
     handleDelete,
-  } = useTaskManager(initialTasks);
+  } = useTaskManager(tasks);
 
   type SortKey = "task" | "point";
   const sortIcon = (key: SortKey) => {
@@ -136,7 +136,7 @@ export default function TaskManagerClient({ users, initialTasks }: Props) {
 
         {/* スマホ: カード */}
         <div className="task-list">
-          {tasks.map((t) =>
+          {sortedTasks.map((t) =>
             editingId === t.id ? (
               <TaskCard
                 key={t.id}
@@ -181,7 +181,7 @@ export default function TaskManagerClient({ users, initialTasks }: Props) {
             </tr>
           </thead>
           <tbody>
-            {tasks.map((t) => (
+            {sortedTasks.map((t) => (
               <tr key={t.id}>
                 {editingId === t.id ? (
                   <>

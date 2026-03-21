@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
+import { approveSubmissionAction, disapproveSubmissionAction } from "@action/submissions";
 import { Submission } from "@type/submission";
 
-export function useManagerPanel(submissions: Submission[], onRefresh: () => Promise<void>) {
+export function useManagerPanel(submissions: Submission[]) {
   const [isDoing, setIsDoing] = useState(false);
   const [pending, setPending] = useState(submissions.filter((s) => s.status === "未承認"));
 
@@ -14,12 +15,7 @@ export function useManagerPanel(submissions: Submission[], onRefresh: () => Prom
   const handleApprove = async (id: string) => {
     setIsDoing(true);
     try {
-      await fetch("/api/submissions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "approve", id }),
-      });
-      await onRefresh();
+      await approveSubmissionAction(id);
       toast.success("承認しました！");
     } catch {
       toast.error("承認に失敗しました");
@@ -31,12 +27,7 @@ export function useManagerPanel(submissions: Submission[], onRefresh: () => Prom
   const handleDisapprove = async (id: string) => {
     setIsDoing(true);
     try {
-      await fetch("/api/submissions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "disapprove", id }),
-      });
-      await onRefresh();
+      await disapproveSubmissionAction(id);
       toast.success("却下しました");
     } catch {
       toast.error("却下に失敗しました");

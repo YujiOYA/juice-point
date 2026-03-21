@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import { loginAction } from "@action/auth";
 import { Submission } from "@type/submission";
 import { User } from "@type/user";
 
@@ -35,16 +36,11 @@ export function useLogin({ loggedInUser, setLoggedInUser, submissions }: Args) {
     setIsLoading(true);
     setError("");
     try {
-      const res = await fetch("/api/auth", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: selectedId, pin }),
-      });
-      if (!res.ok) {
+      const user = await loginAction(selectedId, pin);
+      if (!user) {
         setError("PINが違います");
         return;
       }
-      const user = await res.json();
       setLoggedInUser(user);
     } catch {
       setError("エラーが発生しました");

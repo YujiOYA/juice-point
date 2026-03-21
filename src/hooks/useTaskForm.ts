@@ -1,16 +1,12 @@
 import { useState } from "react";
 import { toast } from "sonner";
 
+import { registerSubmissionAction, usePointsAction } from "@action/submissions";
 import { Submission } from "@type/submission";
 import { Task } from "@type/task";
 import { User } from "@type/user";
 
-export function useTaskForm(
-  user: User,
-  tasks: Task[],
-  submissions: Submission[],
-  onRefresh: () => Promise<void>,
-) {
+export function useTaskForm(user: User, tasks: Task[], submissions: Submission[]) {
   const [point, setPoint] = useState("");
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -36,19 +32,12 @@ export function useTaskForm(
     }
     setIsSubmitting(true);
     try {
-      const res = await fetch("/api/submissions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          type: "register",
-          whatYouDid: selectedTask.task,
-          point: selectedTask.point,
-          whoDid: user.user,
-        }),
+      await registerSubmissionAction({
+        whatYouDid: selectedTask.task,
+        point: selectedTask.point,
+        whoDid: user.user,
       });
-      if (!res.ok) throw new Error("Failed");
       setSubmittedTaskIds((prev) => new Set(prev).add(selectedTask.id));
-      await onRefresh();
       toast.success("申請しました！🎉");
     } catch {
       toast.error("エラーが発生しました");
@@ -61,13 +50,7 @@ export function useTaskForm(
     if (userPoint < 10) return;
     setIsSubmitting(true);
     try {
-      const res = await fetch("/api/submissions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "usePoints", userId: user.user }),
-      });
-      if (!res.ok) throw new Error("Failed");
-      await onRefresh();
+      await usePointsAction(user.user);
       toast.success("🧃 ジュースと交換しました！");
     } catch {
       toast.error("交換に失敗しました");

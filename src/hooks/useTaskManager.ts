@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { toast } from "sonner";
 
+import { createTaskAction, deleteTaskAction, updateTaskAction } from "@action/tasks";
 import { Task } from "@type/task";
 
 const emptyForm = { task: "", point: "", whose: "" };
@@ -8,8 +9,7 @@ const emptyForm = { task: "", point: "", whose: "" };
 type SortKey = "task" | "point";
 type SortDir = "asc" | "desc";
 
-export function useTaskManager(initialTasks: Task[]) {
-  const [tasks, setTasks] = useState<Task[]>(initialTasks);
+export function useTaskManager(tasks: Task[]) {
   const [form, setForm] = useState(emptyForm);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editForm, setEditForm] = useState(emptyForm);
@@ -25,13 +25,13 @@ export function useTaskManager(initialTasks: Task[]) {
     return [...tasks]
       .filter((t) => !filterWhose || t.whose === filterWhose)
       .sort((a, b) => {
-      const av = val(a, sortKey), bv = val(b, sortKey);
-      if (av !== bv) return (av < bv ? -1 : 1) * (sortDir === "asc" ? 1 : -1);
-      if (!sortKey2) return 0;
-      const av2 = val(a, sortKey2), bv2 = val(b, sortKey2);
-      if (av2 !== bv2) return (av2 < bv2 ? -1 : 1) * (sortDir2 === "asc" ? 1 : -1);
-      return 0;
-    });
+        const av = val(a, sortKey), bv = val(b, sortKey);
+        if (av !== bv) return (av < bv ? -1 : 1) * (sortDir === "asc" ? 1 : -1);
+        if (!sortKey2) return 0;
+        const av2 = val(a, sortKey2), bv2 = val(b, sortKey2);
+        if (av2 !== bv2) return (av2 < bv2 ? -1 : 1) * (sortDir2 === "asc" ? 1 : -1);
+        return 0;
+      });
   }, [tasks, sortKey, sortDir, sortKey2, sortDir2, filterWhose]);
 
   const handleSort = (key: SortKey) => {
@@ -53,23 +53,15 @@ export function useTaskManager(initialTasks: Task[]) {
     }
   };
 
-  const refreshTasks = async () => {
-    const res = await fetch("/api/tasks");
-    setTasks(await res.json());
-  };
-
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.task || !form.point || !form.whose) return;
     setIsLoading(true);
     try {
-      await fetch("/api/tasks", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "create", ...form }),
-      });
+      await createTaskAction(form);
       setForm(emptyForm);
-      await refreshTasks();
+    } catch {
+      toast.error("タスクの作成に失敗しました");
     } finally {
       setIsLoading(false);
     }
@@ -83,13 +75,10 @@ export function useTaskManager(initialTasks: Task[]) {
   const handleUpdate = async (id: string) => {
     setIsLoading(true);
     try {
-      await fetch("/api/tasks", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "update", id, ...editForm }),
-      });
+      await updateTaskAction(id, editForm);
       setEditingId(null);
-      await refreshTasks();
+    } catch {
+      toast.error("タスクの更新に失敗しました");
     } finally {
       setIsLoading(false);
     }
@@ -111,12 +100,7 @@ export function useTaskManager(initialTasks: Task[]) {
   const performDelete = async (id: string) => {
     setIsLoading(true);
     try {
-      await fetch("/api/tasks", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "delete", id }),
-      });
-      await refreshTasks();
+      await deleteTaskAction(id);
       toast.success("タスクを削除しました");
     } catch {
       toast.error("削除に失敗しました");

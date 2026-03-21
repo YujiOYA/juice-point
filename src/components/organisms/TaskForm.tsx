@@ -13,10 +13,9 @@ interface Props {
   user: User;
   tasks: Task[];
   submissions: Submission[];
-  onRefresh: () => Promise<void>;
 }
 
-export default function TaskForm({ user, tasks, submissions, onRefresh }: Props) {
+export default function TaskForm({ user, tasks, submissions }: Props) {
   const {
     point,
     selectedTask,
@@ -27,7 +26,7 @@ export default function TaskForm({ user, tasks, submissions, onRefresh }: Props)
     handleChangeSelect,
     handleSubmit,
     handleBuyJuice,
-  } = useTaskForm(user, tasks, submissions, onRefresh);
+  } = useTaskForm(user, tasks, submissions);
 
   return (
     <form className="task-form" onSubmit={handleSubmit}>

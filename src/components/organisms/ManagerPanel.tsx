@@ -7,11 +7,10 @@ import { Submission } from "@type/submission";
 
 interface Props {
   submissions: Submission[];
-  onRefresh: () => Promise<void>;
 }
 
-export default function ManagerPanel({ submissions, onRefresh }: Props) {
-  const { isDoing, pending, handleApprove, handleDisapprove } = useManagerPanel(submissions, onRefresh);
+export default function ManagerPanel({ submissions }: Props) {
+  const { isDoing, pending, handleApprove, handleDisapprove } = useManagerPanel(submissions);
 
   return (
     <div>
