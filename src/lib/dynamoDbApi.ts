@@ -164,6 +164,17 @@ export async function deleteSubmission(id: string): Promise<void> {
   );
 }
 
+export async function updateSubmissionPoint(id: string, point: number): Promise<void> {
+  await dynamo.send(
+    new UpdateItemCommand({
+      TableName: TABLE_SUBMISSIONS,
+      Key: { id: { S: id } },
+      UpdateExpression: "SET point = :point",
+      ExpressionAttributeValues: { ":point": { S: String(point) } },
+    }),
+  );
+}
+
 export async function updateSubmissionStatus(
   id: string,
   status: string,
