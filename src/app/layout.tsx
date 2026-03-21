@@ -1,9 +1,5 @@
 import { Geist, Geist_Mono } from "next/font/google";
-import dynamic from "next/dynamic";
-
-const ToasterWithBackdrop = dynamic(() => import("@atom/ToasterWithBackdrop"), {
-  ssr: false,
-});
+import ToasterClient from "@atom/ToasterClient";
 
 import type { Metadata } from "next";
 import "./globals.css";
@@ -36,7 +32,7 @@ export default function RootLayout({
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         {children}
-        <ToasterWithBackdrop />
+        <ToasterClient />
       </body>
     </html>
   );
