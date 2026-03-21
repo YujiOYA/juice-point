@@ -30,6 +30,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true });
   }
 
+  if (type === "restore") {
+    await updateSubmissionStatus(body.id, "未承認");
+    return NextResponse.json({ ok: true });
+  }
+
   if (type === "delete") {
     await deleteSubmission(body.id);
     return NextResponse.json({ ok: true });
