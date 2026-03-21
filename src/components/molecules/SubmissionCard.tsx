@@ -4,8 +4,10 @@ import { Submission } from "@type/submission";
 interface Props {
   submission: Submission;
   isDoing: boolean;
-  onApprove: (id: string) => void;
-  onDisapprove: (id: string) => void;
+  onApprove?: (id: string) => void;
+  onDisapprove?: (id: string) => void;
+  onRestore?: (id: string) => void;
+  onDelete?: (id: string) => void;
 }
 
 export default function SubmissionCard({
@@ -13,6 +15,8 @@ export default function SubmissionCard({
   isDoing,
   onApprove,
   onDisapprove,
+  onRestore,
+  onDelete,
 }: Props) {
   return (
     <div className="submission-card">
@@ -23,20 +27,26 @@ export default function SubmissionCard({
         <span>🕐 {new Date(s.createdAt).toLocaleString("ja-JP")}</span>
       </div>
       <div className="submission-card__actions">
-        <Button
-          variant="approve"
-          disabled={isDoing}
-          onClick={() => onApprove(s.id)}
-        >
-          ✅ 承認
-        </Button>
-        <Button
-          variant="disapprove"
-          disabled={isDoing}
-          onClick={() => onDisapprove(s.id)}
-        >
-          ❌ 却下
-        </Button>
+        {onApprove && (
+          <Button variant="approve" disabled={isDoing} onClick={() => onApprove(s.id)}>
+            ✅ 承認
+          </Button>
+        )}
+        {onDisapprove && (
+          <Button variant="disapprove" disabled={isDoing} onClick={() => onDisapprove(s.id)}>
+            ❌ 却下
+          </Button>
+        )}
+        {onRestore && (
+          <Button variant="approve" disabled={isDoing} onClick={() => onRestore(s.id)}>
+            🔄 戻す
+          </Button>
+        )}
+        {onDelete && (
+          <Button variant="disapprove" disabled={isDoing} onClick={() => onDelete(s.id)}>
+            🗑️ 削除
+          </Button>
+        )}
       </div>
     </div>
   );
