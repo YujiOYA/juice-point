@@ -4,7 +4,7 @@ import { Task } from "@type/task";
 
 const emptyForm = { task: "", point: "", whose: "" };
 
-type SortKey = "task" | "point" | "whose";
+type SortKey = "task" | "point";
 type SortDir = "asc" | "desc";
 
 export function useTaskManager(initialTasks: Task[]) {
@@ -13,14 +13,17 @@ export function useTaskManager(initialTasks: Task[]) {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editForm, setEditForm] = useState(emptyForm);
   const [isLoading, setIsLoading] = useState(false);
-  const [sortKey, setSortKey] = useState<SortKey>("task");
+  const [sortKey, setSortKey] = useState<SortKey>("point");
   const [sortDir, setSortDir] = useState<SortDir>("asc");
   const [sortKey2, setSortKey2] = useState<SortKey | null>(null);
   const [sortDir2, setSortDir2] = useState<SortDir>("asc");
+  const [filterWhose, setFilterWhose] = useState<string>("");
 
   const sortedTasks = useMemo(() => {
     const val = (t: Task, key: SortKey) => key === "point" ? Number(t[key]) : t[key];
-    return [...tasks].sort((a, b) => {
+    return [...tasks]
+      .filter((t) => !filterWhose || t.whose === filterWhose)
+      .sort((a, b) => {
       const av = val(a, sortKey), bv = val(b, sortKey);
       if (av !== bv) return (av < bv ? -1 : 1) * (sortDir === "asc" ? 1 : -1);
       if (!sortKey2) return 0;
@@ -28,7 +31,7 @@ export function useTaskManager(initialTasks: Task[]) {
       if (av2 !== bv2) return (av2 < bv2 ? -1 : 1) * (sortDir2 === "asc" ? 1 : -1);
       return 0;
     });
-  }, [tasks, sortKey, sortDir, sortKey2, sortDir2]);
+  }, [tasks, sortKey, sortDir, sortKey2, sortDir2, filterWhose]);
 
   const handleSort = (key: SortKey) => {
     if (sortKey === key) {
@@ -114,6 +117,8 @@ export function useTaskManager(initialTasks: Task[]) {
     sortKey2,
     sortDir2,
     handleSort2,
+    filterWhose,
+    setFilterWhose,
     form,
     setForm,
     editingId,

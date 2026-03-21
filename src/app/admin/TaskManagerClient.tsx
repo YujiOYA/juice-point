@@ -23,6 +23,8 @@ export default function TaskManagerClient({ users, initialTasks }: Props) {
     sortKey2,
     sortDir2,
     handleSort2,
+    filterWhose,
+    setFilterWhose,
     form,
     setForm,
     editingId,
@@ -36,7 +38,7 @@ export default function TaskManagerClient({ users, initialTasks }: Props) {
     handleDelete,
   } = useTaskManager(initialTasks);
 
-  type SortKey = "task" | "point" | "whose";
+  type SortKey = "task" | "point";
   const sortIcon = (key: SortKey) => {
     if (sortKey === key) return ` ¹${sortDir === "asc" ? "↑" : "↓"}`;
     if (sortKey2 === key) return ` ²${sortDir2 === "asc" ? "↑" : "↓"}`;
@@ -46,7 +48,6 @@ export default function TaskManagerClient({ users, initialTasks }: Props) {
   const SORT_OPTIONS: { value: SortKey; label: string }[] = [
     { value: "task", label: "タスク名" },
     { value: "point", label: "ポイント" },
-    { value: "whose", label: "担当者" },
   ];
 
   return (
@@ -87,6 +88,17 @@ export default function TaskManagerClient({ users, initialTasks }: Props) {
       {/* タスク一覧 */}
       <section>
         <h2 style={{ marginBottom: "1rem" }}>タスク一覧</h2>
+
+        {/* フィルター */}
+        <div className="task-filter-bar">
+          <span className="task-sort-label">担当者</span>
+          <SelectInput value={filterWhose} onChange={(e) => setFilterWhose(e.target.value)}>
+            <option value="">全員</option>
+            {users.map((u) => (
+              <option key={u.id} value={u.user}>{u.user}</option>
+            ))}
+          </SelectInput>
+        </div>
 
         {/* スマホ: ソート */}
         <div className="task-sort-bar">
@@ -158,11 +170,12 @@ export default function TaskManagerClient({ users, initialTasks }: Props) {
                   key={o.value}
                   onClick={(e) => e.shiftKey ? handleSort2(o.value) : handleSort(o.value)}
                   style={{ cursor: "pointer", userSelect: "none" }}
-                  title={`クリック: 第1優先 / Shift+クリック: 第2優先`}
+                  title="クリック: 第1優先 / Shift+クリック: 第2優先"
                 >
                   {o.label}{sortIcon(o.value)}
                 </th>
               ))}
+              <th>担当者</th>
               <th></th>
             </tr>
           </thead>
