@@ -43,6 +43,63 @@ export async function getUsers(id?: string): Promise<User[]> {
   }));
 }
 
+export async function createUser(data: { user: string; pin: string; authority: string }): Promise<void> {
+  await dynamo.send(
+    new PutItemCommand({
+      TableName: TABLE_USER,
+      Item: {
+        id: { S: randomUUID() },
+        user: { S: data.user },
+        pin: { S: data.pin },
+        authority: { S: data.authority },
+      },
+    }),
+  );
+}
+
+export async function updateUser(
+  id: string,
+  data: { user: string; pin?: string; authority: string },
+): Promise<void> {
+  if (data.pin) {
+    await dynamo.send(
+      new UpdateItemCommand({
+        TableName: TABLE_USER,
+        Key: { id: { S: id } },
+        UpdateExpression: "SET #u = :user, pin = :pin, authority = :authority",
+        ExpressionAttributeNames: { "#u": "user" },
+        ExpressionAttributeValues: {
+          ":user": { S: data.user },
+          ":pin": { S: data.pin },
+          ":authority": { S: data.authority },
+        },
+      }),
+    );
+  } else {
+    await dynamo.send(
+      new UpdateItemCommand({
+        TableName: TABLE_USER,
+        Key: { id: { S: id } },
+        UpdateExpression: "SET #u = :user, authority = :authority",
+        ExpressionAttributeNames: { "#u": "user" },
+        ExpressionAttributeValues: {
+          ":user": { S: data.user },
+          ":authority": { S: data.authority },
+        },
+      }),
+    );
+  }
+}
+
+export async function deleteUser(id: string): Promise<void> {
+  await dynamo.send(
+    new DeleteItemCommand({
+      TableName: TABLE_USER,
+      Key: { id: { S: id } },
+    }),
+  );
+}
+
 export async function verifyUserPin(id: string, pin: string): Promise<User | null> {
   const res = await dynamo.send(
     new QueryCommand({
