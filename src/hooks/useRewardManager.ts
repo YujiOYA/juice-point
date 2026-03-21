@@ -70,6 +70,9 @@ export function useRewardManager(initialRewards: Reward[]) {
       });
       setForm(emptyForm);
       await refreshRewards();
+      toast.success("報酬を追加しました");
+    } catch {
+      toast.error("追加に失敗しました");
     } finally {
       setIsLoading(false);
     }
@@ -90,6 +93,9 @@ export function useRewardManager(initialRewards: Reward[]) {
       });
       setEditingId(null);
       await refreshRewards();
+      toast.success("報酬を更新しました");
+    } catch {
+      toast.error("更新に失敗しました");
     } finally {
       setIsLoading(false);
     }
