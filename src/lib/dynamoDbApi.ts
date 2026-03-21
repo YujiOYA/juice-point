@@ -157,13 +157,11 @@ export async function deleteTask(id: string): Promise<void> {
   );
 }
 
-export async function updateSubmissionIsUsed(id: string): Promise<void> {
+export async function deleteSubmission(id: string): Promise<void> {
   await dynamo.send(
-    new UpdateItemCommand({
+    new DeleteItemCommand({
       TableName: TABLE_SUBMISSIONS,
       Key: { id: { S: id } },
-      UpdateExpression: "SET isUsed = :val",
-      ExpressionAttributeValues: { ":val": { S: "使用済" } },
     }),
   );
 }

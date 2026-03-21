@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { createSubmission, getSubmissions, updateSubmissionIsUsed, updateSubmissionStatus } from "@lib/dynamoDbApi";
+import { createSubmission, deleteSubmission, getSubmissions, updateSubmissionStatus } from "@lib/dynamoDbApi";
 
 export async function GET() {
   const submissions = await getSubmissions();
@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "ポイントが足りません" }, { status: 400 });
     }
 
-    await Promise.all(toUse.map((id) => updateSubmissionIsUsed(id)));
+    await Promise.all(toUse.map((id) => deleteSubmission(id)));
     return NextResponse.json({ ok: true });
   }
 
