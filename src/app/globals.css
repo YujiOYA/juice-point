@@ -374,6 +374,41 @@ body {
   }
 }
 
+/* ===== Toast (Sonner) カスタマイズ ===== */
+[data-sonner-toaster] {
+  z-index: 10000 !important;
+}
+
+[data-sonner-toast] {
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  padding: 20px 28px !important;
+  min-height: 68px !important;
+  border-radius: 16px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.22) !important;
+  gap: 14px !important;
+}
+
+[data-sonner-toast] [data-icon] svg {
+  width: 26px !important;
+  height: 26px !important;
+}
+
+/* ===== Toast backdrop ===== */
+.toast-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.toast-backdrop--visible {
+  opacity: 1;
+}
+
 /* ===== タブ ===== */
 .tabs__list {
   display: flex;

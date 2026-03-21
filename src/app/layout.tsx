@@ -1,5 +1,5 @@
 import { Geist, Geist_Mono } from "next/font/google";
-import { Toaster } from "sonner";
+import ToasterWithBackdrop from "@atom/ToasterWithBackdrop";
 
 import type { Metadata } from "next";
 import "./globals.css";
@@ -32,7 +32,7 @@ export default function RootLayout({
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         {children}
-        <Toaster position="top-center" richColors />
+        <ToasterWithBackdrop />
       </body>
     </html>
   );
