@@ -1,5 +1,9 @@
 import { Geist, Geist_Mono } from "next/font/google";
-import ToasterWithBackdrop from "@atom/ToasterWithBackdrop";
+import dynamic from "next/dynamic";
+
+const ToasterWithBackdrop = dynamic(() => import("@atom/ToasterWithBackdrop"), {
+  ssr: false,
+});
 
 import type { Metadata } from "next";
 import "./globals.css";
