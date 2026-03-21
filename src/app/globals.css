@@ -529,4 +529,13 @@ body {
   .task-table tbody tr:hover {
     background: #fff8f0;
   }
+
+  .task-table__actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .task-table__actions > * {
+    flex: 1;
+  }
 }

@@ -206,7 +206,7 @@ export default function TaskManagerClient({ users, initialTasks }: Props) {
                         ))}
                       </SelectInput>
                     </td>
-                    <td style={{ display: "flex", gap: "0.5rem" }}>
+                    <td className="task-table__actions">
                       <Button variant="approve" disabled={isLoading} onClick={() => handleUpdate(t.id)}>
                         保存
                       </Button>
@@ -220,7 +220,7 @@ export default function TaskManagerClient({ users, initialTasks }: Props) {
                     <td>{t.task}</td>
                     <td>{t.point}pt</td>
                     <td>{t.whose}</td>
-                    <td style={{ display: "flex", gap: "0.5rem" }}>
+                    <td className="task-table__actions">
                       <Button variant="primary" disabled={isLoading} onClick={() => startEdit(t)}>
                         編集
                       </Button>
