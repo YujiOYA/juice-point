@@ -18,7 +18,7 @@ interface Props {
   onRefresh: () => Promise<void>;
 }
 
-export default function TaskForm({ user, tasks, submissions, rewards, onRefresh }: Props) {
+export default function TaskForm({ user, tasks, submissions, rewards = [], onRefresh }: Props) {
   const {
     point,
     selectedTask,
