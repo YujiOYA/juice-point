@@ -63,16 +63,17 @@ export function useRewardManager(initialRewards: Reward[]) {
     if (!form.name || !form.point || !form.whose) return;
     setIsLoading(true);
     try {
-      await fetch("/api/rewards", {
+      const res = await fetch("/api/rewards", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ type: "create", ...form }),
       });
+      if (!res.ok) throw new Error(await res.text());
       setForm(emptyForm);
       await refreshRewards();
       toast.success("報酬を追加しました");
-    } catch {
-      toast.error("追加に失敗しました");
+    } catch (e) {
+      toast.error(`追加に失敗しました: ${e}`);
     } finally {
       setIsLoading(false);
     }
@@ -86,16 +87,17 @@ export function useRewardManager(initialRewards: Reward[]) {
   const handleUpdate = async (id: string) => {
     setIsLoading(true);
     try {
-      await fetch("/api/rewards", {
+      const res = await fetch("/api/rewards", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ type: "update", id, ...editForm }),
       });
+      if (!res.ok) throw new Error(await res.text());
       setEditingId(null);
       await refreshRewards();
       toast.success("報酬を更新しました");
-    } catch {
-      toast.error("更新に失敗しました");
+    } catch (e) {
+      toast.error(`更新に失敗しました: ${e}`);
     } finally {
       setIsLoading(false);
     }
