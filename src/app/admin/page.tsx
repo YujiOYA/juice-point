@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { getRewards, getTasks, getUsers } from "@lib/dynamoDbApi";
+import Tabs from "@atom/Tabs";
 import RewardManagerClient from "./RewardManagerClient";
 import TaskManagerClient from "./TaskManagerClient";
 
@@ -13,17 +14,14 @@ export default async function AdminPage() {
       <Link href="/">
         <button className="logout-button" style={{ marginBottom: "1rem" }}>← 戻る</button>
       </Link>
-      <h1 style={{ marginBottom: "2rem" }}>🛠 管理画面</h1>
+      <h1 style={{ marginBottom: "1.5rem" }}>🛠 管理画面</h1>
 
-      <section style={{ marginBottom: "3rem" }}>
-        <h2 style={{ marginBottom: "1.5rem" }}>📋 タスク管理</h2>
-        <TaskManagerClient users={users} initialTasks={tasks} />
-      </section>
-
-      <section>
-        <h2 style={{ marginBottom: "1.5rem" }}>🎁 報酬管理</h2>
-        <RewardManagerClient initialRewards={rewards} />
-      </section>
+      <Tabs
+        items={[
+          { id: "tasks",   label: "📋 タスク管理", content: <TaskManagerClient users={users} initialTasks={tasks} /> },
+          { id: "rewards", label: "🎁 報酬管理",   content: <RewardManagerClient initialRewards={rewards} /> },
+        ]}
+      />
     </div>
   );
 }
