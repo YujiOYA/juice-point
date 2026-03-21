@@ -1,14 +1,15 @@
 import Link from "next/link";
 
-import { getRewards, getTasks, getUsers } from "@lib/dynamoDbApi";
+import { getRewards, getSubmissions, getTasks, getUsers } from "@lib/dynamoDbApi";
 import Tabs from "@atom/Tabs";
 import RewardManagerClient from "./RewardManagerClient";
+import SubmissionManagerClient from "./SubmissionManagerClient";
 import TaskManagerClient from "./TaskManagerClient";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminPage() {
-  const [users, tasks, rewards] = await Promise.all([getUsers(), getTasks(), getRewards()]);
+  const [users, tasks, rewards, submissions] = await Promise.all([getUsers(), getTasks(), getRewards(), getSubmissions()]);
   return (
     <div className="task-admin-wrap">
       <Link href="/">
@@ -18,8 +19,9 @@ export default async function AdminPage() {
 
       <Tabs
         items={[
-          { id: "tasks",   label: "📋 タスク管理", content: <TaskManagerClient users={users} initialTasks={tasks} /> },
-          { id: "rewards", label: "🎁 報酬管理",   content: <RewardManagerClient initialRewards={rewards} /> },
+          { id: "submissions", label: "📋 申請管理", content: <SubmissionManagerClient initialSubmissions={submissions} /> },
+          { id: "tasks",       label: "🔧 タスク管理", content: <TaskManagerClient users={users} initialTasks={tasks} /> },
+          { id: "rewards",     label: "🎁 報酬管理",   content: <RewardManagerClient initialRewards={rewards} /> },
         ]}
       />
     </div>
