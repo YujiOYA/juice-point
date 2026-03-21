@@ -26,6 +26,7 @@ export default function TaskForm({ user, tasks, submissions, rewards = [], onRef
     submittedTaskIds,
     userTasks,
     userPoint,
+    rewards: userRewards,
     handleChangeSelect,
     handleSubmit,
     handleUsePoints,
@@ -56,11 +57,11 @@ export default function TaskForm({ user, tasks, submissions, rewards = [], onRef
 
       <div style={{ marginTop: "1.5rem", borderTop: "1px solid #e5e7eb", paddingTop: "1.5rem" }}>
         <p style={{ marginBottom: "0.75rem" }}>💰 現在のポイント: <strong>{userPoint}pt</strong></p>
-        {rewards.length > 0 && (
+        {userRewards.length > 0 && (
           <>
             <p style={{ fontSize: "14px", color: "#757575", marginBottom: "0.75rem" }}>🎁 交換できる報酬</p>
             <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-              {rewards.map((reward) => reward.whose === user.user &&(
+              {userRewards.map((reward) => (
                 <Button
                   key={reward.id}
                   variant="approve"
