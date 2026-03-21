@@ -9,6 +9,7 @@ import {
 } from "@aws-sdk/client-dynamodb";
 
 import { dynamo } from "@lib/dynamoClient";
+import { Reward } from "@type/reward";
 import { Submission } from "@type/submission";
 import { Task } from "@type/task";
 import { User } from "@type/user";
@@ -16,6 +17,7 @@ import { User } from "@type/user";
 const TABLE_USER = process.env.TABLE_MASTER_USER!;
 const TABLE_TASK = process.env.TABLE_MASTER_TASK!;
 const TABLE_SUBMISSIONS = process.env.TABLE_SUBMISSIONS!;
+const TABLE_REWARD = process.env.TABLE_MASTER_REWARD!;
 
 export async function getUsers(id?: string): Promise<User[]> {
   let res;
@@ -177,6 +179,57 @@ export async function updateSubmissionStatus(
       UpdateExpression: "SET #s = :status",
       ExpressionAttributeNames: { "#s": "status" },
       ExpressionAttributeValues: { ":status": { S: status } },
+    }),
+  );
+}
+
+// ===== Rewards =====
+
+export async function getRewards(): Promise<Reward[]> {
+  const res = await dynamo.send(
+    new ScanCommand({ TableName: TABLE_REWARD, Limit: 100 }),
+  );
+  if (!res.Items) return [];
+  return res.Items.map((item) => ({
+    id: item.id.S!,
+    name: item.name.S!,
+    point: item.point.S!,
+  }));
+}
+
+export async function createReward(data: { name: string; point: string }): Promise<void> {
+  await dynamo.send(
+    new PutItemCommand({
+      TableName: TABLE_REWARD,
+      Item: {
+        id: { S: randomUUID() },
+        name: { S: data.name },
+        point: { S: data.point },
+      },
+    }),
+  );
+}
+
+export async function updateReward(id: string, data: { name: string; point: string }): Promise<void> {
+  await dynamo.send(
+    new UpdateItemCommand({
+      TableName: TABLE_REWARD,
+      Key: { id: { S: id } },
+      UpdateExpression: "SET #n = :name, point = :point",
+      ExpressionAttributeNames: { "#n": "name" },
+      ExpressionAttributeValues: {
+        ":name": { S: data.name },
+        ":point": { S: data.point },
+      },
+    }),
+  );
+}
+
+export async function deleteReward(id: string): Promise<void> {
+  await dynamo.send(
+    new DeleteItemCommand({
+      TableName: TABLE_REWARD,
+      Key: { id: { S: id } },
     }),
   );
 }
