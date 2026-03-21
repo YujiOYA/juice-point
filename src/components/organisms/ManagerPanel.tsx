@@ -11,7 +11,7 @@ interface Props {
 }
 
 export default function ManagerPanel({ submissions, onRefresh }: Props) {
-  const { isDoing, pending, handleApprove, handleDisapprove } = useManagerPanel(submissions, onRefresh);
+  const { isDoing, pending, rejected, handleApprove, handleDisapprove, handleDelete } = useManagerPanel(submissions, onRefresh);
 
   return (
     <div>
@@ -70,6 +70,54 @@ export default function ManagerPanel({ submissions, onRefresh }: Props) {
             </tbody>
           </table>
         </>
+      )}
+
+      {rejected.length > 0 && (
+        <div style={{ marginTop: "2rem" }}>
+          <p className="manager-title">❌ 却下済み</p>
+
+          {/* スマホ: カード形式 */}
+          <div className="submission-list">
+            {rejected.map((s) => (
+              <SubmissionCard
+                key={s.id}
+                submission={s}
+                isDoing={isDoing}
+                onDelete={handleDelete}
+              />
+            ))}
+          </div>
+
+          {/* PC: テーブル形式 */}
+          <table className="manager-table">
+            <thead>
+              <tr>
+                <th>タスク</th>
+                <th>実施者</th>
+                <th>ポイント</th>
+                <th>ステータス</th>
+                <th>申請日時</th>
+                <th>削除</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rejected.map((s) => (
+                <tr key={s.id}>
+                  <td>{s.whatYouDid}</td>
+                  <td>{s.whoDid}</td>
+                  <td>{s.point}</td>
+                  <td>{s.status}</td>
+                  <td>{new Date(s.createdAt).toLocaleString("ja-JP")}</td>
+                  <td>
+                    <Button variant="disapprove" disabled={isDoing} onClick={() => handleDelete(s.id)}>
+                      🗑️ 削除
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );
