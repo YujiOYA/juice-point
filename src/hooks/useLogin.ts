@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 import { Submission } from "@type/submission";
 import { User } from "@type/user";
@@ -16,6 +17,7 @@ interface Args {
 }
 
 export function useLogin({ loggedInUser, setLoggedInUser, submissions }: Args) {
+  const router = useRouter();
   const [selectedId, setSelectedId] = useState("");
   const [pin, setPin] = useState("");
   const [error, setError] = useState("");
@@ -46,6 +48,7 @@ export function useLogin({ loggedInUser, setLoggedInUser, submissions }: Args) {
       }
       const user = await res.json();
       setLoggedInUser(user);
+      if (user.authority === "admin") router.push("/admin");
     } catch {
       setError("エラーが発生しました");
     } finally {
