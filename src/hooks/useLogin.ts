@@ -10,6 +10,8 @@ const calcUserPoint = (userName: string, submissions: Submission[]): number =>
     .map((s) => Number(s.point) || 0)
     .reduce((sum, point) => sum + point, 0);
 
+const sessionKey = (id: string) => `pin_${id}`;
+
 interface Args {
   loggedInUser: User | null;
   setLoggedInUser: (user: User | null) => void;
@@ -25,35 +27,51 @@ export function useLogin({ loggedInUser, setLoggedInUser, submissions }: Args) {
 
   const userPoint = loggedInUser ? calcUserPoint(loggedInUser.user, submissions) : 0;
 
+  /** PIN でログイン。成功時は true、失敗時は false を返す */
+  const loginWithPin = async (id: string, pinToUse: string): Promise<boolean> => {
+    setIsLoading(true);
+    try {
+      const res = await fetch("/api/auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, pin: pinToUse }),
+      });
+      if (!res.ok) {
+        sessionStorage.removeItem(sessionKey(id));
+        return false;
+      }
+      const user: User = await res.json();
+      sessionStorage.setItem(sessionKey(id), pinToUse);
+      setLoggedInUser(user);
+      if (user.authority === "admin") router.push("/admin");
+      return true;
+    } catch {
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedId(e.target.value);
+    const id = e.target.value;
+    setSelectedId(id);
     setPin("");
     setError("");
+
+    // セッションに保存済みPINがあれば自動ログイン
+    const savedPin = sessionStorage.getItem(sessionKey(id));
+    if (savedPin) {
+      loginWithPin(id, savedPin);
+      // 失敗時はsessionStorageが削除され、PIN入力欄がそのまま表示される
+    }
   };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedId || !pin) return;
-    setIsLoading(true);
     setError("");
-    try {
-      const res = await fetch("/api/auth", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: selectedId, pin }),
-      });
-      if (!res.ok) {
-        setError("PINが違います");
-        return;
-      }
-      const user = await res.json();
-      setLoggedInUser(user);
-      if (user.authority === "admin") router.push("/admin");
-    } catch {
-      setError("エラーが発生しました");
-    } finally {
-      setIsLoading(false);
-    }
+    const ok = await loginWithPin(selectedId, pin);
+    if (!ok) setError("PINが違います");
   };
 
   const handleLogout = () => {
@@ -61,6 +79,7 @@ export function useLogin({ loggedInUser, setLoggedInUser, submissions }: Args) {
     setSelectedId("");
     setPin("");
     setError("");
+    // sessionStorageは維持（セッション内で再選択時に自動ログインできるようにするため）
   };
 
   return { selectedId, pin, setPin, error, isLoading, userPoint, handleSelectChange, handleLogin, handleLogout };
