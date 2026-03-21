@@ -374,6 +374,47 @@ body {
   }
 }
 
+/* ===== タブ ===== */
+.tabs__list {
+  display: flex;
+  overflow-x: auto;
+  border-bottom: 2px solid #ffe0b2;
+  margin-bottom: 1.5rem;
+  gap: 4px;
+  scrollbar-width: none;
+}
+
+.tabs__list::-webkit-scrollbar {
+  display: none;
+}
+
+.tabs__tab {
+  flex: 1;
+  white-space: nowrap;
+  padding: 10px 20px;
+  font-size: 15px;
+  font-weight: 700;
+  border: none;
+  background: transparent;
+  color: #9e9e9e;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  border-radius: 8px 8px 0 0;
+  transition: color 0.15s, background 0.15s, border-color 0.15s;
+}
+
+.tabs__tab:hover {
+  color: #ff9800;
+  background: #fff3e0;
+}
+
+.tabs__tab--active {
+  color: #e65100;
+  border-bottom-color: #ff9800;
+  background: #fff8f0;
+}
+
 /* ===== タスク管理ページ ===== */
 .task-admin-wrap {
   padding: 1.5rem 1rem;
