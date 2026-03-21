@@ -63,16 +63,17 @@ export function useTaskManager(initialTasks: Task[]) {
     if (!form.task || !form.point || !form.whose) return;
     setIsLoading(true);
     try {
-      await fetch("/api/tasks", {
+      const res = await fetch("/api/tasks", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ type: "create", ...form }),
       });
+      if (!res.ok) throw new Error(await res.text());
       setForm(emptyForm);
       await refreshTasks();
       toast.success("タスクを追加しました");
-    } catch {
-      toast.error("追加に失敗しました");
+    } catch (e) {
+      toast.error(`追加に失敗しました: ${e}`);
     } finally {
       setIsLoading(false);
     }
@@ -86,16 +87,17 @@ export function useTaskManager(initialTasks: Task[]) {
   const handleUpdate = async (id: string) => {
     setIsLoading(true);
     try {
-      await fetch("/api/tasks", {
+      const res = await fetch("/api/tasks", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ type: "update", id, ...editForm }),
       });
+      if (!res.ok) throw new Error(await res.text());
       setEditingId(null);
       await refreshTasks();
       toast.success("タスクを更新しました");
-    } catch {
-      toast.error("更新に失敗しました");
+    } catch (e) {
+      toast.error(`更新に失敗しました: ${e}`);
     } finally {
       setIsLoading(false);
     }
