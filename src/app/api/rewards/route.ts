@@ -12,12 +12,12 @@ export async function POST(req: NextRequest) {
   const { type } = body;
 
   if (type === "create") {
-    await createReward({ name: body.name, point: body.point });
+    await createReward({ name: body.name, point: body.point, whose: body.whose });
     return NextResponse.json({ ok: true });
   }
 
   if (type === "update") {
-    await updateReward(body.id, { name: body.name, point: body.point });
+    await updateReward(body.id, { name: body.name, point: body.point, whose: body.whose });
     return NextResponse.json({ ok: true });
   }
 

@@ -70,6 +70,9 @@ export function useTaskManager(initialTasks: Task[]) {
       });
       setForm(emptyForm);
       await refreshTasks();
+      toast.success("タスクを追加しました");
+    } catch {
+      toast.error("追加に失敗しました");
     } finally {
       setIsLoading(false);
     }
@@ -90,6 +93,9 @@ export function useTaskManager(initialTasks: Task[]) {
       });
       setEditingId(null);
       await refreshTasks();
+      toast.success("タスクを更新しました");
+    } catch {
+      toast.error("更新に失敗しました");
     } finally {
       setIsLoading(false);
     }
