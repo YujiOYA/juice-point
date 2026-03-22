@@ -55,6 +55,24 @@ export default function TaskForm({ user, tasks, submissions, rewards = [], onRef
         ✅ 申請する
       </Button>
 
+      {(() => {
+        const pending = submissions.filter((s) => s.whoDid === user.id && s.status === "未承認");
+        if (pending.length === 0) return null;
+        return (
+          <div style={{ marginTop: "1.5rem", borderTop: "1px solid #e5e7eb", paddingTop: "1rem" }}>
+            <p style={{ fontSize: "13px", color: "#757575", marginBottom: "0.5rem" }}>⏳ 承認待ち</p>
+            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+              {pending.map((s) => (
+                <li key={s.id} style={{ fontSize: "13px", display: "flex", justifyContent: "space-between", color: "#444" }}>
+                  <span>{s.whatYouDid}</span>
+                  <span style={{ color: "#f59e0b", fontWeight: "bold", marginLeft: "0.5rem" }}>{s.point}pt</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        );
+      })()}
+
       <div style={{ marginTop: "1.5rem", borderTop: "1px solid #e5e7eb", paddingTop: "1.5rem" }}>
         <p style={{ marginBottom: "0.75rem" }}>💰 現在のポイント: <strong>{userPoint}pt</strong></p>
         {userRewards.length > 0 && (
