@@ -4,6 +4,7 @@ import Button from "@atom/Button";
 import SelectInput from "@atom/SelectInput";
 import TextInput from "@atom/TextInput";
 import FormField from "@molecule/FormField";
+import { useState } from "react";
 import { useTaskForm } from "@hook/useTaskForm";
 import { Reward } from "@type/reward";
 import { Submission } from "@type/submission";
@@ -19,6 +20,7 @@ interface Props {
 }
 
 export default function TaskForm({ user, tasks, submissions, rewards = [], onRefresh }: Props) {
+  const [pendingOpen, setPendingOpen] = useState(false);
   const {
     point,
     selectedTask,
@@ -59,19 +61,26 @@ export default function TaskForm({ user, tasks, submissions, rewards = [], onRef
         const pending = submissions.filter((s) => s.whoDid === user.id && s.status === "未承認");
         if (pending.length === 0) return null;
         return (
-          <details style={{ marginTop: "1.5rem", borderTop: "1px solid #e5e7eb", paddingTop: "1rem" }}>
-            <summary style={{ fontSize: "13px", color: "#757575", cursor: "pointer", userSelect: "none" }}>
+          <div style={{ marginTop: "1.5rem", borderTop: "1px solid #e5e7eb", paddingTop: "1rem" }}>
+            <button
+              type="button"
+              onClick={() => setPendingOpen((o) => !o)}
+              style={{ background: "none", border: "none", padding: 0, cursor: "pointer", display: "flex", alignItems: "center", gap: "0.4rem", color: "#757575", width: "100%" }}
+            >
+              <span style={{ display: "inline-block", transition: "transform 0.2s", transform: pendingOpen ? "rotate(90deg)" : "rotate(0deg)" }}>▶</span>
               ⏳ 承認待ち（{pending.length}件）
-            </summary>
-            <ul style={{ listStyle: "none", padding: 0, margin: "0.5rem 0 0", display: "flex", flexDirection: "column", gap: "0.25rem" }}>
-              {pending.map((s) => (
-                <li key={s.id} style={{ fontSize: "13px", display: "flex", justifyContent: "space-between", color: "#444" }}>
-                  <span>{s.whatYouDid}</span>
-                  <span style={{ color: "#f59e0b", fontWeight: "bold", marginLeft: "0.5rem" }}>{s.point}pt</span>
-                </li>
-              ))}
-            </ul>
-          </details>
+            </button>
+            <div style={{ overflow: "hidden", maxHeight: pendingOpen ? `${pending.length * 2}rem` : "0", transition: "max-height 0.3s ease" }}>
+              <ul style={{ listStyle: "none", padding: 0, margin: "0.5rem 0 0", display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+                {pending.map((s) => (
+                  <li key={s.id} style={{ display: "flex", justifyContent: "space-between", color: "#444" }}>
+                    <span>{s.whatYouDid}</span>
+                    <span style={{ color: "#f59e0b", fontWeight: "bold", marginLeft: "0.5rem" }}>{s.point}pt</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
         );
       })()}
 
