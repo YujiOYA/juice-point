@@ -23,9 +23,9 @@ export default function LoginForm({ users, loggedInUser, setLoggedInUser, submis
 
   if (!loggedInUser) {
     return (
-      <form onSubmit={handleLogin}>
+      <div>
         <label className="login-label">👤 だれがつかうの？</label>
-        <SelectInput className="login-select" defaultValue="" onChange={handleSelectChange}>
+        <SelectInput className="login-select" value={selectedId} onChange={handleSelectChange}>
           <option value="" disabled>えらんでね</option>
           {users.map((u) => (
             <option key={u.id} value={u.id}>{u.user}</option>
@@ -33,30 +33,30 @@ export default function LoginForm({ users, loggedInUser, setLoggedInUser, submis
         </SelectInput>
 
         {selectedId && (
-          <div style={{ marginTop: "1rem" }}>
-            <label className="login-label">🔑 PIN</label>
-            <input
-              ref={pinRef}
-              type="password"
-              value={pin}
-              onChange={(e) => setPin(e.target.value)}
-              className="input"
-              placeholder="PINを入力"
-              inputMode="numeric"
-            />
-          </div>
-        )}
+          <form onSubmit={handleLogin}>
+            <div style={{ marginTop: "1rem" }}>
+              <label className="login-label">🔑 PIN</label>
+              <input
+                ref={pinRef}
+                type="password"
+                value={pin}
+                onChange={(e) => setPin(e.target.value)}
+                className="input"
+                placeholder="PINを入力"
+                inputMode="numeric"
+              />
+            </div>
 
-        {error && <p style={{ color: "red", marginTop: "0.5rem" }}>{error}</p>}
+            {error && <p style={{ color: "red", marginTop: "0.5rem" }}>{error}</p>}
 
-        {selectedId && (
-          <div style={{ marginTop: "1rem" }}>
-            <Button type="submit" variant="primary" disabled={isLoading || !pin}>
-              ログイン
-            </Button>
-          </div>
+            <div style={{ marginTop: "1rem" }}>
+              <Button type="submit" variant="primary" disabled={isLoading || !pin}>
+                ログイン
+              </Button>
+            </div>
+          </form>
         )}
-      </form>
+      </div>
     );
   }
 
