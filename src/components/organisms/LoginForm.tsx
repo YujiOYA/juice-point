@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef } from "react";
 import Button from "@atom/Button";
 import SelectInput from "@atom/SelectInput";
 import PointsBadge from "@molecule/PointsBadge";
@@ -20,11 +20,6 @@ export default function LoginForm({ users, loggedInUser, setLoggedInUser, submis
     useLogin({ loggedInUser, setLoggedInUser, submissions });
 
   const pinRef = useRef<HTMLInputElement>(null);
-  useEffect(() => {
-    if (!selectedId) return;
-    const timer = setTimeout(() => pinRef.current?.focus(), 50);
-    return () => clearTimeout(timer);
-  }, [selectedId]);
 
   if (!loggedInUser) {
     return (
