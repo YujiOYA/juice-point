@@ -24,6 +24,7 @@ export default function SelectInput({
       defaultValue={defaultValue}
       value={value}
       onChange={onChange}
+      onInput={(e) => onChange(e as unknown as React.ChangeEvent<HTMLSelectElement>)}
     >
       {children}
     </select>
