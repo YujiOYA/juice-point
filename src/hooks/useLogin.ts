@@ -37,11 +37,11 @@ export function useLogin({ loggedInUser, setLoggedInUser, submissions }: Args) {
         body: JSON.stringify({ id, pin: pinToUse }),
       });
       if (!res.ok) {
-        sessionStorage.removeItem(sessionKey(id));
+        try { sessionStorage.removeItem(sessionKey(id)); } catch { /* ignore */ }
         return false;
       }
       const user: User = await res.json();
-      sessionStorage.setItem(sessionKey(id), pinToUse);
+      try { sessionStorage.setItem(sessionKey(id), pinToUse); } catch { /* ignore */ }
       setLoggedInUser(user);
       if (user.authority === "admin") router.push("/admin");
       return true;
@@ -59,10 +59,14 @@ export function useLogin({ loggedInUser, setLoggedInUser, submissions }: Args) {
     setError("");
 
     // セッションに保存済みPINがあれば自動ログイン
-    const savedPin = sessionStorage.getItem(sessionKey(id));
-    if (savedPin) {
-      loginWithPin(id, savedPin);
-      // 失敗時はsessionStorageが削除され、PIN入力欄がそのまま表示される
+    try {
+      const savedPin = sessionStorage.getItem(sessionKey(id));
+      if (savedPin) {
+        loginWithPin(id, savedPin);
+        // 失敗時はsessionStorageが削除され、PIN入力欄がそのまま表示される
+      }
+    } catch {
+      // Safari プライベートブラウズ等でsessionStorageが使えない場合は無視
     }
   };
 
