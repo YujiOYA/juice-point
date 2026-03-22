@@ -53,9 +53,7 @@ export function useLogin({ loggedInUser, setLoggedInUser, submissions }: Args) {
   };
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    
     const id = e.target.value;
-    alert("PINを入力してね！");
     setSelectedId(id);
     setPin("");
     setError("");
