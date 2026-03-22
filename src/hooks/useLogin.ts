@@ -53,7 +53,9 @@ export function useLogin({ loggedInUser, setLoggedInUser, submissions }: Args) {
   };
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    
     const id = e.target.value;
+    alert("PINを入力してね！");
     setSelectedId(id);
     setPin("");
     setError("");
@@ -66,6 +68,7 @@ export function useLogin({ loggedInUser, setLoggedInUser, submissions }: Args) {
         // 失敗時はsessionStorageが削除され、PIN入力欄がそのまま表示される
       }
     } catch {
+      alert("このブラウザではセッションの保存ができないため、毎回PINの入力が必要になります。");
       // Safari プライベートブラウズ等でsessionStorageが使えない場合は無視
     }
   };
