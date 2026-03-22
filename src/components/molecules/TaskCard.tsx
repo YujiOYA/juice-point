@@ -6,6 +6,7 @@ import { User } from "@type/user";
 
 interface ViewProps {
   task: Task;
+  users: User[];
   isLoading: boolean;
   onEdit: (task: Task) => void;
   onDelete: (id: string) => void;
@@ -42,7 +43,7 @@ export default function TaskCard(props: Props) {
           />
           <SelectInput value={editForm.whose} onChange={(e) => onChangeForm({ ...editForm, whose: e.target.value })}>
             {users.map((u) => (
-              <option key={u.id} value={u.user}>{u.user}</option>
+              <option key={u.id} value={u.id}>{u.user}</option>
             ))}
           </SelectInput>
           <div className="task-card__actions">
@@ -58,13 +59,14 @@ export default function TaskCard(props: Props) {
     );
   }
 
-  const { task, isLoading, onEdit, onDelete } = props;
+  const { task, users, isLoading, onEdit, onDelete } = props;
+  const whoseName = users.find((u) => u.id === task.whose)?.user ?? task.whose;
   return (
     <div className="task-card">
       <p className="task-card__name">{task.task}</p>
       <div className="task-card__meta">
         <span>💰 {task.point}pt</span>
-        <span>👤 {task.whose}</span>
+        <span>👤 {whoseName}</span>
       </div>
       <div className="task-card__actions">
         <Button variant="primary" disabled={isLoading} onClick={() => onEdit(task)}>
