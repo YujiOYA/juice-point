@@ -4,14 +4,17 @@ import Button from "@atom/Button";
 import SubmissionCard from "@molecule/SubmissionCard";
 import { useManagerPanel } from "@hook/useManagerPanel";
 import { Submission } from "@type/submission";
+import { User } from "@type/user";
 
 interface Props {
   submissions: Submission[];
+  users: User[];
   onRefresh: () => Promise<void>;
 }
 
-export default function ManagerPanel({ submissions, onRefresh }: Props) {
+export default function ManagerPanel({ submissions, users, onRefresh }: Props) {
   const { isDoing, pending, rejected, handleApprove, handleDisapprove, handleRestore, handleDelete } = useManagerPanel(submissions, onRefresh);
+  const userName = (id: string) => users.find((u) => u.id === id)?.user ?? id;
 
   return (
     <div>
@@ -27,6 +30,7 @@ export default function ManagerPanel({ submissions, onRefresh }: Props) {
               <SubmissionCard
                 key={s.id}
                 submission={s}
+                whoseName={userName(s.whoDid)}
                 isDoing={isDoing}
                 onApprove={handleApprove}
                 onDisapprove={handleDisapprove}
@@ -51,7 +55,7 @@ export default function ManagerPanel({ submissions, onRefresh }: Props) {
               {pending.map((s) => (
                 <tr key={s.id}>
                   <td>{s.whatYouDid}</td>
-                  <td>{s.whoDid}</td>
+                  <td>{userName(s.whoDid)}</td>
                   <td>{s.point}</td>
                   <td>{s.status}</td>
                   <td>{new Date(s.createdAt).toLocaleString("ja-JP")}</td>
@@ -82,6 +86,7 @@ export default function ManagerPanel({ submissions, onRefresh }: Props) {
               <SubmissionCard
                 key={s.id}
                 submission={s}
+                whoseName={userName(s.whoDid)}
                 isDoing={isDoing}
                 onRestore={handleRestore}
                 onDelete={handleDelete}
@@ -106,7 +111,7 @@ export default function ManagerPanel({ submissions, onRefresh }: Props) {
               {rejected.map((s) => (
                 <tr key={s.id}>
                   <td>{s.whatYouDid}</td>
-                  <td>{s.whoDid}</td>
+                  <td>{userName(s.whoDid)}</td>
                   <td>{s.point}</td>
                   <td>{s.status}</td>
                   <td>{new Date(s.createdAt).toLocaleString("ja-JP")}</td>

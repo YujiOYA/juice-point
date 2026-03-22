@@ -16,6 +16,8 @@ interface Props {
 }
 
 export default function TaskManagerClient({ users, initialTasks }: Props) {
+  const userName = (id: string) => users.find((u) => u.id === id)?.user ?? id;
+
   const {
     tasks,
     sortKey,
@@ -66,7 +68,7 @@ export default function TaskManagerClient({ users, initialTasks }: Props) {
           <SelectInput value={form.whose} onChange={(e) => setForm({ ...form, whose: e.target.value })}>
             <option value="" disabled>担当者を選択</option>
             {users.map((u) => (
-              <option key={u.id} value={u.user}>{u.user}</option>
+              <option key={u.id} value={u.id}>{u.user}</option>
             ))}
           </SelectInput>
           <Button type="submit" variant="primary" disabled={isLoading}>
@@ -85,7 +87,7 @@ export default function TaskManagerClient({ users, initialTasks }: Props) {
           <SelectInput value={filterWhose} onChange={(e) => setFilterWhose(e.target.value)}>
             <option value="">全員</option>
             {users.map((u) => (
-              <option key={u.id} value={u.user}>{u.user}</option>
+              <option key={u.id} value={u.id}>{u.user}</option>
             ))}
           </SelectInput>
         </div>
@@ -143,6 +145,7 @@ export default function TaskManagerClient({ users, initialTasks }: Props) {
                 key={t.id}
                 isEditing={false}
                 task={t}
+                users={users}
                 isLoading={isLoading}
                 onEdit={startEdit}
                 onDelete={handleDelete}
@@ -187,7 +190,7 @@ export default function TaskManagerClient({ users, initialTasks }: Props) {
                   <td>
                     <SelectInput value={editForm.whose} onChange={(e) => setEditForm({ ...editForm, whose: e.target.value })}>
                       {users.map((u) => (
-                        <option key={u.id} value={u.user}>{u.user}</option>
+                        <option key={u.id} value={u.id}>{u.user}</option>
                       ))}
                     </SelectInput>
                   </td>
@@ -200,7 +203,7 @@ export default function TaskManagerClient({ users, initialTasks }: Props) {
                 <>
                   <td>{t.task}</td>
                   <td>{t.point}pt</td>
-                  <td>{t.whose}</td>
+                  <td>{userName(t.whose)}</td>
                   <td className="task-table__actions">
                     <Button variant="primary" disabled={isLoading} onClick={() => startEdit(t)}>編集</Button>
                     <Button variant="disapprove" disabled={isLoading} onClick={() => handleDelete(t.id)}>削除</Button>
