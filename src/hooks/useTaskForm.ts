@@ -18,11 +18,11 @@ export function useTaskForm(
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submittedTaskIds, setSubmittedTaskIds] = useState<Set<string>>(new Set());
 
-  const userTasks = tasks.filter((t) => t.whose === user.user);
-  const userRewards = rewards.filter((r) => r.whose === user.user);
+  const userTasks = tasks.filter((t) => t.whose === user.id);
+  const userRewards = rewards.filter((r) => r.whose === user.id);
 
   const userPoint = submissions
-    .filter((s) => s.whoDid === user.user && s.status === "承認")
+    .filter((s) => s.whoDid === user.id && s.status === "承認")
     .reduce((sum, s) => sum + (Number(s.point) || 0), 0);
 
   const handleChangeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -46,7 +46,7 @@ export function useTaskForm(
           type: "register",
           whatYouDid: selectedTask.task,
           point: selectedTask.point,
-          whoDid: user.user,
+          whoDid: user.id,
         }),
       });
       if (!res.ok) throw new Error("Failed");
@@ -67,7 +67,7 @@ export function useTaskForm(
       const res = await fetch("/api/submissions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "usePoints", userId: user.user, point: Number(reward.point) }),
+        body: JSON.stringify({ type: "usePoints", userId: user.id, point: Number(reward.point) }),
       });
       if (!res.ok) throw new Error("Failed");
       await onRefresh();

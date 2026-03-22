@@ -20,7 +20,7 @@ export default async function AdminPage() {
 
       <Tabs
         items={[
-          { id: "submissions", label: "📋 申請管理", content: <SubmissionManagerClient initialSubmissions={submissions} /> },
+          { id: "submissions", label: "📋 申請管理", content: <SubmissionManagerClient initialSubmissions={submissions} users={users} /> },
           { id: "tasks",       label: "🔧 タスク管理", content: <TaskManagerClient users={users} initialTasks={tasks} /> },
           { id: "rewards",     label: "🎁 報酬管理",   content: <RewardManagerClient users={users} initialRewards={rewards} /> },
           { id: "users",       label: "👤 ユーザー管理", content: <UserManagerClient initialUsers={users} /> },
