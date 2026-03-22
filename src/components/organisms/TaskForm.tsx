@@ -59,9 +59,11 @@ export default function TaskForm({ user, tasks, submissions, rewards = [], onRef
         const pending = submissions.filter((s) => s.whoDid === user.id && s.status === "未承認");
         if (pending.length === 0) return null;
         return (
-          <div style={{ marginTop: "1.5rem", borderTop: "1px solid #e5e7eb", paddingTop: "1rem" }}>
-            <p style={{ fontSize: "13px", color: "#757575", marginBottom: "0.5rem" }}>⏳ 承認待ち</p>
-            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+          <details style={{ marginTop: "1.5rem", borderTop: "1px solid #e5e7eb", paddingTop: "1rem" }}>
+            <summary style={{ fontSize: "13px", color: "#757575", cursor: "pointer", userSelect: "none" }}>
+              ⏳ 承認待ち（{pending.length}件）
+            </summary>
+            <ul style={{ listStyle: "none", padding: 0, margin: "0.5rem 0 0", display: "flex", flexDirection: "column", gap: "0.25rem" }}>
               {pending.map((s) => (
                 <li key={s.id} style={{ fontSize: "13px", display: "flex", justifyContent: "space-between", color: "#444" }}>
                   <span>{s.whatYouDid}</span>
@@ -69,7 +71,7 @@ export default function TaskForm({ user, tasks, submissions, rewards = [], onRef
                 </li>
               ))}
             </ul>
-          </div>
+          </details>
         );
       })()}
 
