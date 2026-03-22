@@ -3,6 +3,7 @@ import { Submission } from "@type/submission";
 
 interface Props {
   submission: Submission;
+  whoseName: string;
   isDoing: boolean;
   onApprove?: (id: string) => void;
   onDisapprove?: (id: string) => void;
@@ -12,6 +13,7 @@ interface Props {
 
 export default function SubmissionCard({
   submission: s,
+  whoseName,
   isDoing,
   onApprove,
   onDisapprove,
@@ -22,7 +24,7 @@ export default function SubmissionCard({
     <div className="submission-card">
       <p className="submission-card__task">{s.whatYouDid}</p>
       <div className="submission-card__meta">
-        <span>👤 {s.whoDid}</span>
+        <span>👤 {whoseName}</span>
         <span>💰 {s.point}pt</span>
         <span>🕐 {new Date(s.createdAt).toLocaleString("ja-JP")}</span>
       </div>

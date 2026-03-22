@@ -4,9 +4,9 @@ import { useRouter } from "next/navigation";
 import { Submission } from "@type/submission";
 import { User } from "@type/user";
 
-const calcUserPoint = (userName: string, submissions: Submission[]): number =>
+const calcUserPoint = (userId: string, submissions: Submission[]): number =>
   submissions
-    .filter((s) => s.whoDid === userName && s.status === "承認")
+    .filter((s) => s.whoDid === userId && s.status === "承認")
     .map((s) => Number(s.point) || 0)
     .reduce((sum, point) => sum + point, 0);
 
@@ -25,7 +25,7 @@ export function useLogin({ loggedInUser, setLoggedInUser, submissions }: Args) {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const userPoint = loggedInUser ? calcUserPoint(loggedInUser.user, submissions) : 0;
+  const userPoint = loggedInUser ? calcUserPoint(loggedInUser.id, submissions) : 0;
 
   /** PIN でログイン。成功時は true、失敗時は false を返す */
   const loginWithPin = async (id: string, pinToUse: string): Promise<boolean> => {

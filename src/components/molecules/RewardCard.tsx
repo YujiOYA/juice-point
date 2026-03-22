@@ -6,6 +6,7 @@ import { User } from "@type/user";
 
 interface ViewProps {
   reward: Reward;
+  users: User[];
   isLoading: boolean;
   onEdit: (reward: Reward) => void;
   onDelete: (id: string) => void;
@@ -43,7 +44,7 @@ export default function RewardCard(props: Props) {
           <SelectInput value={editForm.whose} onChange={(e) => onChangeForm({ ...editForm, whose: e.target.value })}>
             <option value="" disabled>担当者を選択</option>
             {users.map((u) => (
-              <option key={u.id} value={u.user}>{u.user}</option>
+              <option key={u.id} value={u.id}>{u.user}</option>
             ))}
           </SelectInput>
           <div className="task-card__actions">
@@ -59,13 +60,14 @@ export default function RewardCard(props: Props) {
     );
   }
 
-  const { reward, isLoading, onEdit, onDelete } = props;
+  const { reward, users, isLoading, onEdit, onDelete } = props;
+  const whoseName = users.find((u) => u.id === reward.whose)?.user ?? reward.whose;
   return (
     <div className="task-card">
       <p className="task-card__name">{reward.name}</p>
       <div className="task-card__meta">
         <span>💰 {reward.point}pt</span>
-        <span>👤 {reward.whose}</span>
+        <span>👤 {whoseName}</span>
       </div>
       <div className="task-card__actions">
         <Button variant="primary" disabled={isLoading} onClick={() => onEdit(reward)}>

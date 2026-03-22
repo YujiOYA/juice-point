@@ -16,6 +16,8 @@ interface Props {
 }
 
 export default function RewardManagerClient({ users, initialRewards }: Props) {
+  const userName = (id: string) => users.find((u) => u.id === id)?.user ?? id;
+
   const {
     rewards,
     sortKey,
@@ -66,7 +68,7 @@ export default function RewardManagerClient({ users, initialRewards }: Props) {
           <SelectInput value={form.whose} onChange={(e) => setForm({ ...form, whose: e.target.value })}>
             <option value="" disabled>担当者を選択</option>
             {users.map((u) => (
-              <option key={u.id} value={u.user}>{u.user}</option>
+              <option key={u.id} value={u.id}>{u.user}</option>
             ))}
           </SelectInput>
           <Button type="submit" variant="primary" disabled={isLoading}>
@@ -85,7 +87,7 @@ export default function RewardManagerClient({ users, initialRewards }: Props) {
           <SelectInput value={filterWhose} onChange={(e) => setFilterWhose(e.target.value)}>
             <option value="">全員</option>
             {users.map((u) => (
-              <option key={u.id} value={u.user}>{u.user}</option>
+              <option key={u.id} value={u.id}>{u.user}</option>
             ))}
           </SelectInput>
         </div>
@@ -140,6 +142,7 @@ export default function RewardManagerClient({ users, initialRewards }: Props) {
                 key={r.id}
                 isEditing={false}
                 reward={r}
+                users={users}
                 isLoading={isLoading}
                 onEdit={startEdit}
                 onDelete={handleDelete}
@@ -184,7 +187,7 @@ export default function RewardManagerClient({ users, initialRewards }: Props) {
                   <td>
                     <SelectInput value={editForm.whose} onChange={(e) => setEditForm({ ...editForm, whose: e.target.value })}>
                       {users.map((u) => (
-                        <option key={u.id} value={u.user}>{u.user}</option>
+                        <option key={u.id} value={u.id}>{u.user}</option>
                       ))}
                     </SelectInput>
                   </td>
@@ -197,7 +200,7 @@ export default function RewardManagerClient({ users, initialRewards }: Props) {
                 <>
                   <td>{r.name}</td>
                   <td>{r.point}pt</td>
-                  <td>{r.whose}</td>
+                  <td>{userName(r.whose)}</td>
                   <td className="task-table__actions">
                     <Button variant="primary" disabled={isLoading} onClick={() => startEdit(r)}>編集</Button>
                     <Button variant="disapprove" disabled={isLoading} onClick={() => handleDelete(r.id)}>削除</Button>
