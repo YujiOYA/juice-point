@@ -1,5 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import ToasterClient from "@atom/ToasterClient";
+import QueryProvider from "@app/../providers/QueryProvider";
 
 import type { Metadata } from "next";
 import "./globals.css";
@@ -31,8 +32,10 @@ export default function RootLayout({
         <link rel="icon" type="image/png" href="/favicon-orange.png" />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        {children}
-        <ToasterClient />
+        <QueryProvider>
+          {children}
+          <ToasterClient />
+        </QueryProvider>
       </body>
     </html>
   );
