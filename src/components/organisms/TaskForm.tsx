@@ -76,11 +76,11 @@ export default function TaskForm({ user, tasks, submissions, rewards = [], onRef
               <span style={{ display: "inline-block", transition: "transform 0.2s", transform: pendingOpen ? "rotate(90deg)" : "rotate(0deg)" }}>▶</span>
               ⏳ 承認待ち（{pending.length}件）
             </button>
-            <div style={{ overflow: "hidden", maxHeight: pendingOpen ? `${pending.length * 2}rem` : "0", transition: "max-height 0.3s ease" }}>
+            <div style={{ overflow: "hidden", maxHeight: pendingOpen ? "500px" : "0", transition: "max-height 0.3s ease" }}>
               <ul style={{ listStyle: "none", padding: 0, margin: "0.5rem 0 0", display: "flex", flexDirection: "column", gap: "0.25rem" }}>
                 {pending.map((s) => (
                   <li key={s.id} style={{ display: "flex", justifyContent: "space-between", color: "#444" }}>
-                    <span>{s.whatYouDid}</span>
+                    <span style={{ textAlign: "left" }}>{s.whatYouDid}</span>
                     <span style={{ color: "#f59e0b", fontWeight: "bold", marginLeft: "0.5rem" }}>{s.point}pt</span>
                   </li>
                 ))}
