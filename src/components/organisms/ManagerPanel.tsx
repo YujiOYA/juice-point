@@ -3,7 +3,7 @@
 import Button from "@atom/Button";
 import SubmissionCard from "@molecule/SubmissionCard";
 import { useManagerPanel } from "@hook/useManagerPanel";
-import { Submission } from "@type/submission";
+import { Submission, SubmissionType } from "@type/submission";
 import { User } from "@type/user";
 
 interface Props {
@@ -13,7 +13,7 @@ interface Props {
 }
 
 export default function ManagerPanel({ submissions, users, onRefresh }: Props) {
-  const { isDoing, pending, rejected, pendingTaskRequests, rejectedTaskRequests, handleApprove, handleDisapprove, handleRestore, handleDelete, handleApproveTaskRequest } = useManagerPanel(submissions, onRefresh);
+  const { isDoing, pending, rejected, pendingTaskRequests, rejectedTaskRequests, getEditedPoint, setEditedPoint, handleApprove, handleApproveOneTimeTask, handleDisapprove, handleRestore, handleDelete, handleApproveTaskRequest } = useManagerPanel(submissions, onRefresh);
   const userName = (id: string) => users.find((u) => u.id === id)?.user ?? id;
 
   return (
@@ -134,16 +134,21 @@ export default function ManagerPanel({ submissions, users, onRefresh }: Props) {
         <>
           {/* スマホ: カード形式 */}
           <div className="submission-list">
-            {pending.map((s) => (
-              <SubmissionCard
-                key={s.id}
-                submission={s}
-                whoseName={userName(s.whoDid)}
-                isDoing={isDoing}
-                onApprove={handleApprove}
-                onDisapprove={handleDisapprove}
-              />
-            ))}
+            {pending.map((s) => {
+              const isOneTime = s.submissionType === SubmissionType.OneTimeTask;
+              return (
+                <SubmissionCard
+                  key={s.id}
+                  submission={s}
+                  whoseName={userName(s.whoDid)}
+                  isDoing={isDoing}
+                  editablePoint={isOneTime ? getEditedPoint(s.id, s.point) : undefined}
+                  onPointChange={isOneTime ? (point) => setEditedPoint(s.id, point) : undefined}
+                  onApprove={isOneTime ? () => handleApproveOneTimeTask(s.id, getEditedPoint(s.id, s.point)) : handleApprove}
+                  onDisapprove={handleDisapprove}
+                />
+              );
+            })}
           </div>
 
           {/* PC: テーブル形式 */}
@@ -160,25 +165,43 @@ export default function ManagerPanel({ submissions, users, onRefresh }: Props) {
               </tr>
             </thead>
             <tbody>
-              {pending.map((s) => (
-                <tr key={s.id}>
-                  <td>{s.whatYouDid}</td>
-                  <td>{userName(s.whoDid)}</td>
-                  <td>{s.point}</td>
-                  <td>{s.status}</td>
-                  <td>{new Date(s.createdAt).toLocaleString("ja-JP")}</td>
-                  <td>
-                    <Button variant="approve" disabled={isDoing} onClick={() => handleApprove(s.id)}>
-                      承認
-                    </Button>
-                  </td>
-                  <td>
-                    <Button variant="disapprove" disabled={isDoing} onClick={() => handleDisapprove(s.id)}>
-                      却下
-                    </Button>
-                  </td>
-                </tr>
-              ))}
+              {pending.map((s) => {
+                const isOneTime = s.submissionType === SubmissionType.OneTimeTask;
+                return (
+                  <tr key={s.id}>
+                    <td>{s.whatYouDid}</td>
+                    <td>{userName(s.whoDid)}</td>
+                    <td>
+                      {isOneTime ? (
+                        <input
+                          type="number"
+                          value={getEditedPoint(s.id, s.point)}
+                          onChange={(e) => setEditedPoint(s.id, e.target.value)}
+                          style={{ width: "4rem", padding: "0.1rem 0.3rem", border: "1px solid #d1d5db", borderRadius: "4px", fontSize: "0.9rem" }}
+                        />
+                      ) : (
+                        s.point
+                      )}
+                    </td>
+                    <td>{s.status}</td>
+                    <td>{new Date(s.createdAt).toLocaleString("ja-JP")}</td>
+                    <td>
+                      <Button
+                        variant="approve"
+                        disabled={isDoing}
+                        onClick={() => isOneTime ? handleApproveOneTimeTask(s.id, getEditedPoint(s.id, s.point)) : handleApprove(s.id)}
+                      >
+                        承認
+                      </Button>
+                    </td>
+                    <td>
+                      <Button variant="disapprove" disabled={isDoing} onClick={() => handleDisapprove(s.id)}>
+                        却下
+                      </Button>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </>
