@@ -117,6 +117,7 @@ export default function TaskForm({ user, tasks, submissions, rewards = [], onRef
           variant="primary"
           disabled={isRequesting || !requestTaskName.trim() || !requestPoint}
           onClick={handleRequestSubmit}
+          style={{ marginTop: "1rem" }}
         >
           📨 リクエストする
         </Button>
