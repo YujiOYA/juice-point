@@ -7,7 +7,7 @@ import FormField from "@molecule/FormField";
 import { useState } from "react";
 import { useTaskForm } from "@hook/useTaskForm";
 import { Reward } from "@type/reward";
-import { Submission } from "@type/submission";
+import { Submission, SubmissionType } from "@type/submission";
 import { Task } from "@type/task";
 import { User } from "@type/user";
 
@@ -32,8 +32,10 @@ export default function TaskForm({ user, tasks, submissions, rewards = [], onRef
     requestTaskName,
     requestPoint,
     isRequesting,
+    registerTaskAlso,
     setRequestTaskName,
     setRequestPoint,
+    setRegisterTaskAlso,
     handleChangeSelect,
     handleSubmit,
     handleUsePoints,
@@ -80,7 +82,14 @@ export default function TaskForm({ user, tasks, submissions, rewards = [], onRef
               <ul style={{ listStyle: "none", padding: 0, margin: "0.5rem 0 0", display: "flex", flexDirection: "column", gap: "0.25rem" }}>
                 {pending.map((s) => (
                   <li key={s.id} style={{ display: "flex", justifyContent: "space-between", color: "#444" }}>
-                    <span style={{ textAlign: "left" }}>{s.whatYouDid}</span>
+                    <span style={{ textAlign: "left" }}>
+                      {s.submissionType === SubmissionType.TaskRequest ? (
+                        <span style={{ fontSize: "0.7rem", background: "#fef9c3", color: "#a16207", borderRadius: "4px", padding: "0.1rem 0.35rem", marginRight: "0.4rem", fontWeight: "bold" }}>追加リクエスト</span>
+                      ) : (
+                        <span style={{ fontSize: "0.7rem", background: "#dcfce7", color: "#15803d", borderRadius: "4px", padding: "0.1rem 0.35rem", marginRight: "0.4rem", fontWeight: "bold" }}>申請</span>
+                      )}
+                      {s.whatYouDid}
+                    </span>
                     <span style={{ color: "#f59e0b", fontWeight: "bold", marginLeft: "0.5rem" }}>{s.point}pt</span>
                   </li>
                 ))}
@@ -91,7 +100,7 @@ export default function TaskForm({ user, tasks, submissions, rewards = [], onRef
       })()}
 
       <div style={{ marginTop: "1.5rem", borderTop: "1px solid #e5e7eb", paddingTop: "1rem" }}>
-        <p style={{ marginBottom: "0.75rem", fontWeight: "bold" }}>📝 タスクをリクエストする</p>
+        <p style={{ marginBottom: "0.75rem", fontWeight: "bold" }}>📝 新しいタスクを申請する</p>
         <FormField label="タスク名" htmlFor="requestTaskName">
           <TextInput
             id="requestTaskName"
@@ -109,9 +118,20 @@ export default function TaskForm({ user, tasks, submissions, rewards = [], onRef
             type="number"
             value={requestPoint}
             onChange={(e) => setRequestPoint(e.target.value)}
+            onBlur={(e) => { const v = parseFloat(e.target.value); if (!isNaN(v)) setRequestPoint(String(v)); }}
             placeholder="例: 1.5"
+            step={0.5}
+            min={0}
           />
         </FormField>
+        <label style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginTop: "0.75rem", cursor: "pointer", color: "#555" }}>
+          <input
+            type="checkbox"
+            checked={registerTaskAlso}
+            onChange={(e) => setRegisterTaskAlso(e.target.checked)}
+          />
+          タスクとして登録もリクエストする
+        </label>
         <Button
           type="button"
           variant="primary"
@@ -119,30 +139,28 @@ export default function TaskForm({ user, tasks, submissions, rewards = [], onRef
           onClick={handleRequestSubmit}
           style={{ marginTop: "1rem" }}
         >
-          📨 リクエストする
+          ✅ 申請する
         </Button>
       </div>
 
-      <div style={{ marginTop: "1.5rem", borderTop: "1px solid #e5e7eb", paddingTop: "1.5rem" }}>
-        <p style={{ marginBottom: "0.75rem" }}>💰 現在のポイント: <strong>{userPoint}pt</strong></p>
-        {userRewards.length > 0 && (
-          <>
-            <p style={{ fontSize: "14px", color: "#757575", marginBottom: "0.75rem" }}>🎁 交換できる報酬</p>
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-              {userRewards.map((reward) => (
-                <Button
-                  key={reward.id}
-                  variant="approve"
-                  disabled={isSubmitting || userPoint < Number(reward.point)}
-                  onClick={() => handleUsePoints(reward)}
-                >
-                  {reward.name}（{reward.point}pt）と交換する
-                </Button>
-              ))}
-            </div>
-          </>
-        )}
-      </div>
+      {userRewards.length > 0 && (
+        <div style={{ marginTop: "1.5rem", borderTop: "1px solid #e5e7eb", paddingTop: "1rem" }}>
+          <p style={{ marginBottom: "0.75rem", fontWeight: "bold" }}>🎁 交換できる報酬</p>
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+            {userRewards.map((reward) => (
+              <Button
+                key={reward.id}
+                variant="approve"
+                disabled={isSubmitting || userPoint < Number(reward.point)}
+                onClick={() => handleUsePoints(reward)}
+              >
+                {reward.name}（{reward.point}pt）と交換する
+              </Button>
+            ))}
+          </div>
+          <p style={{ marginTop: "0.75rem" }}>💰 現在のポイント: <strong>{userPoint}pt</strong></p>
+        </div>
+      )}
     </form>
   );
 }

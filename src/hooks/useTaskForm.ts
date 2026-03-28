@@ -20,6 +20,7 @@ export function useTaskForm(
   const [requestTaskName, setRequestTaskName] = useState("");
   const [requestPoint, setRequestPoint] = useState("");
   const [isRequesting, setIsRequesting] = useState(false);
+  const [registerTaskAlso, setRegisterTaskAlso] = useState(false);
 
   const userTasks = tasks.filter((t) => t.whose === user.id);
   const userRewards = rewards.filter((r) => r.whose === user.id).sort((a, b) => Number(a.point) - Number(b.point));
@@ -89,22 +90,41 @@ export function useTaskForm(
     }
     setIsRequesting(true);
     try {
-      const res = await fetch("/api/submissions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          type: "requestTask",
-          whatYouDid: requestTaskName.trim(),
-          point: requestPoint,
-          whoDid: user.id,
+      const requests = [
+        fetch("/api/submissions", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            type: "registerOneTimeTask",
+            whatYouDid: requestTaskName.trim(),
+            point: requestPoint,
+            whoDid: user.id,
+          }),
         }),
-      });
-      if (!res.ok) throw new Error("Failed");
+      ];
+      if (registerTaskAlso) {
+        requests.push(
+          fetch("/api/submissions", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              type: "requestTask",
+              whatYouDid: requestTaskName.trim(),
+              point: requestPoint,
+              whoDid: user.id,
+            }),
+          }),
+        );
+      }
+      const results = await Promise.all(requests);
+      if (results.some((r) => !r.ok)) throw new Error("Failed");
       setRequestTaskName("");
       setRequestPoint("");
-      toast.success("タスクをリクエストしました！");
+      setRegisterTaskAlso(false);
+      await onRefresh();
+      toast.success(registerTaskAlso ? "申請とタスク登録リクエストを送りました！" : "申請しました！");
     } catch {
-      toast.error("リクエストに失敗しました");
+      toast.error("申請に失敗しました");
     } finally {
       setIsRequesting(false);
     }
@@ -121,8 +141,10 @@ export function useTaskForm(
     requestTaskName,
     requestPoint,
     isRequesting,
+    registerTaskAlso,
     setRequestTaskName,
     setRequestPoint,
+    setRegisterTaskAlso,
     handleChangeSelect,
     handleSubmit,
     handleUsePoints,
