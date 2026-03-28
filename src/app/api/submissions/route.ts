@@ -77,6 +77,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true });
   }
 
+  if (type === "updatePoint") {
+    await updateSubmissionPoint(body.id, Number(body.newPoint));
+    return NextResponse.json({ ok: true });
+  }
+
   if (type === "usePoints") {
     const all = await getSubmissions();
     const usable = all

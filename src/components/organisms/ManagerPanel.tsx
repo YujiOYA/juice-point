@@ -2,6 +2,7 @@
 
 import Button from "@atom/Button";
 import SubmissionCard from "@molecule/SubmissionCard";
+import UserPointsSummary from "@molecule/UserPointsSummary";
 import { useManagerPanel } from "@hook/useManagerPanel";
 import { Submission, SubmissionType } from "@type/submission";
 import { User } from "@type/user";
@@ -17,115 +18,7 @@ export default function ManagerPanel({ submissions, users }: Props) {
 
   return (
     <div>
-      <p className="manager-title">📝 タスク追加リクエスト</p>
-
-      {pendingTaskRequests.length === 0 ? (
-        <p className="no-submissions">リクエストはありません 🎉</p>
-      ) : (
-        <>
-          <div className="submission-list">
-            {pendingTaskRequests.map((s) => (
-              <SubmissionCard
-                key={s.id}
-                submission={s}
-                whoseName={userName(s.whoDid)}
-                isDoing={isDoing}
-                onApprove={() => handleApproveTaskRequest(s)}
-                onDisapprove={handleDisapprove}
-              />
-            ))}
-          </div>
-
-          <table className="manager-table">
-            <thead>
-              <tr>
-                <th>タスク名</th>
-                <th>リクエスト者</th>
-                <th>希望ポイント</th>
-                <th>ステータス</th>
-                <th>申請日時</th>
-                <th>承認</th>
-                <th>却下</th>
-              </tr>
-            </thead>
-            <tbody>
-              {pendingTaskRequests.map((s) => (
-                <tr key={s.id}>
-                  <td>{s.whatYouDid}</td>
-                  <td>{userName(s.whoDid)}</td>
-                  <td>{s.point}</td>
-                  <td>{s.status}</td>
-                  <td>{new Date(s.createdAt).toLocaleString("ja-JP")}</td>
-                  <td>
-                    <Button variant="approve" disabled={isDoing} onClick={() => handleApproveTaskRequest(s)}>
-                      承認
-                    </Button>
-                  </td>
-                  <td>
-                    <Button variant="disapprove" disabled={isDoing} onClick={() => handleDisapprove(s.id)}>
-                      却下
-                    </Button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </>
-      )}
-
-      {rejectedTaskRequests.length > 0 && (
-        <div style={{ marginTop: "2rem" }}>
-          <p className="manager-title">❌ 却下済みタスク追加リクエスト</p>
-          <div className="submission-list">
-            {rejectedTaskRequests.map((s) => (
-              <SubmissionCard
-                key={s.id}
-                submission={s}
-                whoseName={userName(s.whoDid)}
-                isDoing={isDoing}
-                onRestore={handleRestore}
-                onDelete={handleDelete}
-              />
-            ))}
-          </div>
-          <table className="manager-table">
-            <thead>
-              <tr>
-                <th>タスク名</th>
-                <th>リクエスト者</th>
-                <th>希望ポイント</th>
-                <th>ステータス</th>
-                <th>申請日時</th>
-                <th>戻す</th>
-                <th>削除</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rejectedTaskRequests.map((s) => (
-                <tr key={s.id}>
-                  <td>{s.whatYouDid}</td>
-                  <td>{userName(s.whoDid)}</td>
-                  <td>{s.point}</td>
-                  <td>{s.status}</td>
-                  <td>{new Date(s.createdAt).toLocaleString("ja-JP")}</td>
-                  <td>
-                    <Button variant="approve" disabled={isDoing} onClick={() => handleRestore(s.id)}>
-                      🔄 戻す
-                    </Button>
-                  </td>
-                  <td>
-                    <Button variant="disapprove" disabled={isDoing} onClick={() => handleDelete(s.id)}>
-                      🗑️ 削除
-                    </Button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-
-      <p className="manager-title" style={{ marginTop: "2rem" }}>📋 申請一覧</p>
+      <p className="manager-title">📋 申請一覧</p>
 
       {pending.length === 0 ? (
         <p className="no-submissions">申請はありません 🎉</p>
@@ -239,6 +132,117 @@ export default function ManagerPanel({ submissions, users }: Props) {
             </thead>
             <tbody>
               {rejected.map((s) => (
+                <tr key={s.id}>
+                  <td>{s.whatYouDid}</td>
+                  <td>{userName(s.whoDid)}</td>
+                  <td>{s.point}</td>
+                  <td>{s.status}</td>
+                  <td>{new Date(s.createdAt).toLocaleString("ja-JP")}</td>
+                  <td>
+                    <Button variant="approve" disabled={isDoing} onClick={() => handleRestore(s.id)}>
+                      🔄 戻す
+                    </Button>
+                  </td>
+                  <td>
+                    <Button variant="disapprove" disabled={isDoing} onClick={() => handleDelete(s.id)}>
+                      🗑️ 削除
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      <p className="manager-title" style={{ marginTop: "2rem" }}>💰 未使用ポイント</p>
+      <UserPointsSummary users={users} submissions={submissions} />
+
+      <p className="manager-title" style={{ marginTop: "2rem" }}>📝 タスク追加リクエスト</p>
+
+      {pendingTaskRequests.length === 0 ? (
+        <p className="no-submissions">リクエストはありません 🎉</p>
+      ) : (
+        <>
+          <div className="submission-list">
+            {pendingTaskRequests.map((s) => (
+              <SubmissionCard
+                key={s.id}
+                submission={s}
+                whoseName={userName(s.whoDid)}
+                isDoing={isDoing}
+                onApprove={() => handleApproveTaskRequest(s)}
+                onDisapprove={handleDisapprove}
+              />
+            ))}
+          </div>
+
+          <table className="manager-table">
+            <thead>
+              <tr>
+                <th>タスク名</th>
+                <th>リクエスト者</th>
+                <th>希望ポイント</th>
+                <th>ステータス</th>
+                <th>申請日時</th>
+                <th>承認</th>
+                <th>却下</th>
+              </tr>
+            </thead>
+            <tbody>
+              {pendingTaskRequests.map((s) => (
+                <tr key={s.id}>
+                  <td>{s.whatYouDid}</td>
+                  <td>{userName(s.whoDid)}</td>
+                  <td>{s.point}</td>
+                  <td>{s.status}</td>
+                  <td>{new Date(s.createdAt).toLocaleString("ja-JP")}</td>
+                  <td>
+                    <Button variant="approve" disabled={isDoing} onClick={() => handleApproveTaskRequest(s)}>
+                      承認
+                    </Button>
+                  </td>
+                  <td>
+                    <Button variant="disapprove" disabled={isDoing} onClick={() => handleDisapprove(s.id)}>
+                      却下
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>
+      )}
+
+      {rejectedTaskRequests.length > 0 && (
+        <div style={{ marginTop: "2rem" }}>
+          <p className="manager-title">❌ 却下済みタスク追加リクエスト</p>
+          <div className="submission-list">
+            {rejectedTaskRequests.map((s) => (
+              <SubmissionCard
+                key={s.id}
+                submission={s}
+                whoseName={userName(s.whoDid)}
+                isDoing={isDoing}
+                onRestore={handleRestore}
+                onDelete={handleDelete}
+              />
+            ))}
+          </div>
+          <table className="manager-table">
+            <thead>
+              <tr>
+                <th>タスク名</th>
+                <th>リクエスト者</th>
+                <th>希望ポイント</th>
+                <th>ステータス</th>
+                <th>申請日時</th>
+                <th>戻す</th>
+                <th>削除</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rejectedTaskRequests.map((s) => (
                 <tr key={s.id}>
                   <td>{s.whatYouDid}</td>
                   <td>{userName(s.whoDid)}</td>

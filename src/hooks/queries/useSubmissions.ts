@@ -89,6 +89,12 @@ export function useSubmissionMutations() {
     onSuccess: invalidateSubs,
   });
 
+  const updatePoint = useMutation({
+    mutationFn: ({ id, newPoint }: { id: string; newPoint: string }) =>
+      post({ type: "updatePoint", id, newPoint }),
+    onSuccess: invalidateSubs,
+  });
+
   return {
     approve,
     disapprove,
@@ -100,5 +106,6 @@ export function useSubmissionMutations() {
     registerOneTimeTask,
     requestTask,
     usePoints,
+    updatePoint,
   };
 }
