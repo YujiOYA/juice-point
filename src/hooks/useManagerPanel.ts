@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 import { Submission, SubmissionType } from "@type/submission";
 
 export function useManagerPanel(submissions: Submission[], onRefresh: () => Promise<void>) {
+  const router = useRouter();
   const [isDoing, setIsDoing] = useState(false);
   const [editedPoints, setEditedPoints] = useState<Map<string, string>>(new Map());
 
@@ -124,6 +126,7 @@ export function useManagerPanel(submissions: Submission[], onRefresh: () => Prom
         }),
       });
       await onRefresh();
+      router.refresh();
       toast.success("承認してタスクに追加しました！");
     } catch {
       toast.error("承認に失敗しました");
