@@ -22,6 +22,7 @@ interface Props {
 
 export default function TaskForm({ user, tasks, submissions, rewards = [], onRefresh }: Props) {
   const [pendingOpen, setPendingOpen] = useState(false);
+  const [pendingRequestOpen, setPendingRequestOpen] = useState(false);
   const {
     point,
     selectedTask,
@@ -43,7 +44,9 @@ export default function TaskForm({ user, tasks, submissions, rewards = [], onRef
     handleRequestSubmit,
   } = useTaskForm(user, tasks, submissions, rewards, onRefresh);
 
-  const pending = submissions.filter((s) => s.whoDid === user.id && s.status === "未承認");
+  const userPending = submissions.filter((s) => s.whoDid === user.id && s.status === "未承認");
+  const pendingSubmit  = userPending.filter((s) => s.submissionType !== SubmissionType.TaskRequest);
+  const pendingRequest = userPending.filter((s) => s.submissionType === SubmissionType.TaskRequest);
 
   const tabSubmit = (
     <form onSubmit={handleSubmit}>
@@ -68,7 +71,7 @@ export default function TaskForm({ user, tasks, submissions, rewards = [], onRef
         ✅ 申請する
       </Button>
 
-      {pending.length > 0 && (
+      {pendingSubmit.length > 0 && (
         <div style={{ marginTop: "1.5rem", borderTop: "1px solid #e5e7eb", paddingTop: "1rem" }}>
           <button
             type="button"
@@ -76,20 +79,13 @@ export default function TaskForm({ user, tasks, submissions, rewards = [], onRef
             style={{ background: "none", border: "none", padding: 0, cursor: "pointer", display: "flex", alignItems: "center", gap: "0.4rem", color: "#757575", width: "100%" }}
           >
             <span style={{ display: "inline-block", transition: "transform 0.2s", transform: pendingOpen ? "rotate(90deg)" : "rotate(0deg)" }}>▶</span>
-            ⏳ 承認待ち（{pending.length}件）
+            ⏳ 承認待ち（{pendingSubmit.length}件）
           </button>
           <div style={{ overflow: "hidden", maxHeight: pendingOpen ? "500px" : "0", transition: "max-height 0.3s ease" }}>
             <ul style={{ listStyle: "none", padding: 0, margin: "0.5rem 0 0", display: "flex", flexDirection: "column", gap: "0.25rem" }}>
-              {pending.map((s) => (
+              {pendingSubmit.map((s) => (
                 <li key={s.id} style={{ display: "flex", justifyContent: "space-between", color: "#444" }}>
-                  <span style={{ textAlign: "left" }}>
-                    {s.submissionType === SubmissionType.TaskRequest ? (
-                      <span style={{ fontSize: "0.7rem", background: "#fef9c3", color: "#a16207", borderRadius: "4px", padding: "0.1rem 0.35rem", marginRight: "0.4rem", fontWeight: "bold" }}>タスク追加リクエスト</span>
-                    ) : (
-                      <span style={{ fontSize: "0.7rem", background: "#dcfce7", color: "#15803d", borderRadius: "4px", padding: "0.1rem 0.35rem", marginRight: "0.4rem", fontWeight: "bold" }}>申請</span>
-                    )}
-                    {s.whatYouDid}
-                  </span>
+                  <span style={{ textAlign: "left" }}>{s.whatYouDid}</span>
                   <span style={{ color: "#f59e0b", fontWeight: "bold", marginLeft: "0.5rem" }}>{s.point}pt</span>
                 </li>
               ))}
@@ -142,6 +138,29 @@ export default function TaskForm({ user, tasks, submissions, rewards = [], onRef
       >
         ✅ 申請する
       </Button>
+
+      {pendingRequest.length > 0 && (
+        <div style={{ marginTop: "1.5rem", borderTop: "1px solid #e5e7eb", paddingTop: "1rem" }}>
+          <button
+            type="button"
+            onClick={() => setPendingRequestOpen((o) => !o)}
+            style={{ background: "none", border: "none", padding: 0, cursor: "pointer", display: "flex", alignItems: "center", gap: "0.4rem", color: "#757575", width: "100%" }}
+          >
+            <span style={{ display: "inline-block", transition: "transform 0.2s", transform: pendingRequestOpen ? "rotate(90deg)" : "rotate(0deg)" }}>▶</span>
+            ⏳ 承認待ち（{pendingRequest.length}件）
+          </button>
+          <div style={{ overflow: "hidden", maxHeight: pendingRequestOpen ? "500px" : "0", transition: "max-height 0.3s ease" }}>
+            <ul style={{ listStyle: "none", padding: 0, margin: "0.5rem 0 0", display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+              {pendingRequest.map((s) => (
+                <li key={s.id} style={{ display: "flex", justifyContent: "space-between", color: "#444" }}>
+                  <span style={{ textAlign: "left" }}>{s.whatYouDid}</span>
+                  <span style={{ color: "#f59e0b", fontWeight: "bold", marginLeft: "0.5rem" }}>{s.point}pt</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
     </div>
   );
 
