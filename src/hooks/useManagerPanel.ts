@@ -1,20 +1,27 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-import { Submission } from "@type/submission";
+import { Submission, SubmissionType } from "@type/submission";
 
 export function useManagerPanel(submissions: Submission[], onRefresh: () => Promise<void>) {
   const [isDoing, setIsDoing] = useState(false);
-  const [pending, setPending] = useState(submissions.filter((s) => s.status === "未承認" && s.submissionType !== "taskRequest"));
-  const [rejected, setRejected] = useState(submissions.filter((s) => s.status === "却下" && s.submissionType !== "taskRequest"));
-  const [pendingTaskRequests, setPendingTaskRequests] = useState(submissions.filter((s) => s.status === "未承認" && s.submissionType === "taskRequest"));
-  const [rejectedTaskRequests, setRejectedTaskRequests] = useState(submissions.filter((s) => s.status === "却下" && s.submissionType === "taskRequest"));
+  const [editedPoints, setEditedPoints] = useState<Map<string, string>>(new Map());
+
+  const getEditedPoint = (id: string, defaultPoint: string) => editedPoints.get(id) ?? defaultPoint;
+
+  const setEditedPoint = (id: string, point: string) => {
+    setEditedPoints((prev) => new Map(prev).set(id, point));
+  };
+  const [pending, setPending] = useState(submissions.filter((s) => s.status === "未承認" && s.submissionType !== SubmissionType.TaskRequest));
+  const [rejected, setRejected] = useState(submissions.filter((s) => s.status === "却下" && s.submissionType !== SubmissionType.TaskRequest));
+  const [pendingTaskRequests, setPendingTaskRequests] = useState(submissions.filter((s) => s.status === "未承認" && s.submissionType === SubmissionType.TaskRequest));
+  const [rejectedTaskRequests, setRejectedTaskRequests] = useState(submissions.filter((s) => s.status === "却下" && s.submissionType === SubmissionType.TaskRequest));
 
   useEffect(() => {
-    setPending(submissions.filter((s) => s.status === "未承認" && s.submissionType !== "taskRequest"));
-    setRejected(submissions.filter((s) => s.status === "却下" && s.submissionType !== "taskRequest"));
-    setPendingTaskRequests(submissions.filter((s) => s.status === "未承認" && s.submissionType === "taskRequest"));
-    setRejectedTaskRequests(submissions.filter((s) => s.status === "却下" && s.submissionType === "taskRequest"));
+    setPending(submissions.filter((s) => s.status === "未承認" && s.submissionType !== SubmissionType.TaskRequest));
+    setRejected(submissions.filter((s) => s.status === "却下" && s.submissionType !== SubmissionType.TaskRequest));
+    setPendingTaskRequests(submissions.filter((s) => s.status === "未承認" && s.submissionType === SubmissionType.TaskRequest));
+    setRejectedTaskRequests(submissions.filter((s) => s.status === "却下" && s.submissionType === SubmissionType.TaskRequest));
   }, [submissions]);
 
   const handleApprove = async (id: string) => {
@@ -85,6 +92,23 @@ export function useManagerPanel(submissions: Submission[], onRefresh: () => Prom
     }
   };
 
+  const handleApproveOneTimeTask = async (id: string, newPoint: string) => {
+    setIsDoing(true);
+    try {
+      await fetch("/api/submissions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: "approveOneTimeTask", id, newPoint }),
+      });
+      await onRefresh();
+      toast.success("承認しました！");
+    } catch {
+      toast.error("承認に失敗しました");
+    } finally {
+      setIsDoing(false);
+    }
+  };
+
   const handleApproveTaskRequest = async (submission: Submission) => {
     setIsDoing(true);
     try {
@@ -108,5 +132,5 @@ export function useManagerPanel(submissions: Submission[], onRefresh: () => Prom
     }
   };
 
-  return { isDoing, pending, rejected, pendingTaskRequests, rejectedTaskRequests, handleApprove, handleDisapprove, handleRestore, handleDelete, handleApproveTaskRequest };
+  return { isDoing, pending, rejected, pendingTaskRequests, rejectedTaskRequests, editedPoints, getEditedPoint, setEditedPoint, handleApprove, handleApproveOneTimeTask, handleDisapprove, handleRestore, handleDelete, handleApproveTaskRequest };
 }

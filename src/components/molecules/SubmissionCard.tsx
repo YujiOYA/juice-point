@@ -5,6 +5,8 @@ interface Props {
   submission: Submission;
   whoseName: string;
   isDoing: boolean;
+  editablePoint?: string;
+  onPointChange?: (point: string) => void;
   onApprove?: (id: string) => void;
   onDisapprove?: (id: string) => void;
   onRestore?: (id: string) => void;
@@ -15,6 +17,8 @@ export default function SubmissionCard({
   submission: s,
   whoseName,
   isDoing,
+  editablePoint,
+  onPointChange,
   onApprove,
   onDisapprove,
   onRestore,
@@ -25,7 +29,20 @@ export default function SubmissionCard({
       <p className="submission-card__task">{s.whatYouDid}</p>
       <div className="submission-card__meta">
         <span>👤 {whoseName}</span>
-        <span>💰 {s.point}pt</span>
+        {editablePoint !== undefined ? (
+          <span style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}>
+            💰
+            <input
+              type="number"
+              value={editablePoint}
+              onChange={(e) => onPointChange?.(e.target.value)}
+              style={{ width: "4rem", padding: "0.1rem 0.3rem", border: "1px solid #d1d5db", borderRadius: "4px", fontSize: "0.9rem" }}
+            />
+            pt
+          </span>
+        ) : (
+          <span>💰 {s.point}pt</span>
+        )}
         <span>🕐 {new Date(s.createdAt).toLocaleString("ja-JP")}</span>
       </div>
       <div className="submission-card__actions">

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { createSubmission, createTask, deleteSubmission, getSubmissions, updateSubmissionPoint, updateSubmissionStatus } from "@lib/dynamoDbApi";
+import { SubmissionType } from "@type/submission";
 
 export async function GET() {
   const submissions = await getSubmissions();
@@ -20,12 +21,28 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true });
   }
 
+  if (type === "registerOneTimeTask") {
+    await createSubmission({
+      whatYouDid: body.whatYouDid,
+      whoDid: body.whoDid,
+      point: body.point,
+      submissionType: SubmissionType.OneTimeTask,
+    });
+    return NextResponse.json({ ok: true });
+  }
+
+  if (type === "approveOneTimeTask") {
+    await updateSubmissionPoint(body.id, Number(body.newPoint));
+    await updateSubmissionStatus(body.id, "承認");
+    return NextResponse.json({ ok: true });
+  }
+
   if (type === "requestTask") {
     await createSubmission({
       whatYouDid: body.whatYouDid,
       whoDid: body.whoDid,
       point: body.point,
-      submissionType: "taskRequest",
+      submissionType: SubmissionType.TaskRequest,
     });
     return NextResponse.json({ ok: true });
   }
