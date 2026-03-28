@@ -1,11 +1,10 @@
 "use client";
-import Link from "next/link";
 import { useState } from "react";
 
 import Card from "@atom/Card";
 import LoginForm from "@organism/LoginForm";
 import TaskForm from "@organism/TaskForm";
-import { useSubmissions } from "@hook/useSubmissions";
+import { useSubmissions } from "@hook/queries/useSubmissions";
 import { Reward } from "@type/reward";
 import { Submission } from "@type/submission";
 import { Task } from "@type/task";
@@ -20,7 +19,7 @@ interface Props {
 
 export default function PageClient({ users, tasks, submissions: initialSubmissions, rewards }: Props) {
   const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
-  const { submissions, refreshSubmissions } = useSubmissions(initialSubmissions);
+  const { data: submissions = [] } = useSubmissions(initialSubmissions);
 
   const isAdmin = loggedInUser?.authority === "admin";
 
@@ -37,7 +36,12 @@ export default function PageClient({ users, tasks, submissions: initialSubmissio
       </Card>
       {loggedInUser && !isAdmin && (
         <Card>
-          <TaskForm user={loggedInUser} tasks={tasks} submissions={submissions} rewards={rewards} onRefresh={refreshSubmissions} />
+          <TaskForm
+            user={loggedInUser}
+            initialTasks={tasks}
+            initialSubmissions={initialSubmissions}
+            initialRewards={rewards}
+          />
         </Card>
       )}
     </div>
