@@ -412,6 +412,10 @@ body {
 }
 
 /* ===== タブ ===== */
+.tabs__list-wrap {
+  position: relative;
+}
+
 .tabs__list {
   display: flex;
   overflow-x: auto;
@@ -423,6 +427,31 @@ body {
 
 .tabs__list::-webkit-scrollbar {
   display: none;
+}
+
+.tabs__scroll-arrow {
+  position: absolute;
+  top: 0;
+  height: calc(100% - 2px);
+  border: none;
+  color: #ff9800;
+  font-size: 2rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.tabs__scroll-arrow--right {
+  right: 0;
+  padding: 0 8px 0 24px;
+  background: linear-gradient(to right, transparent, #fff 40%);
+}
+
+.tabs__scroll-arrow--left {
+  left: 0;
+  padding: 0 24px 0 8px;
+  background: linear-gradient(to left, transparent, #fff 40%);
 }
 
 .tabs__tab {
