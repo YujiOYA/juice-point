@@ -84,7 +84,7 @@ export default function TaskForm({ user, tasks, submissions, rewards = [], onRef
                 <li key={s.id} style={{ display: "flex", justifyContent: "space-between", color: "#444" }}>
                   <span style={{ textAlign: "left" }}>
                     {s.submissionType === SubmissionType.TaskRequest ? (
-                      <span style={{ fontSize: "0.7rem", background: "#fef9c3", color: "#a16207", borderRadius: "4px", padding: "0.1rem 0.35rem", marginRight: "0.4rem", fontWeight: "bold" }}>追加リクエスト</span>
+                      <span style={{ fontSize: "0.7rem", background: "#fef9c3", color: "#a16207", borderRadius: "4px", padding: "0.1rem 0.35rem", marginRight: "0.4rem", fontWeight: "bold" }}>タスク追加リクエスト</span>
                     ) : (
                       <span style={{ fontSize: "0.7rem", background: "#dcfce7", color: "#15803d", borderRadius: "4px", padding: "0.1rem 0.35rem", marginRight: "0.4rem", fontWeight: "bold" }}>申請</span>
                     )}
@@ -171,8 +171,8 @@ export default function TaskForm({ user, tasks, submissions, rewards = [], onRef
     <div className="task-form">
       <Tabs
         items={[
-          { id: "submit",  label: "✅ タスク申請",       content: tabSubmit },
-          { id: "request", label: "📝 タスクリクエスト", content: tabRequest },
+          { id: "submit",  label: "✅ タスク完了申請",       content: tabSubmit },
+          { id: "request", label: "📝 タスク追加リクエスト", content: tabRequest },
           { id: "rewards", label: "🎁 ポイント交換",     content: tabRewards },
         ]}
       />
