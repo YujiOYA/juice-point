@@ -9,11 +9,10 @@ import { User } from "@type/user";
 interface Props {
   submissions: Submission[];
   users: User[];
-  onRefresh: () => Promise<void>;
 }
 
-export default function ManagerPanel({ submissions, users, onRefresh }: Props) {
-  const { isDoing, pending, rejected, pendingTaskRequests, rejectedTaskRequests, getEditedPoint, setEditedPoint, handleApprove, handleApproveOneTimeTask, handleDisapprove, handleRestore, handleDelete, handleApproveTaskRequest } = useManagerPanel(submissions, onRefresh);
+export default function ManagerPanel({ submissions, users }: Props) {
+  const { isDoing, pending, rejected, pendingTaskRequests, rejectedTaskRequests, getEditedPoint, setEditedPoint, handleApprove, handleApproveOneTimeTask, handleDisapprove, handleRestore, handleDelete, handleApproveTaskRequest } = useManagerPanel(submissions);
   const userName = (id: string) => users.find((u) => u.id === id)?.user ?? id;
 
   return (

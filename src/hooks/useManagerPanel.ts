@@ -1,40 +1,29 @@
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { toast } from "sonner";
 
+import { useSubmissionMutations } from "@hook/queries/useSubmissions";
 import { Submission, SubmissionType } from "@type/submission";
 
-export function useManagerPanel(submissions: Submission[], onRefresh: () => Promise<void>) {
-  const router = useRouter();
+export function useManagerPanel(submissions: Submission[]) {
   const [isDoing, setIsDoing] = useState(false);
   const [editedPoints, setEditedPoints] = useState<Map<string, string>>(new Map());
 
   const getEditedPoint = (id: string, defaultPoint: string) => editedPoints.get(id) ?? defaultPoint;
-
   const setEditedPoint = (id: string, point: string) => {
     setEditedPoints((prev) => new Map(prev).set(id, point));
   };
-  const [pending, setPending] = useState(submissions.filter((s) => s.status === "未承認" && s.submissionType !== SubmissionType.TaskRequest));
-  const [rejected, setRejected] = useState(submissions.filter((s) => s.status === "却下" && s.submissionType !== SubmissionType.TaskRequest));
-  const [pendingTaskRequests, setPendingTaskRequests] = useState(submissions.filter((s) => s.status === "未承認" && s.submissionType === SubmissionType.TaskRequest));
-  const [rejectedTaskRequests, setRejectedTaskRequests] = useState(submissions.filter((s) => s.status === "却下" && s.submissionType === SubmissionType.TaskRequest));
 
-  useEffect(() => {
-    setPending(submissions.filter((s) => s.status === "未承認" && s.submissionType !== SubmissionType.TaskRequest));
-    setRejected(submissions.filter((s) => s.status === "却下" && s.submissionType !== SubmissionType.TaskRequest));
-    setPendingTaskRequests(submissions.filter((s) => s.status === "未承認" && s.submissionType === SubmissionType.TaskRequest));
-    setRejectedTaskRequests(submissions.filter((s) => s.status === "却下" && s.submissionType === SubmissionType.TaskRequest));
-  }, [submissions]);
+  const pending = submissions.filter((s) => s.status === "未承認" && s.submissionType !== SubmissionType.TaskRequest);
+  const rejected = submissions.filter((s) => s.status === "却下" && s.submissionType !== SubmissionType.TaskRequest);
+  const pendingTaskRequests = submissions.filter((s) => s.status === "未承認" && s.submissionType === SubmissionType.TaskRequest);
+  const rejectedTaskRequests = submissions.filter((s) => s.status === "却下" && s.submissionType === SubmissionType.TaskRequest);
+
+  const mutations = useSubmissionMutations();
 
   const handleApprove = async (id: string) => {
     setIsDoing(true);
     try {
-      await fetch("/api/submissions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "approve", id }),
-      });
-      await onRefresh();
+      await mutations.approve.mutateAsync(id);
       toast.success("承認しました！");
     } catch {
       toast.error("承認に失敗しました");
@@ -46,12 +35,7 @@ export function useManagerPanel(submissions: Submission[], onRefresh: () => Prom
   const handleDisapprove = async (id: string) => {
     setIsDoing(true);
     try {
-      await fetch("/api/submissions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "disapprove", id }),
-      });
-      await onRefresh();
+      await mutations.disapprove.mutateAsync(id);
       toast.success("却下しました");
     } catch {
       toast.error("却下に失敗しました");
@@ -63,12 +47,7 @@ export function useManagerPanel(submissions: Submission[], onRefresh: () => Prom
   const handleRestore = async (id: string) => {
     setIsDoing(true);
     try {
-      await fetch("/api/submissions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "restore", id }),
-      });
-      await onRefresh();
+      await mutations.restore.mutateAsync(id);
       toast.success("申請一覧に戻しました");
     } catch {
       toast.error("操作に失敗しました");
@@ -80,12 +59,7 @@ export function useManagerPanel(submissions: Submission[], onRefresh: () => Prom
   const handleDelete = async (id: string) => {
     setIsDoing(true);
     try {
-      await fetch("/api/submissions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "delete", id }),
-      });
-      await onRefresh();
+      await mutations.remove.mutateAsync(id);
       toast.success("削除しました");
     } catch {
       toast.error("削除に失敗しました");
@@ -97,12 +71,7 @@ export function useManagerPanel(submissions: Submission[], onRefresh: () => Prom
   const handleApproveOneTimeTask = async (id: string, newPoint: string) => {
     setIsDoing(true);
     try {
-      await fetch("/api/submissions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "approveOneTimeTask", id, newPoint }),
-      });
-      await onRefresh();
+      await mutations.approveOneTimeTask.mutateAsync({ id, newPoint });
       toast.success("承認しました！");
     } catch {
       toast.error("承認に失敗しました");
@@ -114,19 +83,7 @@ export function useManagerPanel(submissions: Submission[], onRefresh: () => Prom
   const handleApproveTaskRequest = async (submission: Submission) => {
     setIsDoing(true);
     try {
-      await fetch("/api/submissions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          type: "approveTaskRequest",
-          id: submission.id,
-          taskName: submission.whatYouDid,
-          point: submission.point,
-          whoDid: submission.whoDid,
-        }),
-      });
-      await onRefresh();
-      router.refresh();
+      await mutations.approveTaskRequest.mutateAsync(submission);
       toast.success("承認してタスクに追加しました！");
     } catch {
       toast.error("承認に失敗しました");
@@ -135,5 +92,20 @@ export function useManagerPanel(submissions: Submission[], onRefresh: () => Prom
     }
   };
 
-  return { isDoing, pending, rejected, pendingTaskRequests, rejectedTaskRequests, editedPoints, getEditedPoint, setEditedPoint, handleApprove, handleApproveOneTimeTask, handleDisapprove, handleRestore, handleDelete, handleApproveTaskRequest };
+  return {
+    isDoing,
+    pending,
+    rejected,
+    pendingTaskRequests,
+    rejectedTaskRequests,
+    editedPoints,
+    getEditedPoint,
+    setEditedPoint,
+    handleApprove,
+    handleApproveOneTimeTask,
+    handleDisapprove,
+    handleRestore,
+    handleDelete,
+    handleApproveTaskRequest,
+  };
 }

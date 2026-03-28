@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { toast } from "sonner";
 
+import { useUsers, useUserMutations } from "@hook/queries/useUsers";
 import { User } from "@type/user";
 
 const emptyForm = { user: "", pin: "", authority: "user" };
@@ -10,7 +11,9 @@ type SortKey = "user" | "authority";
 type SortDir = "asc" | "desc";
 
 export function useUserManager(initialUsers: User[]) {
-  const [users, setUsers] = useState<User[]>(initialUsers);
+  const { data: users = [] } = useUsers(initialUsers);
+  const { create, update, remove } = useUserMutations();
+
   const [form, setForm] = useState(emptyForm);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editForm, setEditForm] = useState(emptyEditForm);
@@ -27,17 +30,8 @@ export function useUserManager(initialUsers: User[]) {
   }, [users, sortKey, sortDir]);
 
   const handleSort = (key: SortKey) => {
-    if (sortKey === key) {
-      setSortDir((d) => (d === "asc" ? "desc" : "asc"));
-    } else {
-      setSortKey(key);
-      setSortDir("asc");
-    }
-  };
-
-  const refreshUsers = async () => {
-    const res = await fetch("/api/users");
-    setUsers(await res.json());
+    if (sortKey === key) setSortDir((d) => (d === "asc" ? "desc" : "asc"));
+    else { setSortKey(key); setSortDir("asc"); }
   };
 
   const handleCreate = async (e: React.FormEvent) => {
@@ -45,14 +39,8 @@ export function useUserManager(initialUsers: User[]) {
     if (!form.user || !form.pin || !form.authority) return;
     setIsLoading(true);
     try {
-      const res = await fetch("/api/users", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "create", ...form }),
-      });
-      if (!res.ok) throw new Error(await res.text());
+      await create.mutateAsync(form);
       setForm(emptyForm);
-      await refreshUsers();
       toast.success("ユーザーを追加しました");
     } catch (e) {
       toast.error(`追加に失敗しました: ${e}`);
@@ -70,14 +58,8 @@ export function useUserManager(initialUsers: User[]) {
     if (!editForm.user || !editForm.authority) return;
     setIsLoading(true);
     try {
-      const res = await fetch("/api/users", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "update", id, ...editForm }),
-      });
-      if (!res.ok) throw new Error(await res.text());
+      await update.mutateAsync({ id, ...editForm });
       setEditingId(null);
-      await refreshUsers();
       toast.success("ユーザーを更新しました");
     } catch (e) {
       toast.error(`更新に失敗しました: ${e}`);
@@ -96,12 +78,7 @@ export function useUserManager(initialUsers: User[]) {
   const performDelete = async (id: string) => {
     setIsLoading(true);
     try {
-      await fetch("/api/users", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "delete", id }),
-      });
-      await refreshUsers();
+      await remove.mutateAsync(id);
       toast.success("ユーザーを削除しました");
     } catch {
       toast.error("削除に失敗しました");
@@ -112,19 +89,11 @@ export function useUserManager(initialUsers: User[]) {
 
   return {
     users: sortedUsers,
-    sortKey,
-    sortDir,
-    handleSort,
-    form,
-    setForm,
-    editingId,
-    setEditingId,
-    editForm,
-    setEditForm,
+    sortKey, sortDir, handleSort,
+    form, setForm,
+    editingId, setEditingId,
+    editForm, setEditForm,
     isLoading,
-    handleCreate,
-    startEdit,
-    handleUpdate,
-    handleDelete,
+    handleCreate, startEdit, handleUpdate, handleDelete,
   };
 }

@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { toast } from "sonner";
 
+import { useRewards, useRewardMutations } from "@hook/queries/useRewards";
 import { Reward } from "@type/reward";
 
 const emptyForm = { name: "", point: "", whose: "" };
@@ -9,7 +10,9 @@ type SortKey = "name" | "point";
 type SortDir = "asc" | "desc";
 
 export function useRewardManager(initialRewards: Reward[]) {
-  const [rewards, setRewards] = useState<Reward[]>(initialRewards);
+  const { data: rewards = [] } = useRewards(initialRewards);
+  const { create, update, remove } = useRewardMutations();
+
   const [form, setForm] = useState(emptyForm);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editForm, setEditForm] = useState(emptyForm);
@@ -35,27 +38,14 @@ export function useRewardManager(initialRewards: Reward[]) {
   }, [rewards, sortKey, sortDir, sortKey2, sortDir2, filterWhose]);
 
   const handleSort = (key: SortKey) => {
-    if (sortKey === key) {
-      setSortDir((d) => (d === "asc" ? "desc" : "asc"));
-    } else {
-      setSortKey(key);
-      setSortDir("asc");
-    }
+    if (sortKey === key) setSortDir((d) => (d === "asc" ? "desc" : "asc"));
+    else { setSortKey(key); setSortDir("asc"); }
   };
 
   const handleSort2 = (key: SortKey | null) => {
     if (key === null) { setSortKey2(null); return; }
-    if (sortKey2 === key) {
-      setSortDir2((d) => (d === "asc" ? "desc" : "asc"));
-    } else {
-      setSortKey2(key);
-      setSortDir2("asc");
-    }
-  };
-
-  const refreshRewards = async () => {
-    const res = await fetch("/api/rewards");
-    setRewards(await res.json());
+    if (sortKey2 === key) setSortDir2((d) => (d === "asc" ? "desc" : "asc"));
+    else { setSortKey2(key); setSortDir2("asc"); }
   };
 
   const handleCreate = async (e: React.FormEvent) => {
@@ -63,14 +53,8 @@ export function useRewardManager(initialRewards: Reward[]) {
     if (!form.name || !form.point || !form.whose) return;
     setIsLoading(true);
     try {
-      const res = await fetch("/api/rewards", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "create", ...form }),
-      });
-      if (!res.ok) throw new Error(await res.text());
+      await create.mutateAsync(form);
       setForm(emptyForm);
-      await refreshRewards();
       toast.success("報酬を追加しました");
     } catch (e) {
       toast.error(`追加に失敗しました: ${e}`);
@@ -87,14 +71,8 @@ export function useRewardManager(initialRewards: Reward[]) {
   const handleUpdate = async (id: string) => {
     setIsLoading(true);
     try {
-      const res = await fetch("/api/rewards", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "update", id, ...editForm }),
-      });
-      if (!res.ok) throw new Error(await res.text());
+      await update.mutateAsync({ id, ...editForm });
       setEditingId(null);
-      await refreshRewards();
       toast.success("報酬を更新しました");
     } catch (e) {
       toast.error(`更新に失敗しました: ${e}`);
@@ -113,12 +91,7 @@ export function useRewardManager(initialRewards: Reward[]) {
   const performDelete = async (id: string) => {
     setIsLoading(true);
     try {
-      await fetch("/api/rewards", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "delete", id }),
-      });
-      await refreshRewards();
+      await remove.mutateAsync(id);
       toast.success("報酬を削除しました");
     } catch {
       toast.error("削除に失敗しました");
@@ -129,24 +102,13 @@ export function useRewardManager(initialRewards: Reward[]) {
 
   return {
     rewards: sortedRewards,
-    sortKey,
-    sortDir,
-    handleSort,
-    sortKey2,
-    sortDir2,
-    handleSort2,
-    filterWhose,
-    setFilterWhose,
-    form,
-    setForm,
-    editingId,
-    setEditingId,
-    editForm,
-    setEditForm,
+    sortKey, sortDir, handleSort,
+    sortKey2, sortDir2, handleSort2,
+    filterWhose, setFilterWhose,
+    form, setForm,
+    editingId, setEditingId,
+    editForm, setEditForm,
     isLoading,
-    handleCreate,
-    startEdit,
-    handleUpdate,
-    handleDelete,
+    handleCreate, startEdit, handleUpdate, handleDelete,
   };
 }

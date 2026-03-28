@@ -7,6 +7,7 @@ import TextInput from "@atom/TextInput";
 import FormField from "@molecule/FormField";
 import { useState } from "react";
 import { useTaskForm } from "@hook/useTaskForm";
+import { useSubmissions } from "@hook/queries/useSubmissions";
 import { Reward } from "@type/reward";
 import { Submission, SubmissionType } from "@type/submission";
 import { Task } from "@type/task";
@@ -14,13 +15,12 @@ import { User } from "@type/user";
 
 interface Props {
   user: User;
-  tasks: Task[];
-  submissions: Submission[];
-  rewards: Reward[];
-  onRefresh: () => Promise<void>;
+  initialTasks: Task[];
+  initialSubmissions: Submission[];
+  initialRewards: Reward[];
 }
 
-export default function TaskForm({ user, tasks, submissions, rewards = [], onRefresh }: Props) {
+export default function TaskForm({ user, initialTasks, initialSubmissions, initialRewards }: Props) {
   const [pendingOpen, setPendingOpen] = useState(false);
   const [pendingRequestOpen, setPendingRequestOpen] = useState(false);
   const {
@@ -42,8 +42,9 @@ export default function TaskForm({ user, tasks, submissions, rewards = [], onRef
     handleSubmit,
     handleUsePoints,
     handleRequestSubmit,
-  } = useTaskForm(user, tasks, submissions, rewards, onRefresh);
+  } = useTaskForm(user, initialTasks, initialSubmissions, initialRewards);
 
+  const { data: submissions = [] } = useSubmissions(initialSubmissions);
   const userPending = submissions.filter((s) => s.whoDid === user.id && s.status === "未承認");
   const pendingSubmit  = userPending.filter((s) => s.submissionType !== SubmissionType.TaskRequest);
   const pendingRequest = userPending.filter((s) => s.submissionType === SubmissionType.TaskRequest);
