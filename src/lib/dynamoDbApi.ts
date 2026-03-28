@@ -143,6 +143,7 @@ export async function getSubmissions(): Promise<Submission[]> {
     point: item.point.S!,
     status: item.status.S!,
     createdAt: item.createdAt.S!,
+    submissionType: item.submissionType?.S,
   }));
 }
 
@@ -150,20 +151,20 @@ export async function createSubmission(data: {
   whatYouDid: string;
   whoDid: string;
   point: string;
+  submissionType?: string;
 }): Promise<void> {
-  await dynamo.send(
-    new PutItemCommand({
-      TableName: TABLE_SUBMISSIONS,
-      Item: {
-        id: { S: randomUUID() },
-        whatYouDid: { S: data.whatYouDid },
-        whoDid: { S: data.whoDid },
-        point: { S: data.point },
-        status: { S: "未承認" },
-        createdAt: { S: new Date().toISOString() },
-      },
-    }),
-  );
+  const item: Record<string, { S: string }> = {
+    id: { S: randomUUID() },
+    whatYouDid: { S: data.whatYouDid },
+    whoDid: { S: data.whoDid },
+    point: { S: data.point },
+    status: { S: "未承認" },
+    createdAt: { S: new Date().toISOString() },
+  };
+  if (data.submissionType) {
+    item.submissionType = { S: data.submissionType };
+  }
+  await dynamo.send(new PutItemCommand({ TableName: TABLE_SUBMISSIONS, Item: item }));
 }
 
 export async function createTask(data: {
