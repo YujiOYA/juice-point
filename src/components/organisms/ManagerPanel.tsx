@@ -61,7 +61,14 @@ export default function ManagerPanel({ submissions, users }: Props) {
                 const isOneTime = s.submissionType === SubmissionType.OneTimeTask;
                 return (
                   <tr key={s.id}>
-                    <td>{s.whatYouDid}</td>
+                    <td>
+                      {isOneTime && (
+                        <span style={{ display: "inline-block", fontSize: "0.7rem", fontWeight: 600, color: "#fff", background: "#f59e0b", borderRadius: "4px", padding: "0.1rem 0.4rem", marginRight: "0.4rem", verticalAlign: "middle" }}>
+                          一度きり
+                        </span>
+                      )}
+                      {s.whatYouDid}
+                    </td>
                     <td>{userName(s.whoDid)}</td>
                     <td>
                       {isOneTime ? (
@@ -131,25 +138,35 @@ export default function ManagerPanel({ submissions, users }: Props) {
               </tr>
             </thead>
             <tbody>
-              {rejected.map((s) => (
-                <tr key={s.id}>
-                  <td>{s.whatYouDid}</td>
-                  <td>{userName(s.whoDid)}</td>
-                  <td>{s.point}</td>
-                  <td>{s.status}</td>
-                  <td>{new Date(s.createdAt).toLocaleString("ja-JP")}</td>
-                  <td>
-                    <Button variant="approve" disabled={isDoing} onClick={() => handleRestore(s.id)}>
-                      🔄 戻す
-                    </Button>
-                  </td>
-                  <td>
-                    <Button variant="disapprove" disabled={isDoing} onClick={() => handleDelete(s.id)}>
-                      🗑️ 削除
-                    </Button>
-                  </td>
-                </tr>
-              ))}
+              {rejected.map((s) => {
+                const isOneTime = s.submissionType === SubmissionType.OneTimeTask;
+                return (
+                  <tr key={s.id}>
+                    <td>
+                      {isOneTime && (
+                        <span style={{ display: "inline-block", fontSize: "0.7rem", fontWeight: 600, color: "#fff", background: "#f59e0b", borderRadius: "4px", padding: "0.1rem 0.4rem", marginRight: "0.4rem", verticalAlign: "middle" }}>
+                          一度きり
+                        </span>
+                      )}
+                      {s.whatYouDid}
+                    </td>
+                    <td>{userName(s.whoDid)}</td>
+                    <td>{s.point}</td>
+                    <td>{s.status}</td>
+                    <td>{new Date(s.createdAt).toLocaleString("ja-JP")}</td>
+                    <td>
+                      <Button variant="approve" disabled={isDoing} onClick={() => handleRestore(s.id)}>
+                        🔄 戻す
+                      </Button>
+                    </td>
+                    <td>
+                      <Button variant="disapprove" disabled={isDoing} onClick={() => handleDelete(s.id)}>
+                        🗑️ 削除
+                      </Button>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

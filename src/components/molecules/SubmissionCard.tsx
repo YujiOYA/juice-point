@@ -1,5 +1,5 @@
 import Button from "@atom/Button";
-import { Submission } from "@type/submission";
+import { Submission, SubmissionType } from "@type/submission";
 
 interface Props {
   submission: Submission;
@@ -26,7 +26,14 @@ export default function SubmissionCard({
 }: Props) {
   return (
     <div className="submission-card">
-      <p className="submission-card__task">{s.whatYouDid}</p>
+      <p className="submission-card__task">
+        {s.submissionType === SubmissionType.OneTimeTask && (
+          <span style={{ display: "inline-block", fontSize: "0.7rem", fontWeight: 600, color: "#fff", background: "#f59e0b", borderRadius: "4px", padding: "0.1rem 0.4rem", marginRight: "0.4rem", verticalAlign: "middle" }}>
+            一度きり
+          </span>
+        )}
+        {s.whatYouDid}
+      </p>
       <div className="submission-card__meta">
         <span>👤 {whoseName}</span>
         {editablePoint !== undefined ? (
