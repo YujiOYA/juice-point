@@ -67,6 +67,7 @@ export default function TaskForm({ user, tasks, submissions, rewards = [], onRef
         type="submit"
         variant="primary"
         disabled={isSubmitting || !selectedTask || submittedTaskIds.has(selectedTask.id)}
+        style={{ marginTop: "16px" }}
       >
         ✅ 申請する
       </Button>
