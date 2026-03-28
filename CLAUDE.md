@@ -46,7 +46,7 @@
 - `id` (PK), `task`, `point`, `whose`
 
 ### TABLE_SUBMISSIONS
-- `id` (PK), `whatYouDid`, `whoDid`, `point`, `status`（`未承認`/`承認`/`却下`）, `createdAt`
+- `id` (PK), `whatYouDid`, `whoDid`, `point`, `status`（`未承認`/`承認`/`却下`）, `createdAt`, `submissionType`（省略可: `oneTimeTask` / `taskRequest`）
 
 ### TABLE_MASTER_REWARD
 - `id` (PK), `name`, `point`（交換に必要なポイント数）, `whose`（担当ユーザー名）
@@ -97,7 +97,7 @@
 | エンドポイント | メソッド | 説明 |
 |--------------|---------|------|
 | `/api/auth` | POST | PIN 認証 |
-| `/api/submissions` | GET / POST | 申請の取得・操作（type: register / approve / disapprove / restore / delete / usePoints） |
+| `/api/submissions` | GET / POST | 申請の取得・操作（type: register / registerOneTimeTask / approveOneTimeTask / requestTask / approveTaskRequest / approve / disapprove / restore / delete / usePoints） |
 | `/api/tasks` | GET / POST | タスクの取得・CRUD（type: create / update / delete） |
 | `/api/rewards` | GET / POST | 報酬の取得・CRUD（type: create / update / delete） |
 | `/api/users` | GET / POST | ユーザーの取得・CRUD（type: create / update / delete） |
