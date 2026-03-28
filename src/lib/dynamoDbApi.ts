@@ -10,7 +10,7 @@ import {
 
 import { dynamo } from "@lib/dynamoClient";
 import { Reward } from "@type/reward";
-import { Submission } from "@type/submission";
+import { Submission, SubmissionType } from "@type/submission";
 import { Task } from "@type/task";
 import { User } from "@type/user";
 
@@ -143,7 +143,7 @@ export async function getSubmissions(): Promise<Submission[]> {
     point: item.point.S!,
     status: item.status.S!,
     createdAt: item.createdAt.S!,
-    submissionType: item.submissionType?.S,
+    submissionType: item.submissionType?.S as SubmissionType | undefined,
   }));
 }
 
