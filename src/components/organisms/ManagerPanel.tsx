@@ -63,9 +63,10 @@ export default function ManagerPanel({ submissions, users }: Props) {
                   <tr key={s.id}>
                     <td>
                       {isOneTime && (
-                        <span style={{ display: "inline-block", fontSize: "0.7rem", fontWeight: 600, color: "#fff", background: "#f59e0b", borderRadius: "4px", padding: "0.1rem 0.4rem", marginRight: "0.4rem", verticalAlign: "middle" }}>
-                          一度きり
+                        <span style={{ display: "inline-block", fontSize: "0.7rem", fontWeight: 600, color: "#fff", background: "#f59e0b", borderRadius: "4px", padding: "0.1rem 0.4rem" }}>
+                          未登録タスク
                         </span>
+                        <br />
                       )}
                       {s.whatYouDid}
                     </td>
@@ -144,9 +145,10 @@ export default function ManagerPanel({ submissions, users }: Props) {
                   <tr key={s.id}>
                     <td>
                       {isOneTime && (
-                        <span style={{ display: "inline-block", fontSize: "0.7rem", fontWeight: 600, color: "#fff", background: "#f59e0b", borderRadius: "4px", padding: "0.1rem 0.4rem", marginRight: "0.4rem", verticalAlign: "middle" }}>
-                          一度きり
+                        <span style={{ display: "inline-block", fontSize: "0.7rem", fontWeight: 600, color: "#fff", background: "#f59e0b", borderRadius: "4px", padding: "0.1rem 0.4rem" }}>
+                          未登録タスク
                         </span>
+                        <br />
                       )}
                       {s.whatYouDid}
                     </td>
