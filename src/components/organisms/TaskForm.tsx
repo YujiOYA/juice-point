@@ -192,7 +192,7 @@ export default function TaskForm({ user, tasks, submissions, rewards = [], onRef
       <Tabs
         items={[
           { id: "submit",  label: "✅ タスク完了", content: tabSubmit },
-          { id: "request", label: "📝 タスク追加", content: tabRequest },
+          { id: "request", label: "📝 新規タスク追加", content: tabRequest },
           { id: "rewards", label: "🎁 ポイント交換", content: tabRewards },
         ]}
       />
