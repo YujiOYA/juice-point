@@ -128,7 +128,7 @@ export default function TaskForm({ user, tasks, submissions, rewards = [], onRef
           checked={registerTaskAlso}
           onChange={(e) => setRegisterTaskAlso(e.target.checked)}
         />
-        タスクとして登録もリクエストする
+        タスクとして登録
       </label>
       <Button
         type="button"
