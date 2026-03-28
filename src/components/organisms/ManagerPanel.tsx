@@ -18,7 +18,7 @@ export default function ManagerPanel({ submissions, users, onRefresh }: Props) {
 
   return (
     <div>
-      <p className="manager-title">📝 タスクリクエスト</p>
+      <p className="manager-title">📝 タスク追加リクエスト</p>
 
       {pendingTaskRequests.length === 0 ? (
         <p className="no-submissions">リクエストはありません 🎉</p>
@@ -76,7 +76,7 @@ export default function ManagerPanel({ submissions, users, onRefresh }: Props) {
 
       {rejectedTaskRequests.length > 0 && (
         <div style={{ marginTop: "2rem" }}>
-          <p className="manager-title">❌ 却下済みタスクリクエスト</p>
+          <p className="manager-title">❌ 却下済みタスク追加リクエスト</p>
           <div className="submission-list">
             {rejectedTaskRequests.map((s) => (
               <SubmissionCard
