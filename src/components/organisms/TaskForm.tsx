@@ -29,9 +29,15 @@ export default function TaskForm({ user, tasks, submissions, rewards = [], onRef
     userTasks,
     userPoint,
     rewards: userRewards,
+    requestTaskName,
+    requestPoint,
+    isRequesting,
+    setRequestTaskName,
+    setRequestPoint,
     handleChangeSelect,
     handleSubmit,
     handleUsePoints,
+    handleRequestSubmit,
   } = useTaskForm(user, tasks, submissions, rewards, onRefresh);
 
   return (
@@ -83,6 +89,38 @@ export default function TaskForm({ user, tasks, submissions, rewards = [], onRef
           </div>
         );
       })()}
+
+      <div style={{ marginTop: "1.5rem", borderTop: "1px solid #e5e7eb", paddingTop: "1rem" }}>
+        <p style={{ marginBottom: "0.75rem", fontWeight: "bold" }}>📝 タスクをリクエストする</p>
+        <FormField label="タスク名" htmlFor="requestTaskName">
+          <TextInput
+            id="requestTaskName"
+            name="requestTaskName"
+            type="text"
+            value={requestTaskName}
+            onChange={(e) => setRequestTaskName(e.target.value)}
+            placeholder="例: 🧺洗濯物をたたむ"
+          />
+        </FormField>
+        <FormField label="希望ポイント" htmlFor="requestPoint">
+          <TextInput
+            id="requestPoint"
+            name="requestPoint"
+            type="number"
+            value={requestPoint}
+            onChange={(e) => setRequestPoint(e.target.value)}
+            placeholder="例: 1.5"
+          />
+        </FormField>
+        <Button
+          type="button"
+          variant="primary"
+          disabled={isRequesting || !requestTaskName.trim() || !requestPoint}
+          onClick={handleRequestSubmit}
+        >
+          📨 リクエストする
+        </Button>
+      </div>
 
       <div style={{ marginTop: "1.5rem", borderTop: "1px solid #e5e7eb", paddingTop: "1.5rem" }}>
         <p style={{ marginBottom: "0.75rem" }}>💰 現在のポイント: <strong>{userPoint}pt</strong></p>

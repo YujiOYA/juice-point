@@ -5,4 +5,5 @@ export type Submission = {
   point: string;
   status: string;
   createdAt: string;
+  submissionType?: string;
 };
