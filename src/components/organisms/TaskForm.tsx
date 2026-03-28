@@ -99,7 +99,7 @@ export default function TaskForm({ user, tasks, submissions, rewards = [], onRef
             type="text"
             value={requestTaskName}
             onChange={(e) => setRequestTaskName(e.target.value)}
-            placeholder="例: 洗濯物をたたむ"
+            placeholder="例: 🧺洗濯物をたたむ"
           />
         </FormField>
         <FormField label="希望ポイント" htmlFor="requestPoint">
@@ -109,7 +109,7 @@ export default function TaskForm({ user, tasks, submissions, rewards = [], onRef
             type="number"
             value={requestPoint}
             onChange={(e) => setRequestPoint(e.target.value)}
-            placeholder="例: 30"
+            placeholder="例: 1.5"
           />
         </FormField>
         <Button
