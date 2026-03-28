@@ -179,7 +179,7 @@ export default function ManagerPanel({ submissions, users }: Props) {
       )}
 
       <p className="manager-title" style={{ marginTop: "2rem" }}>💰 未使用ポイント</p>
-      <UserPointsSummary users={users} submissions={submissions} />
+      <UserPointsSummary users={users.filter((u) => u.authority !== "admin")} submissions={submissions} />
 
       <p className="manager-title" style={{ marginTop: "2rem" }}>📝 タスク追加リクエスト</p>
 

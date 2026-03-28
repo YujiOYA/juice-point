@@ -11,6 +11,7 @@ export const dynamic = "force-dynamic";
 
 export default async function AdminPage() {
   const [users, tasks, rewards, submissions] = await Promise.all([getUsers(), getTasks(), getRewards(), getSubmissions()]);
+  const nonAdminUsers = users.filter((u) => u.authority !== "admin");
   return (
     <div className="task-admin-wrap">
       <Link href="/">
@@ -21,8 +22,8 @@ export default async function AdminPage() {
       <Tabs
         items={[
           { id: "submissions", label: "📋 申請管理", content: <SubmissionManagerClient initialSubmissions={submissions} users={users} /> },
-          { id: "tasks",       label: "🔧 タスク管理", content: <TaskManagerClient users={users} initialTasks={tasks} /> },
-          { id: "rewards",     label: "🎁 報酬管理",   content: <RewardManagerClient users={users} initialRewards={rewards} /> },
+          { id: "tasks",       label: "🔧 タスク管理", content: <TaskManagerClient users={nonAdminUsers} initialTasks={tasks} /> },
+          { id: "rewards",     label: "🎁 報酬管理",   content: <RewardManagerClient users={nonAdminUsers} initialRewards={rewards} /> },
           { id: "users",       label: "👤 ユーザー管理", content: <UserManagerClient initialUsers={users} /> },
         ]}
       />
