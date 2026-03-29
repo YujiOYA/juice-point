@@ -91,6 +91,11 @@ export default function UserPointsSummary({ users, submissions }: Props) {
     setOpenUserId((prev) => (prev === id ? null : id));
   };
 
+  const formatDate = (iso: string) => {
+    const d = new Date(iso);
+    return `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, "0")}/${String(d.getDate()).padStart(2, "0")}`;
+  };
+
   const BreakdownItem = ({ s }: { s: Submission }) => {
     const isEditing = editingId === s.id;
     return (
@@ -111,6 +116,7 @@ export default function UserPointsSummary({ users, submissions }: Props) {
         ) : (
           <>
             <span style={{ flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{s.whatYouDid}</span>
+            <span style={{ color: "#9e9e9e", fontSize: "0.8rem", whiteSpace: "nowrap", flexShrink: 0 }}>{formatDate(s.createdAt)}</span>
             <span style={{ color: "#f59e0b", fontWeight: 600, whiteSpace: "nowrap", flexShrink: 0 }}>{s.point}pt</span>
             <Button variant="primary" disabled={remove.isPending} onClick={() => startEdit(s)} style={{ padding: "0.1rem 0.4rem", fontSize: "0.7rem", flex: "none", width: "auto" }}>編集</Button>
             <Button variant="disapprove" disabled={remove.isPending} onClick={() => handleDelete(s.id)} style={{ padding: "0.1rem 0.4rem", fontSize: "0.7rem", flex: "none" }}>削除</Button>
