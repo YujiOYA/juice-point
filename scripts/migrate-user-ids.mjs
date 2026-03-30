@@ -4,11 +4,7 @@
 import { DynamoDBClient, ScanCommand, UpdateItemCommand } from "@aws-sdk/client-dynamodb";
 
 const client = new DynamoDBClient({
-  region: "ap-northeast-1",
-  credentials: {
-    accessKeyId: "REMOVED_ACCESS_KEY",
-    secretAccessKey: "REMOVED_SECRET_KEY",
-  },
+  region: process.env.AWS_REGION ?? "ap-northeast-1",
 });
 
 const USER_MAP = {
