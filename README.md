@@ -73,60 +73,84 @@
 | point     | String | 交換に必要なポイント |
 | whose     | String | 担当ユーザー名     |
 
-## 環境変数
+## セットアップ
 
-Vercel のダッシュボードまたは `.env.local` に以下を設定してください。
+### 前提条件
+
+- Node.js 18 以上
+- AWS CLI（[インストール方法](https://aws.amazon.com/cli/)）
+- AWS アカウント（DynamoDB テーブル・IAM リソース作成権限が必要）
+
+### 1. リポジトリのクローン
+
+```bash
+git clone <repository-url>
+cd family-point-app
+npm install
+```
+
+### 2. AWS インフラの構築
+
+```bash
+# AWS CLI の認証設定（未設定の場合）
+aws configure
+
+# インフラセットアップスクリプトを実行
+./scripts/setup-aws.sh
+```
+
+以下を自動作成します：
+
+| リソース | 内容 |
+|---------|------|
+| DynamoDB テーブル x4 | ユーザー・タスク・申請・報酬 |
+| IAM ポリシー | DynamoDB 最小権限 |
+| IAM ユーザー + アクセスキー | ローカル開発用 |
+| IAM ロール（任意） | Vercel OIDC 用 |
+
+### 3. 環境変数の設定
+
+```bash
+cp .env.example .env.local
+```
+
+`.env.local` にセットアップスクリプトの出力値を入力します。
 
 ```env
 AWS_REGION=ap-northeast-1
-AWS_ROLE_ARN=arn:aws:iam::<アカウントID>:role/<ロール名>
-TABLE_MASTER_USER=<ユーザーテーブル名>
-TABLE_MASTER_TASK=<タスクテーブル名>
-TABLE_SUBMISSIONS=<申請テーブル名>
-TABLE_MASTER_REWARD=<報酬テーブル名>
+AWS_ACCESS_KEY_ID=<setup-aws.sh の出力値>
+AWS_SECRET_ACCESS_KEY=<setup-aws.sh の出力値>
+TABLE_MASTER_USER=TABLE_MASTER_USER
+TABLE_MASTER_TASK=TABLE_MASTER_TASK
+TABLE_SUBMISSIONS=TABLE_SUBMISSIONS
+TABLE_MASTER_REWARD=TABLE_MASTER_REWARD
 ```
 
-> **ローカル開発時**は `AWS_ACCESS_KEY_ID` と `AWS_SECRET_ACCESS_KEY` も設定してください（Vercel環境ではOIDCを使用するため不要）。
+> **Vercel 環境**では `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` の代わりに `AWS_ROLE_ARN`（OIDC）を使用します。
 
-## AWS IAM ポリシー
-
-Vercel OIDC 連携用の IAM ロールに以下のポリシーをアタッチしてください。
-
-```json
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "dynamodb:GetItem",
-        "dynamodb:PutItem",
-        "dynamodb:UpdateItem",
-        "dynamodb:DeleteItem",
-        "dynamodb:Scan",
-        "dynamodb:Query"
-      ],
-      "Resource": "*"
-    }
-  ]
-}
-```
-
-## セットアップ
+### 4. 開発サーバーの起動
 
 ```bash
-# 依存関係をインストール
-npm install
-
-# 開発サーバーを起動
 npm run dev
 ```
 
-ブラウザで [http://localhost:3000](http://localhost:3000) を開きます。
+[http://localhost:3000](http://localhost:3000) でアプリが起動します。ユーザーが 0 人の場合は初期設定画面が表示されるので、管理者名と PIN を入力して最初のアカウントを作成してください。
 
-### 初回セットアップ
+## Vercel へのデプロイ
 
-DynamoDB テーブルを作成して環境変数を設定したあと、アプリを起動するとユーザーが0人の場合に初期設定画面が表示されます。管理者名と PIN を入力して最初の管理者アカウントを作成してください。
+Vercel CLI が必要です（`npm install -g vercel`）。`setup-aws.sh` で Vercel OIDC ロールを作成済みであることを確認してから実行します。
+
+```bash
+./scripts/setup-vercel.sh
+```
+
+以下を自動実行します：
+
+1. Vercel へのログイン確認
+2. プロジェクトのリンク（初回のみ）
+3. `production` / `preview` / `development` 環境への環境変数一括設定
+
+設定後は `vercel deploy` でデプロイできます。
 
 ## ページ構成
 
