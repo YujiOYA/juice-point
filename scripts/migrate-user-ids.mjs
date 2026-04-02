@@ -1,5 +1,20 @@
 /**
  * DynamoDB マイグレーション: whose/whoDid をユーザー名 → ユーザーID に変換
+ *
+ * 【背景】
+ * 当初、タスク・報酬・申請の各テーブルでユーザーを名前文字列（例: "🍜しんちゃん"）で
+ * 管理していたが、UUID ベースのユーザーID で管理する設計に変更した。
+ * このスクリプトは既存データを新しい方式に一括移行するために使用したワンタイムスクリプト。
+ *
+ * 【対象】
+ * - TABLE_MASTER_TASK.whose   （タスクの担当者）
+ * - TABLE_MASTER_REWARD.whose （報酬の担当者）
+ * - TABLE_SUBMISSIONS.whoDid  （申請者）
+ *
+ * 【注意】
+ * このスクリプトはすでに適用済みのため、通常は再実行不要。
+ * すでに UUID が入っているレコードは自動的にスキップされるため冪等性はあるが、
+ * USER_MAP のユーザー情報は当時のものであり、現在の DB 内容と一致しない可能性がある。
  */
 import { DynamoDBClient, ScanCommand, UpdateItemCommand } from "@aws-sdk/client-dynamodb";
 
