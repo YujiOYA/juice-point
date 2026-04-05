@@ -175,6 +175,46 @@ export default function LpPage() {
         </div>
       </section>
 
+      {/* なぜアプリなのか */}
+      <section className="lp-section lp-section--gray">
+        <div className="lp-section__inner">
+          <p className="lp-section__label">よくある疑問</p>
+          <h2 className="lp-section__title">
+            紙や口約束じゃ、
+            <br />
+            ダメなんですか？
+          </h2>
+          <p className="lp-why__lead">
+            ダメではありません。でも、<strong>続きません。</strong>
+          </p>
+          <div className="lp-why-grid">
+            <div className="lp-why-card lp-why-card--analog">
+              <p className="lp-why-card__label">紙・口約束</p>
+              <ul>
+                <li>😔 「やったよ」と親に言いに行かないと始まらない</li>
+                <li>😔 ポイントが曖昧になり、親も子もいつの間にか忘れる</li>
+                <li>😔 ゴールが見えず、モチベーションが続かない</li>
+                <li>😔 「認められた」という感覚が残りにくい</li>
+              </ul>
+            </div>
+            <div className="lp-why-card lp-why-card--app">
+              <p className="lp-why-card__label">おてつだいポイント</p>
+              <ul>
+                <li>✅ 子供が自分のタイミングで申請できる</li>
+                <li>✅ 承認が記録されて、いつでも見返せる</li>
+                <li>✅ 報酬まであと何ポイントかが常に見える</li>
+                <li>✅ 「ちゃんと認められた」が積み重なっていく</li>
+              </ul>
+            </div>
+          </div>
+          <p className="lp-why__note">
+            SNSの「いいね」が効果的なのは、<strong>即座に・記録されて・見返せる</strong>からです。
+            <br />
+            同じ仕組みを、家族のリアルな行動に持ち込んだのがこのアプリです。
+          </p>
+        </div>
+      </section>
+
       {/* 使い方ステップ */}
       <section className="lp-section lp-section--orange">
         <div className="lp-section__inner">
