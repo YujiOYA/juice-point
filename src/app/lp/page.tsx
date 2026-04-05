@@ -1,3 +1,5 @@
+import AppScreenCarousel from "./AppScreenCarousel";
+
 export const metadata = {
   title: "おてつだいポイント | スクリーンも、リアルも、どちらも楽しめる子に。",
   description:
@@ -46,28 +48,8 @@ export default function LpPage() {
             <span>✓ ブラウザで即使える</span>
           </div>
         </div>
-        <div className="lp-hero__visual" aria-hidden="true">
-          <div className="lp-hero__scene-card">
-            <div className="lp-hero__scene-header">
-              <span className="lp-hero__scene-dot" />
-              <span className="lp-hero__scene-dot" />
-              <span className="lp-hero__scene-dot" />
-              <span className="lp-hero__scene-title">おてつだいポイント</span>
-            </div>
-            <div className="lp-hero__scene">
-              <div className="lp-scene-bubble lp-scene-bubble--child">
-                🧒 「お皿洗いしたよ！申請する」
-              </div>
-              <div className="lp-scene-arrow">↓</div>
-              <div className="lp-scene-bubble lp-scene-bubble--parent">
-                👩 「確認！承認します ✅」
-              </div>
-              <div className="lp-scene-arrow">↓</div>
-              <div className="lp-scene-reward">
-                🧃 ポイントで念願のジュース！
-              </div>
-            </div>
-          </div>
+        <div className="lp-hero__visual">
+          <AppScreenCarousel />
         </div>
       </section>
 
