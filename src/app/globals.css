@@ -1037,6 +1037,76 @@ body {
   cursor: default;
 }
 
+/* ---- 役割バッジ ---- */
+.lp-mock-role {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 99px;
+  margin-bottom: 6px;
+  letter-spacing: 0.02em;
+}
+
+.lp-mock-role--child {
+  background: #fff3e0;
+  color: #e65100;
+}
+
+.lp-mock-role--parent {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+/* ---- カルーセルウィンドウ：役割に応じた枠色 ---- */
+.lp-carousel__window--child {
+  box-shadow: 0 8px 40px rgba(255, 152, 0, 0.2), 0 2px 10px rgba(0,0,0,0.06);
+}
+
+.lp-carousel__window--parent {
+  box-shadow: 0 8px 40px rgba(76, 175, 80, 0.2), 0 2px 10px rgba(0,0,0,0.06);
+}
+
+/* ---- ドット：役割別デフォルト色 ---- */
+.lp-carousel__dot--parent {
+  background: #c8e6c9;
+}
+
+.lp-carousel__dot--parent.lp-carousel__dot--active {
+  background: #43a047;
+}
+
+/* ---- 申請ボタン（モック用アクティブ状態） ---- */
+.lp-mock-btn-active {
+  opacity: 1 !important;
+  cursor: default !important;
+}
+
+/* ---- 申請カードのハイライト（親画面） ---- */
+.lp-mock-submission-highlight {
+  border-left-color: #43a047 !important;
+  background: #f1f8f1 !important;
+}
+
+/* ---- ポイント獲得バッジ ---- */
+.lp-mock-badge-gained {
+  background: linear-gradient(135deg, #a5d6a7, #66bb6a) !important;
+  box-shadow: 0 6px 16px rgba(102, 187, 106, 0.4) !important;
+  color: #1b5e20 !important;
+}
+
+.lp-mock-gained {
+  display: inline-block;
+  background: #e8f5e9;
+  color: #2e7d32;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 4px 12px;
+  border-radius: 99px;
+  margin-bottom: 10px;
+  border: 1px solid #a5d6a7;
+}
+
 /* ---- モック：ご褒美交換画面 ---- */
 .lp-mock-points-line {
   font-size: 11px;
