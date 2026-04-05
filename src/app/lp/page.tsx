@@ -90,6 +90,41 @@ export default function LpPage() {
         </div>
       </section>
 
+      {/* 差別化 */}
+      <section className="lp-section lp-section--dark">
+        <div className="lp-section__inner">
+          <p className="lp-section__label lp-section__label--light">既存の解決策との違い</p>
+          <h2 className="lp-section__title lp-section__title--light">
+            禁止するアプリは、
+            <br />
+            たくさんある。
+          </h2>
+          <div className="lp-comparison">
+            <div className="lp-comparison__col lp-comparison__col--other">
+              <p className="lp-comparison__col-label">既存のアプローチ</p>
+              <ul>
+                <li>⛔ フィルタリングで見せない</li>
+                <li>⛔ 時間制限でやめさせる</li>
+                <li>⛔ デバイスを取り上げる</li>
+                <li>⛔ 子供は不満を抱えたまま</li>
+              </ul>
+            </div>
+            <div className="lp-comparison__col lp-comparison__col--ours">
+              <p className="lp-comparison__col-label">おてつだいポイント</p>
+              <ul>
+                <li>✅ 子供が自分から家族に向き合う</li>
+                <li>✅ 承認欲求を家族の中で満たす</li>
+                <li>✅ 頑張りを親が毎回「認める」</li>
+                <li>✅ 離れる理由を子供自身が持てる</li>
+              </ul>
+            </div>
+          </div>
+          <p className="lp-comparison__note">
+            子供が自分から家族に向き合う仕組みを作ったのは、ここだけです。
+          </p>
+        </div>
+      </section>
+
       {/* 解決策 */}
       <section className="lp-section">
         <div className="lp-section__inner">
