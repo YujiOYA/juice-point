@@ -1029,6 +1029,73 @@ body {
   font-size: 18px;
 }
 
+/* ---- なぜアプリなのか ---- */
+.lp-why__lead {
+  font-size: 20px;
+  margin: 0 0 32px;
+  color: #4a4a4a;
+}
+
+.lp-why-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 36px;
+  text-align: left;
+}
+
+.lp-why-card {
+  border-radius: 16px;
+  padding: 24px 20px;
+}
+
+.lp-why-card--analog {
+  background: #f5f5f5;
+  border: 1px solid #e0e0e0;
+}
+
+.lp-why-card--app {
+  background: #fff8f0;
+  border: 2px solid #ffb300;
+}
+
+.lp-why-card__label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  margin: 0 0 14px;
+  color: #9e9e9e;
+}
+
+.lp-why-card--app .lp-why-card__label {
+  color: #f57c00;
+}
+
+.lp-why-card ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 14px;
+  color: #4a4a4a;
+  line-height: 1.6;
+}
+
+.lp-why__note {
+  font-size: 16px;
+  color: #4a4a4a;
+  background: #fff;
+  border-left: 4px solid #ff9800;
+  border-radius: 0 12px 12px 0;
+  padding: 16px 20px;
+  margin: 0;
+  text-align: left;
+  max-width: 620px;
+  margin: 0 auto;
+}
+
 /* ---- 差別化セクション ---- */
 .lp-section--dark {
   background: #1a1a2e;
@@ -1128,6 +1195,10 @@ body {
   }
 
   .lp-comparison {
+    grid-template-columns: 1fr;
+  }
+
+  .lp-why-grid {
     grid-template-columns: 1fr;
   }
 
