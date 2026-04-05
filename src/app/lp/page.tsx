@@ -38,20 +38,34 @@ export default function LpPage() {
           <a href="/" className="lp-btn lp-btn--primary lp-btn--lg">
             無料で始める →
           </a>
-          <p className="lp-hero__note">登録不要・ずっと無料</p>
+          <div className="lp-hero__trust">
+            <span>✓ 登録不要</span>
+            <span className="lp-hero__trust-sep" aria-hidden="true" />
+            <span>✓ 完全無料</span>
+            <span className="lp-hero__trust-sep" aria-hidden="true" />
+            <span>✓ ブラウザで即使える</span>
+          </div>
         </div>
         <div className="lp-hero__visual" aria-hidden="true">
-          <div className="lp-hero__scene">
-            <div className="lp-scene-bubble lp-scene-bubble--child">
-              🧒 「お皿洗いしたよ！申請する」
+          <div className="lp-hero__scene-card">
+            <div className="lp-hero__scene-header">
+              <span className="lp-hero__scene-dot" />
+              <span className="lp-hero__scene-dot" />
+              <span className="lp-hero__scene-dot" />
+              <span className="lp-hero__scene-title">おてつだいポイント</span>
             </div>
-            <div className="lp-scene-arrow">↓</div>
-            <div className="lp-scene-bubble lp-scene-bubble--parent">
-              👩 「確認！承認します ✅」
-            </div>
-            <div className="lp-scene-arrow">↓</div>
-            <div className="lp-scene-reward">
-              🧃 ポイントで念願のジュース！
+            <div className="lp-hero__scene">
+              <div className="lp-scene-bubble lp-scene-bubble--child">
+                🧒 「お皿洗いしたよ！申請する」
+              </div>
+              <div className="lp-scene-arrow">↓</div>
+              <div className="lp-scene-bubble lp-scene-bubble--parent">
+                👩 「確認！承認します ✅」
+              </div>
+              <div className="lp-scene-arrow">↓</div>
+              <div className="lp-scene-reward">
+                🧃 ポイントで念願のジュース！
+              </div>
             </div>
           </div>
         </div>
