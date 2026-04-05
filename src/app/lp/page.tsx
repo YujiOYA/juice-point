@@ -1,7 +1,7 @@
 export const metadata = {
-  title: "おてつだいポイント | お手伝い、自分からやりたがる子に。",
+  title: "おてつだいポイント | いいねより、ありがとう。",
   description:
-    "子供が自分でお手伝いを申請してポイントを貯め、ご褒美と交換できる家族向けアプリ。親の承認制で安心、子供のリクエスト機能で自主性も育てます。",
+    "子供の承認欲求を、家族の中で満たす。お手伝いの申請・承認を通じて、スクリーンの外に子供の居場所を作る家族向けアプリ。",
 };
 
 export default function LpPage() {
@@ -22,18 +22,16 @@ export default function LpPage() {
         <div className="lp-hero__inner">
           <p className="lp-hero__eyebrow">家族向けお手伝い管理アプリ</p>
           <h1 className="lp-hero__title">
-            お手伝い、
+            いいねより、
             <br />
-            自分からやりたがる
-            <br />
-            子に。
+            ありがとう。
           </h1>
           <p className="lp-hero__sub">
-            やりたいお手伝いを子供が自分で申請。
+            子供の承認欲求を、家族の中で満たす。
             <br />
-            親が確認・承認してポイント付与。
+            お手伝いの申請・承認を通じて、
             <br />
-            貯まったらご褒美と交換。
+            スクリーンの外に子供の居場所を作る。
           </p>
           <a href="/" className="lp-btn lp-btn--primary lp-btn--lg">
             無料で始める →
@@ -60,30 +58,32 @@ export default function LpPage() {
       {/* 課題提起 */}
       <section className="lp-section lp-section--gray">
         <div className="lp-section__inner">
-          <p className="lp-section__label">こんな悩み、ありませんか？</p>
+          <p className="lp-section__label">子育ての、リアルな悩み</p>
           <h2 className="lp-section__title">
-            お手伝いって、続かないですよね。
+            子供の承認欲求が、
+            <br />
+            スクリーンに吸い取られていく。
           </h2>
           <ul className="lp-problems">
             <li className="lp-problem">
-              <span className="lp-problem__icon">😮‍💨</span>
+              <span className="lp-problem__icon">📱</span>
               <div>
-                <strong>「お手伝いして」と言っても動かない</strong>
-                <p>やる気が続かず、毎回声がけが必要になる。</p>
+                <strong>YouTube・SNS・ゲームが子供の時間を奪う</strong>
+                <p>「いいね」や通知で承認欲求が満たされ、家族との時間が減っていく。</p>
               </div>
             </li>
             <li className="lp-problem">
-              <span className="lp-problem__icon">📝</span>
+              <span className="lp-problem__icon">😶</span>
               <div>
-                <strong>紙や口約束で管理が続かない</strong>
-                <p>シールを貼ったり、ノートに書いたりしても気づけば흐지부지。</p>
+                <strong>「やめなさい」だけでは解決しない</strong>
+                <p>禁止するだけでは反発を生む。子供が自分から離れられる理由が必要。</p>
               </div>
             </li>
             <li className="lp-problem">
-              <span className="lp-problem__icon">🤔</span>
+              <span className="lp-problem__icon">🏠</span>
               <div>
-                <strong>何をどれだけやればいいかわからない</strong>
-                <p>ゴールが見えないと、子供のモチベーションも上がらない。</p>
+                <strong>家族の中に「認められる体験」が少ない</strong>
+                <p>頑張りを見てもらえる場がないと、子供は画面の中に居場所を求める。</p>
               </div>
             </li>
           </ul>
@@ -196,9 +196,9 @@ export default function LpPage() {
       <section className="lp-cta">
         <div className="lp-section__inner">
           <h2 className="lp-cta__title">
-            小さなモチベーションを、
+            子供の承認欲求の行き先を、
             <br />
-            良い習慣に変えよう。
+            家族の中につくろう。
           </h2>
           <p className="lp-cta__sub">
             登録不要。ブラウザからすぐ使えます。
