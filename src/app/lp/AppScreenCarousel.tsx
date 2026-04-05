@@ -68,6 +68,39 @@ function Screen3() {
   );
 }
 
+function Screen4() {
+  return (
+    <div className="lp-app-mock">
+      <h1 className="page-title">⭐ ポイント管理アプリ ⭐</h1>
+      <div className="card">
+        <div className="task-form">
+          <div className="tabs__list-wrap">
+            <div className="tabs__list">
+              <button className="tabs__tab">✅ タスク完了</button>
+              <button className="tabs__tab">📝 新規</button>
+              <button className="tabs__tab tabs__tab--active">🎁 交換</button>
+            </div>
+          </div>
+          <p className="lp-mock-points-line">
+            💰 現在のポイント: <strong>12pt</strong>
+          </p>
+          <div className="lp-mock-reward-list">
+            <button className="approve-button" disabled>
+              🧃 ジュース（5pt）と交換する
+            </button>
+            <button className="approve-button" disabled>
+              🍕 ピザの日（10pt）と交換する
+            </button>
+            <button className="approve-button lp-mock-reward-disabled" disabled>
+              🎮 ゲーム30分（15pt）と交換する
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const SCREENS = [
   {
     label: "① 子供がポイントを確認",
@@ -83,6 +116,11 @@ const SCREENS = [
     label: "③ 親が確認して承認",
     sub: "確認してボタンを押すだけ。ポイントが即加算",
     content: <Screen3 />,
+  },
+  {
+    label: "④ ご褒美と交換",
+    sub: "貯まったポイントで好きなご褒美と交換できる",
+    content: <Screen4 />,
   },
 ];
 
