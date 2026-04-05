@@ -1,7 +1,7 @@
 export const metadata = {
-  title: "おてつだいポイント | いいねより、ありがとう。",
+  title: "おてつだいポイント | スクリーンも、リアルも、どちらも楽しめる子に。",
   description:
-    "子供の承認欲求を、家族の中で満たす。お手伝いの申請・承認を通じて、スクリーンの外に子供の居場所を作る家族向けアプリ。",
+    "SNSもゲームもあっていい。でもリアルにも居場所を。お手伝いの申請・承認を通じて、家族の中にも「認められる体験」を作る家族向けアプリ。",
 };
 
 export default function LpPage() {
@@ -22,16 +22,18 @@ export default function LpPage() {
         <div className="lp-hero__inner">
           <p className="lp-hero__eyebrow">家族向けお手伝い管理アプリ</p>
           <h1 className="lp-hero__title">
-            いいねより、
+            スクリーンも、
             <br />
-            ありがとう。
+            リアルも、
+            <br />
+            どちらも楽しめる子に。
           </h1>
           <p className="lp-hero__sub">
-            子供の承認欲求を、家族の中で満たす。
+            SNSもゲームも、あっていい。
             <br />
-            お手伝いの申請・承認を通じて、
+            でも家族の中にも「認められる場所」を。
             <br />
-            スクリーンの外に子供の居場所を作る。
+            お手伝い申請・承認で、リアルを充実させる。
           </p>
           <a href="/" className="lp-btn lp-btn--primary lp-btn--lg">
             無料で始める →
@@ -60,30 +62,30 @@ export default function LpPage() {
         <div className="lp-section__inner">
           <p className="lp-section__label">子育ての、リアルな悩み</p>
           <h2 className="lp-section__title">
-            子供の承認欲求が、
+            スクリーンは楽しい。
             <br />
-            スクリーンに吸い取られていく。
+            でもリアルが薄くなっていく。
           </h2>
           <ul className="lp-problems">
             <li className="lp-problem">
-              <span className="lp-problem__icon">📱</span>
+              <span className="lp-problem__icon">🎮</span>
               <div>
-                <strong>YouTube・SNS・ゲームが子供の時間を奪う</strong>
-                <p>「いいね」や通知で承認欲求が満たされ、家族との時間が減っていく。</p>
+                <strong>SNS・ゲームは悪くない。でもバランスが難しい</strong>
+                <p>友達とのコミュニケーションや創造の場として優れている一方、気づけば一日中スクリーンの前に。</p>
               </div>
             </li>
             <li className="lp-problem">
               <span className="lp-problem__icon">😶</span>
               <div>
                 <strong>「やめなさい」だけでは解決しない</strong>
-                <p>禁止するだけでは反発を生む。子供が自分から離れられる理由が必要。</p>
+                <p>禁止するだけでは反発を生む。リアルに戻ってくる理由を子供自身が持てることが大切。</p>
               </div>
             </li>
             <li className="lp-problem">
               <span className="lp-problem__icon">🏠</span>
               <div>
                 <strong>家族の中に「認められる体験」が少ない</strong>
-                <p>頑張りを見てもらえる場がないと、子供は画面の中に居場所を求める。</p>
+                <p>スクリーンの外にも頑張りを見てもらえる場があれば、子供は自然にバランスをとれるようになる。</p>
               </div>
             </li>
           </ul>
@@ -95,7 +97,7 @@ export default function LpPage() {
         <div className="lp-section__inner">
           <p className="lp-section__label lp-section__label--light">既存の解決策との違い</p>
           <h2 className="lp-section__title lp-section__title--light">
-            禁止するアプリは、
+            どちらかを諦めるアプリは、
             <br />
             たくさんある。
           </h2>
@@ -105,22 +107,22 @@ export default function LpPage() {
               <ul>
                 <li>⛔ フィルタリングで見せない</li>
                 <li>⛔ 時間制限でやめさせる</li>
-                <li>⛔ デバイスを取り上げる</li>
+                <li>⛔ スクリーンを悪者にする</li>
                 <li>⛔ 子供は不満を抱えたまま</li>
               </ul>
             </div>
             <div className="lp-comparison__col lp-comparison__col--ours">
               <p className="lp-comparison__col-label">おてつだいポイント</p>
               <ul>
-                <li>✅ 子供が自分から家族に向き合う</li>
-                <li>✅ 承認欲求を家族の中で満たす</li>
+                <li>✅ スクリーンもリアルも否定しない</li>
+                <li>✅ リアルに戻ってくる理由を作る</li>
                 <li>✅ 頑張りを親が毎回「認める」</li>
-                <li>✅ 離れる理由を子供自身が持てる</li>
+                <li>✅ 子供が自分でバランスをとれるようになる</li>
               </ul>
             </div>
           </div>
           <p className="lp-comparison__note">
-            子供が自分から家族に向き合う仕組みを作ったのは、ここだけです。
+            スクリーンとリアルを両立する仕組みを作ったのは、ここだけです。
           </p>
         </div>
       </section>
@@ -231,9 +233,9 @@ export default function LpPage() {
       <section className="lp-cta">
         <div className="lp-section__inner">
           <h2 className="lp-cta__title">
-            子供の承認欲求の行き先を、
+            スクリーンの外にも、
             <br />
-            家族の中につくろう。
+            子供の居場所をつくろう。
           </h2>
           <p className="lp-cta__sub">
             登録不要。ブラウザからすぐ使えます。
