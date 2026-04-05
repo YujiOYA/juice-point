@@ -795,34 +795,17 @@ body {
   text-align: center;
 }
 
-.lp-hero__scene-card {
-  display: inline-block;
-  background: #fff;
-  border-radius: 20px;
-  box-shadow: 0 8px 40px rgba(255, 152, 0, 0.18), 0 2px 10px rgba(0,0,0,0.06);
-  padding: 0 0 20px;
-  overflow: hidden;
-  text-align: left;
-}
-
-.lp-hero__scene-header {
-  background: #fff3e0;
-  border-bottom: 1px solid #ffe0b2;
-  padding: 10px 16px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
+/* scene-dot / scene-title はカルーセルchrome内でも使用 */
 .lp-hero__scene-dot {
   display: inline-block;
   width: 10px;
   height: 10px;
   border-radius: 50%;
   background: #ffcc80;
+  flex-shrink: 0;
 }
 
-.lp-hero__scene-dot:first-child { background: #ef9a9a; }
+.lp-hero__scene-dot:nth-child(1) { background: #ef9a9a; }
 .lp-hero__scene-dot:nth-child(2) { background: #fff59d; }
 .lp-hero__scene-dot:nth-child(3) { background: #a5d6a7; }
 
@@ -833,46 +816,227 @@ body {
   margin-left: 6px;
 }
 
-.lp-hero__scene {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  padding: 20px 24px 4px;
+/* ---- カルーセル ---- */
+.lp-carousel {
+  display: inline-block;
+  width: 100%;
+  max-width: 300px;
+  text-align: left;
 }
 
-.lp-scene-bubble {
+.lp-carousel__window {
   background: #fff;
-  border-radius: 16px;
-  padding: 14px 20px;
-  font-size: 15px;
-  font-weight: 600;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-  max-width: 320px;
+  border-radius: 20px;
+  box-shadow: 0 8px 40px rgba(255, 152, 0, 0.18), 0 2px 10px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  touch-action: pan-y;
+  user-select: none;
 }
 
-.lp-scene-bubble--child {
-  border-left: 4px solid #ff9800;
+.lp-carousel__chrome {
+  background: #fff3e0;
+  border-bottom: 1px solid #ffe0b2;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
-.lp-scene-bubble--parent {
-  border-left: 4px solid #66bb6a;
+.lp-carousel__body {
+  overflow: hidden;
 }
 
-.lp-scene-arrow {
+.lp-carousel__track {
+  display: flex;
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform;
+}
+
+.lp-carousel__slide {
+  flex: 0 0 100%;
+  width: 100%;
+}
+
+.lp-carousel__footer {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.lp-carousel__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.lp-carousel__meta strong {
+  font-size: 13px;
+  color: #2d2d2d;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lp-carousel__meta span {
+  font-size: 11px;
+  color: #757575;
+  line-height: 1.4;
+}
+
+.lp-carousel__dots {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.lp-carousel__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #e0e0e0;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.lp-carousel__dot--active {
+  background: #ff9800;
+  transform: scale(1.4);
+}
+
+/* ---- アプリモック (カルーセル内で実アプリCSSを縮小表示) ---- */
+.lp-app-mock {
+  background: #fff8f0;
+  padding: 8px 10px 10px;
+}
+
+.lp-app-mock .page-title {
+  font-size: 13px;
+  margin: 8px 0 10px;
+  text-align: center;
+}
+
+.lp-app-mock .card {
+  padding: 12px 10px;
+  margin-bottom: 0;
+  border-radius: 12px;
+}
+
+.lp-app-mock .user-info {
+  text-align: center;
+}
+
+.lp-app-mock .user-name {
+  font-size: 12px;
+  margin: 0 0 10px;
+}
+
+.lp-app-mock .points-badge {
+  font-size: 22px;
+  padding: 8px 18px;
+  margin-bottom: 10px;
+}
+
+.lp-app-mock .points-label {
+  font-size: 12px;
+}
+
+.lp-app-mock .logout-button {
+  font-size: 11px;
+  padding: 6px 14px;
+  cursor: default;
+}
+
+.lp-app-mock .task-form {
+  gap: 6px;
+}
+
+.lp-app-mock .task-label {
+  font-size: 11px;
+  margin-bottom: 4px;
+}
+
+.lp-mock-label-top {
+  margin-top: 8px !important;
+}
+
+.lp-app-mock .tabs__list {
+  margin-bottom: 10px;
+  overflow: hidden;
+  border-bottom-width: 1px;
+  gap: 0;
+}
+
+.lp-app-mock .tabs__tab {
+  font-size: 9px;
+  padding: 5px 6px;
+  border-radius: 6px 6px 0 0;
+}
+
+/* モック用セレクト */
+.lp-mock-select {
+  width: 100%;
+  padding: 8px 10px;
+  font-size: 11px;
+  border-radius: 10px;
+  border: 2px solid #ffcc80;
+  background: #fff8f0;
+  color: #2d2d2d;
+  text-align: center;
+}
+
+.lp-app-mock .input {
+  font-size: 11px;
+  padding: 8px 10px;
+}
+
+.lp-app-mock .input.highlight {
   font-size: 20px;
-  color: #bdbdbd;
+  padding: 6px 10px;
 }
 
-.lp-scene-reward {
-  background: linear-gradient(135deg, #fff9c4, #fff3e0);
-  border: 2px solid #ffd54f;
-  border-radius: 16px;
-  padding: 14px 24px;
-  font-size: 16px;
-  font-weight: 700;
-  color: #e65100;
+.lp-app-mock .submit-button {
+  font-size: 12px;
+  padding: 9px;
+  cursor: default;
 }
+
+.lp-mock-btn-top {
+  margin-top: 8px !important;
+}
+
+.lp-app-mock .manager-title {
+  font-size: 12px;
+  margin: 0 0 10px;
+}
+
+.lp-app-mock .submission-card {
+  padding: 10px;
+  border-radius: 12px;
+}
+
+.lp-app-mock .submission-card__task {
+  font-size: 12px;
+  margin: 0 0 6px;
+}
+
+.lp-app-mock .submission-card__meta {
+  font-size: 10px;
+  margin-bottom: 10px;
+}
+
+.lp-app-mock .approve-button,
+.lp-app-mock .disapprove-button {
+  padding: 7px 8px;
+  font-size: 10px;
+  cursor: default;
+}
+
 
 /* ---- セクション共通 ---- */
 .lp-section {
