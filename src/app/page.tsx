@@ -5,7 +5,12 @@ import { getSessionUser } from "@lib/authGuard";
 
 export const dynamic = "force-dynamic";
 
-export default async function Page() {
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<{ next?: string }>;
+}) {
+  const { next } = await searchParams;
   const users = await getUsers();
 
   if (users.length === 0) {
@@ -18,5 +23,5 @@ export default async function Page() {
     ? await Promise.all([getTasks(), getSubmissions(), getRewards()])
     : [[], [], []];
 
-  return <PageClient users={users} tasks={tasks} submissions={submissions} rewards={rewards} sessionUser={sessionUser ?? null} />;
+  return <PageClient users={users} tasks={tasks} submissions={submissions} rewards={rewards} sessionUser={sessionUser ?? null} next={next ?? null} />;
 }

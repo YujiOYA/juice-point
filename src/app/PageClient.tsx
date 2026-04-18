@@ -18,9 +18,10 @@ interface Props {
   submissions: Submission[];
   rewards: Reward[];
   sessionUser: User | null;
+  next?: string | null;
 }
 
-export default function PageClient({ users, tasks, submissions: initialSubmissions, rewards, sessionUser }: Props) {
+export default function PageClient({ users, tasks, submissions: initialSubmissions, rewards, sessionUser, next }: Props) {
   const [loggedInUser, setLoggedInUser] = useState<User | null>(sessionUser);
   const { data: submissions = [] } = useSubmissions(initialSubmissions);
 
@@ -35,6 +36,7 @@ export default function PageClient({ users, tasks, submissions: initialSubmissio
           loggedInUser={loggedInUser}
           setLoggedInUser={setLoggedInUser}
           submissions={submissions}
+          next={next}
         />
       </Card>
       {loggedInUser && !isAdmin && (
