@@ -4,6 +4,10 @@ import { toast } from "sonner";
 import { useUsers, useUserMutations } from "@hook/queries/useUsers";
 import { User } from "@type/user";
 import { AUTHORITY } from "@const/constDefinition";
+import { LABELS } from "@const/labels";
+
+const T = LABELS.toast;
+const C = LABELS.common;
 
 const emptyForm: { user: string; pin: string; authority: string } = { user: "", pin: "", authority: AUTHORITY.user };
 const emptyEditForm: { user: string; pin: string; authority: string } = { user: "", pin: "", authority: AUTHORITY.user };
@@ -42,9 +46,9 @@ export function useUserManager(initialUsers: User[]) {
     try {
       await create.mutateAsync(form);
       setForm(emptyForm);
-      toast.success("ユーザーを追加しました");
+      toast.success(T.userAddSuccess);
     } catch (e) {
-      toast.error(`追加に失敗しました: ${e}`);
+      toast.error(T.userAddError(e));
     } finally {
       setIsLoading(false);
     }
@@ -61,18 +65,18 @@ export function useUserManager(initialUsers: User[]) {
     try {
       await update.mutateAsync({ id, ...editForm });
       setEditingId(null);
-      toast.success("ユーザーを更新しました");
+      toast.success(T.userEditSuccess);
     } catch (e) {
-      toast.error(`更新に失敗しました: ${e}`);
+      toast.error(T.userEditError(e));
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleDelete = (id: string) => {
-    toast("このユーザーを削除しますか？", {
-      action: { label: "削除", onClick: () => performDelete(id) },
-      cancel: { label: "キャンセル", onClick: () => {} },
+    toast(T.userDeleteConfirm, {
+      action: { label: C.delete, onClick: () => performDelete(id) },
+      cancel: { label: C.cancel, onClick: () => {} },
     });
   };
 
@@ -80,9 +84,9 @@ export function useUserManager(initialUsers: User[]) {
     setIsLoading(true);
     try {
       await remove.mutateAsync(id);
-      toast.success("ユーザーを削除しました");
+      toast.success(T.userDeleteSuccess);
     } catch {
-      toast.error("削除に失敗しました");
+      toast.error(T.deleteError);
     } finally {
       setIsLoading(false);
     }

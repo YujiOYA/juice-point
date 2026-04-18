@@ -9,6 +9,9 @@ import { Submission } from "@type/submission";
 import { Task } from "@type/task";
 import { User } from "@type/user";
 import { SUBMISSION_STATUS } from "@const/constDefinition";
+import { LABELS } from "@const/labels";
+
+const T = LABELS.toast;
 
 export function useTaskForm(
   user: User,
@@ -45,7 +48,7 @@ export function useTaskForm(
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!selectedTask) {
-      toast.warning("タスクを選択してください");
+      toast.warning(T.taskRequired);
       return;
     }
     setIsSubmitting(true);
@@ -57,9 +60,9 @@ export function useTaskForm(
         whoDidName: user.user,
       });
       setSubmittedTaskIds((prev) => new Set(prev).add(selectedTask.id));
-      toast.success("申請しました！🎉");
+      toast.success(T.submitSuccess);
     } catch {
-      toast.error("エラーが発生しました");
+      toast.error(T.submitError);
     } finally {
       setIsSubmitting(false);
     }
@@ -70,9 +73,9 @@ export function useTaskForm(
     setIsSubmitting(true);
     try {
       await mutations.usePoints.mutateAsync({ userId: user.id, point: Number(reward.point) });
-      toast.success(`🎁 ${reward.name}と交換しました！`);
+      toast.success(T.exchangeSuccess(reward.name));
     } catch {
-      toast.error("交換に失敗しました");
+      toast.error(T.exchangeError);
     } finally {
       setIsSubmitting(false);
     }
@@ -80,7 +83,7 @@ export function useTaskForm(
 
   const handleRequestSubmit = async () => {
     if (!requestTaskName.trim() || !requestPoint) {
-      toast.warning("タスク名とポイントを入力してください");
+      toast.warning(T.taskNameRequired);
       return;
     }
     setIsRequesting(true);
@@ -107,9 +110,9 @@ export function useTaskForm(
       setRequestTaskName("");
       setRequestPoint("");
       setRegisterTaskAlso(false);
-      toast.success(registerTaskAlso ? "申請とタスク登録リクエストを送りました！" : "申請しました！");
+      toast.success(registerTaskAlso ? T.requestWithTaskSuccess : T.requestSuccess);
     } catch {
-      toast.error("申請に失敗しました");
+      toast.error(T.requestError);
     } finally {
       setIsRequesting(false);
     }

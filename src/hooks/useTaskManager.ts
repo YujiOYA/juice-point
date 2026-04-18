@@ -3,6 +3,10 @@ import { toast } from "sonner";
 
 import { useTasks, useTaskMutations } from "@hook/queries/useTasks";
 import { Task } from "@type/task";
+import { LABELS } from "@const/labels";
+
+const T = LABELS.toast;
+const C = LABELS.common;
 
 const emptyForm = { task: "", point: "", whose: "" };
 
@@ -55,9 +59,9 @@ export function useTaskManager(initialTasks: Task[]) {
     try {
       await create.mutateAsync(form);
       setForm(emptyForm);
-      toast.success("タスクを追加しました");
+      toast.success(T.taskAddSuccess);
     } catch (e) {
-      toast.error(`追加に失敗しました: ${e}`);
+      toast.error(T.taskAddError(e));
     } finally {
       setIsLoading(false);
     }
@@ -73,18 +77,18 @@ export function useTaskManager(initialTasks: Task[]) {
     try {
       await update.mutateAsync({ id, ...editForm });
       setEditingId(null);
-      toast.success("タスクを更新しました");
+      toast.success(T.taskEditSuccess);
     } catch (e) {
-      toast.error(`更新に失敗しました: ${e}`);
+      toast.error(T.taskEditError(e));
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleDelete = (id: string) => {
-    toast("このタスクを削除しますか？", {
-      action: { label: "削除", onClick: () => performDelete(id) },
-      cancel: { label: "キャンセル", onClick: () => {} },
+    toast(T.taskDeleteConfirm, {
+      action: { label: C.delete, onClick: () => performDelete(id) },
+      cancel: { label: C.cancel, onClick: () => {} },
     });
   };
 
@@ -92,9 +96,9 @@ export function useTaskManager(initialTasks: Task[]) {
     setIsLoading(true);
     try {
       await remove.mutateAsync(id);
-      toast.success("タスクを削除しました");
+      toast.success(T.taskDeleteSuccess);
     } catch {
-      toast.error("削除に失敗しました");
+      toast.error(T.deleteError);
     } finally {
       setIsLoading(false);
     }

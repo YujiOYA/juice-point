@@ -6,6 +6,7 @@ import { User } from "@type/user";
 import { API } from "@const/apiEndpoint";
 import { AUTHORITY, SUBMISSION_STATUS, sessionStorageKey } from "@const/constDefinition";
 import { ROUTES } from "@const/routesConfig";
+import { LABELS } from "@const/labels";
 
 const calcUserPoint = (userId: string, submissions: Submission[]): number =>
   submissions
@@ -77,7 +78,7 @@ export function useLogin({ loggedInUser, setLoggedInUser, submissions }: Args) {
     if (!selectedId || !pin) return;
     setError("");
     const ok = await loginWithPin(selectedId, pin);
-    if (!ok) setError("PINが違います");
+    if (!ok) setError(LABELS.login.errorWrongPin);
   };
 
   const handleLogout = async () => {

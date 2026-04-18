@@ -9,6 +9,10 @@ import RewardCard from "@molecule/RewardCard";
 import { useRewardManager } from "@hook/useRewardManager";
 import { Reward } from "@type/reward";
 import { User } from "@type/user";
+import { LABELS } from "@const/labels";
+
+const L = LABELS.rewardManager;
+const C = LABELS.common;
 
 interface Props {
   users: User[];
@@ -20,72 +24,61 @@ export default function RewardManagerClient({ users, initialRewards }: Props) {
 
   const {
     rewards,
-    sortKey,
-    sortDir,
-    handleSort,
-    sortKey2,
-    sortDir2,
-    handleSort2,
-    filterWhose,
-    setFilterWhose,
-    form,
-    setForm,
-    editingId,
-    setEditingId,
-    editForm,
-    setEditForm,
+    sortKey, sortDir, handleSort,
+    sortKey2, sortDir2, handleSort2,
+    filterWhose, setFilterWhose,
+    form, setForm,
+    editingId, setEditingId,
+    editForm, setEditForm,
     isLoading,
-    handleCreate,
-    startEdit,
-    handleUpdate,
-    handleDelete,
+    handleCreate, startEdit, handleUpdate, handleDelete,
   } = useRewardManager(initialRewards);
 
   type SortKey = "name" | "point";
   const SORT_OPTIONS: { value: SortKey; label: string }[] = [
-    { value: "name", label: "報酬名" },
-    { value: "point", label: "ポイント" },
+    { value: "name",  label: L.sortByName },
+    { value: "point", label: L.sortByPoint },
   ];
 
   return (
     <div>
       {/* 追加フォーム */}
       <Card variant="add" className="task-add-card">
-        <h2 style={{ marginBottom: "1rem" }}>報酬を追加</h2>
+        <h2 style={{ marginBottom: "1rem" }}>{L.headingAdd}</h2>
         <form onSubmit={handleCreate} className="task-add-form">
           <TextInput
-            placeholder="報酬名（例: ジュース）"
+            placeholder={L.placeholderName}
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
           />
           <TextInput
-            placeholder="必要ポイント"
+            placeholder={L.placeholderPoint}
             type="number"
             value={form.point}
             onChange={(e) => setForm({ ...form, point: e.target.value })}
             style={{ maxWidth: "150px" }}
           />
           <SelectInput value={form.whose} onChange={(e) => setForm({ ...form, whose: e.target.value })}>
-            <option value="" disabled>担当者を選択</option>
+            <option value="" disabled>{C.selectPerson}</option>
             {users.map((u) => (
               <option key={u.id} value={u.id}>{u.user}</option>
             ))}
           </SelectInput>
           <Button type="submit" variant="primary" disabled={isLoading}>
-            追加
+            {C.add}
           </Button>
         </form>
       </Card>
 
       {/* 報酬一覧 */}
       <section>
-        <h2 style={{ marginBottom: "1rem" }}>報酬一覧</h2>
+        <h2 style={{ marginBottom: "1rem" }}>{L.headingList}</h2>
 
         {/* フィルター */}
         <div className="task-filter-bar">
-          <span className="task-sort-label">担当者</span>
+          <span className="task-sort-label">{C.filterPerson}</span>
           <SelectInput value={filterWhose} onChange={(e) => setFilterWhose(e.target.value)}>
-            <option value="">全員</option>
+            <option value="">{C.filterAll}</option>
             {users.map((u) => (
               <option key={u.id} value={u.id}>{u.user}</option>
             ))}
@@ -94,30 +87,30 @@ export default function RewardManagerClient({ users, initialRewards }: Props) {
 
         {/* スマホ: ソート */}
         <div className="task-sort-bar">
-          <span className="task-sort-label">第1</span>
+          <span className="task-sort-label">{C.sortFirst}</span>
           <SelectInput value={sortKey} onChange={(e) => handleSort(e.target.value as SortKey)}>
             {SORT_OPTIONS.map((o) => (
               <option key={o.value} value={o.value}>{o.label}</option>
             ))}
           </SelectInput>
           <Button variant="logout" onClick={() => handleSort(sortKey)}>
-            {sortDir === "asc" ? "↑" : "↓"}
+            {sortDir === "asc" ? C.sortAsc : C.sortDesc}
           </Button>
         </div>
         <div className="task-sort-bar">
-          <span className="task-sort-label">第2</span>
+          <span className="task-sort-label">{C.sortSecond}</span>
           <SelectInput
             value={sortKey2 ?? ""}
             onChange={(e) => handleSort2((e.target.value || null) as SortKey | null)}
           >
-            <option value="">なし</option>
+            <option value="">{C.sortNone}</option>
             {SORT_OPTIONS.filter((o) => o.value !== sortKey).map((o) => (
               <option key={o.value} value={o.value}>{o.label}</option>
             ))}
           </SelectInput>
           {sortKey2 && (
             <Button variant="logout" onClick={() => handleSort2(sortKey2)}>
-              {sortDir2 === "asc" ? "↑" : "↓"}
+              {sortDir2 === "asc" ? C.sortAsc : C.sortDesc}
             </Button>
           )}
         </div>
@@ -154,9 +147,9 @@ export default function RewardManagerClient({ users, initialRewards }: Props) {
         {/* PC: テーブル */}
         <AdminTable
           columns={[
-            { key: "name",    label: "報酬名",      sortable: true },
-            { key: "point",   label: "必要ポイント", sortable: true },
-            { key: "whose",   label: "担当者" },
+            { key: "name",    label: L.colName,   sortable: true },
+            { key: "point",   label: L.colPoint,  sortable: true },
+            { key: "whose",   label: L.colPerson },
             { key: "actions", label: "" },
           ]}
           sortKey={sortKey}
@@ -192,8 +185,8 @@ export default function RewardManagerClient({ users, initialRewards }: Props) {
                     </SelectInput>
                   </td>
                   <td className="task-table__actions">
-                    <Button variant="approve" disabled={isLoading} onClick={() => handleUpdate(r.id)}>保存</Button>
-                    <Button variant="logout" onClick={() => setEditingId(null)}>キャンセル</Button>
+                    <Button variant="approve" disabled={isLoading} onClick={() => handleUpdate(r.id)}>{C.save}</Button>
+                    <Button variant="logout" onClick={() => setEditingId(null)}>{C.cancel}</Button>
                   </td>
                 </>
               ) : (
@@ -202,8 +195,8 @@ export default function RewardManagerClient({ users, initialRewards }: Props) {
                   <td>{r.point}pt</td>
                   <td>{userName(r.whose)}</td>
                   <td className="task-table__actions">
-                    <Button variant="primary" disabled={isLoading} onClick={() => startEdit(r)}>編集</Button>
-                    <Button variant="disapprove" disabled={isLoading} onClick={() => handleDelete(r.id)}>削除</Button>
+                    <Button variant="primary" disabled={isLoading} onClick={() => startEdit(r)}>{C.edit}</Button>
+                    <Button variant="disapprove" disabled={isLoading} onClick={() => handleDelete(r.id)}>{C.delete}</Button>
                   </td>
                 </>
               )}

@@ -3,6 +3,10 @@ import { toast } from "sonner";
 
 import { useRewards, useRewardMutations } from "@hook/queries/useRewards";
 import { Reward } from "@type/reward";
+import { LABELS } from "@const/labels";
+
+const T = LABELS.toast;
+const C = LABELS.common;
 
 const emptyForm = { name: "", point: "", whose: "" };
 
@@ -55,9 +59,9 @@ export function useRewardManager(initialRewards: Reward[]) {
     try {
       await create.mutateAsync(form);
       setForm(emptyForm);
-      toast.success("報酬を追加しました");
+      toast.success(T.rewardAddSuccess);
     } catch (e) {
-      toast.error(`追加に失敗しました: ${e}`);
+      toast.error(T.rewardAddError(e));
     } finally {
       setIsLoading(false);
     }
@@ -73,18 +77,18 @@ export function useRewardManager(initialRewards: Reward[]) {
     try {
       await update.mutateAsync({ id, ...editForm });
       setEditingId(null);
-      toast.success("報酬を更新しました");
+      toast.success(T.rewardEditSuccess);
     } catch (e) {
-      toast.error(`更新に失敗しました: ${e}`);
+      toast.error(T.rewardEditError(e));
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleDelete = (id: string) => {
-    toast("この報酬を削除しますか？", {
-      action: { label: "削除", onClick: () => performDelete(id) },
-      cancel: { label: "キャンセル", onClick: () => {} },
+    toast(T.rewardDeleteConfirm, {
+      action: { label: C.delete, onClick: () => performDelete(id) },
+      cancel: { label: C.cancel, onClick: () => {} },
     });
   };
 
@@ -92,9 +96,9 @@ export function useRewardManager(initialRewards: Reward[]) {
     setIsLoading(true);
     try {
       await remove.mutateAsync(id);
-      toast.success("報酬を削除しました");
+      toast.success(T.rewardDeleteSuccess);
     } catch {
-      toast.error("削除に失敗しました");
+      toast.error(T.deleteError);
     } finally {
       setIsLoading(false);
     }

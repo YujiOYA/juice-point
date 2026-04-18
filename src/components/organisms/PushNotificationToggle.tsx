@@ -1,6 +1,9 @@
 "use client";
 
 import { usePushNotification } from "@hook/usePushNotification";
+import { LABELS } from "@const/labels";
+
+const L = LABELS.push;
 
 export default function PushNotificationToggle() {
   const { status, errorMsg, subscribe, unsubscribe } = usePushNotification();
@@ -10,16 +13,14 @@ export default function PushNotificationToggle() {
   return (
     <div className="push-notification-toggle">
       {status === "denied" && (
-        <p className="push-notification-toggle__denied">
-          🔕 通知がブロックされています。ブラウザの設定から許可してください。
-        </p>
+        <p className="push-notification-toggle__denied">{L.denied}</p>
       )}
       {status === "subscribed" && (
         <button
           className="push-notification-toggle__btn push-notification-toggle__btn--on"
           onClick={unsubscribe}
         >
-          🔔 申請通知: オン（タップでオフ）
+          {L.on}
         </button>
       )}
       {status === "unsubscribed" && (
@@ -27,12 +28,12 @@ export default function PushNotificationToggle() {
           className="push-notification-toggle__btn push-notification-toggle__btn--off"
           onClick={subscribe}
         >
-          🔕 申請通知: オフ（タップでオン）
+          {L.off}
         </button>
       )}
       {status === "loading" && (
         <button className="push-notification-toggle__btn" disabled>
-          ...
+          {L.loading}
         </button>
       )}
       {errorMsg && (
