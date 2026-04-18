@@ -24,6 +24,8 @@ export const LABELS = {
     filterPerson: "担当者",
     filterAll:    "全員",
     selectPerson: "担当者を選択",
+    selectAll:    "全て選択",
+    bulkDelete:   (n: number) => `選択した ${n} 件を削除`,
   },
 
   /** 権限表示ラベル */

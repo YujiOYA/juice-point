@@ -18,9 +18,14 @@ interface Props {
 }
 
 export default function ManagerPanel({ submissions, users }: Props) {
-  const { isDoing, data, editPoint, actions } = useManagerPanel(submissions);
+  const { isDoing, data, editPoint, selection, actions } = useManagerPanel(submissions);
   const { pending, rejected, pendingTaskRequests, rejectedTaskRequests } = data;
+  const { selectedIds, toggleSelect, toggleSelectAll } = selection;
   const userName = (id: string) => users.find((u) => u.id === id)?.user ?? id;
+
+  const rejectedIds         = rejected.map((s) => s.id);
+  const rejectedRequestIds  = rejectedTaskRequests.map((s) => s.id);
+  const selectedCount       = selectedIds.size;
 
   return (
     <div>
@@ -117,19 +122,44 @@ export default function ManagerPanel({ submissions, users }: Props) {
 
       {rejected.length > 0 && (
         <div style={{ marginTop: "2rem" }}>
-          <p className="manager-title">{L.titleRejected}</p>
+          {/* セクションヘッダー（タイトル + 全選択 + 一括削除） */}
+          <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", flexWrap: "wrap", marginBottom: "0.5rem" }}>
+            <p className="manager-title" style={{ margin: 0 }}>{L.titleRejected}</p>
+            <label style={{ display: "flex", alignItems: "center", gap: "0.3rem", fontSize: "0.85rem", cursor: "pointer" }}>
+              <input
+                type="checkbox"
+                checked={rejectedIds.length > 0 && rejectedIds.every((id) => selectedIds.has(id))}
+                onChange={() => toggleSelectAll(rejectedIds)}
+              />
+              {C.selectAll}
+            </label>
+            {selectedCount > 0 && (
+              <Button variant="disapprove" disabled={isDoing} onClick={actions.bulkDelete}>
+                {C.bulkDelete(selectedCount)}
+              </Button>
+            )}
+          </div>
 
           {/* スマホ: カード形式 */}
           <div className="submission-list">
             {rejected.map((s) => (
-              <SubmissionCard
-                key={s.id}
-                submission={s}
-                whoseName={userName(s.whoDid)}
-                isDoing={isDoing}
-                onRestore={actions.restore}
-                onDelete={actions.delete}
-              />
+              <div key={s.id} style={{ display: "flex", alignItems: "flex-start", gap: "0.5rem" }}>
+                <input
+                  type="checkbox"
+                  checked={selectedIds.has(s.id)}
+                  onChange={() => toggleSelect(s.id)}
+                  style={{ marginTop: "1rem", flexShrink: 0, width: "1.1rem", height: "1.1rem", cursor: "pointer" }}
+                />
+                <div style={{ flex: 1 }}>
+                  <SubmissionCard
+                    submission={s}
+                    whoseName={userName(s.whoDid)}
+                    isDoing={isDoing}
+                    onRestore={actions.restore}
+                    onDelete={actions.delete}
+                  />
+                </div>
+              </div>
             ))}
           </div>
 
@@ -137,6 +167,13 @@ export default function ManagerPanel({ submissions, users }: Props) {
           <table className="manager-table">
             <thead>
               <tr>
+                <th style={{ width: "2rem" }}>
+                  <input
+                    type="checkbox"
+                    checked={rejectedIds.length > 0 && rejectedIds.every((id) => selectedIds.has(id))}
+                    onChange={() => toggleSelectAll(rejectedIds)}
+                  />
+                </th>
                 <th>{L.thTask}</th>
                 <th>{L.thPerson}</th>
                 <th>{L.thPoint}</th>
@@ -150,7 +187,15 @@ export default function ManagerPanel({ submissions, users }: Props) {
               {rejected.map((s) => {
                 const isOneTime = s.submissionType === SubmissionType.OneTimeTask;
                 return (
-                  <tr key={s.id}>
+                  <tr key={s.id} style={selectedIds.has(s.id) ? { background: "#fef2f2" } : undefined}>
+                    <td>
+                      <input
+                        type="checkbox"
+                        checked={selectedIds.has(s.id)}
+                        onChange={() => toggleSelect(s.id)}
+                        style={{ cursor: "pointer" }}
+                      />
+                    </td>
                     <td>
                       {isOneTime && (
                         <>
@@ -245,22 +290,57 @@ export default function ManagerPanel({ submissions, users }: Props) {
 
       {rejectedTaskRequests.length > 0 && (
         <div style={{ marginTop: "2rem" }}>
-          <p className="manager-title">{L.titleRejectedRequests}</p>
+          {/* セクションヘッダー（タイトル + 全選択 + 一括削除） */}
+          <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", flexWrap: "wrap", marginBottom: "0.5rem" }}>
+            <p className="manager-title" style={{ margin: 0 }}>{L.titleRejectedRequests}</p>
+            <label style={{ display: "flex", alignItems: "center", gap: "0.3rem", fontSize: "0.85rem", cursor: "pointer" }}>
+              <input
+                type="checkbox"
+                checked={rejectedRequestIds.length > 0 && rejectedRequestIds.every((id) => selectedIds.has(id))}
+                onChange={() => toggleSelectAll(rejectedRequestIds)}
+              />
+              {C.selectAll}
+            </label>
+            {selectedCount > 0 && (
+              <Button variant="disapprove" disabled={isDoing} onClick={actions.bulkDelete}>
+                {C.bulkDelete(selectedCount)}
+              </Button>
+            )}
+          </div>
+
+          {/* スマホ: カード形式 */}
           <div className="submission-list">
             {rejectedTaskRequests.map((s) => (
-              <SubmissionCard
-                key={s.id}
-                submission={s}
-                whoseName={userName(s.whoDid)}
-                isDoing={isDoing}
-                onRestore={actions.restore}
-                onDelete={actions.delete}
-              />
+              <div key={s.id} style={{ display: "flex", alignItems: "flex-start", gap: "0.5rem" }}>
+                <input
+                  type="checkbox"
+                  checked={selectedIds.has(s.id)}
+                  onChange={() => toggleSelect(s.id)}
+                  style={{ marginTop: "1rem", flexShrink: 0, width: "1.1rem", height: "1.1rem", cursor: "pointer" }}
+                />
+                <div style={{ flex: 1 }}>
+                  <SubmissionCard
+                    submission={s}
+                    whoseName={userName(s.whoDid)}
+                    isDoing={isDoing}
+                    onRestore={actions.restore}
+                    onDelete={actions.delete}
+                  />
+                </div>
+              </div>
             ))}
           </div>
+
           <table className="manager-table">
             <thead>
               <tr>
+                <th style={{ width: "2rem" }}>
+                  <input
+                    type="checkbox"
+                    checked={rejectedRequestIds.length > 0 && rejectedRequestIds.every((id) => selectedIds.has(id))}
+                    onChange={() => toggleSelectAll(rejectedRequestIds)}
+                  />
+                </th>
                 <th>{L.thTaskName}</th>
                 <th>{L.thRequester}</th>
                 <th>{L.thRequestedPt}</th>
@@ -272,7 +352,15 @@ export default function ManagerPanel({ submissions, users }: Props) {
             </thead>
             <tbody>
               {rejectedTaskRequests.map((s) => (
-                <tr key={s.id}>
+                <tr key={s.id} style={selectedIds.has(s.id) ? { background: "#fef2f2" } : undefined}>
+                  <td>
+                    <input
+                      type="checkbox"
+                      checked={selectedIds.has(s.id)}
+                      onChange={() => toggleSelect(s.id)}
+                      style={{ cursor: "pointer" }}
+                    />
+                  </td>
                   <td>{s.whatYouDid}</td>
                   <td>{userName(s.whoDid)}</td>
                   <td>{s.point}</td>
