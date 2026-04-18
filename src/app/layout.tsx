@@ -1,8 +1,9 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import ToasterClient from "@atom/ToasterClient";
 import QueryProvider from "@app/../providers/QueryProvider";
+import PwaRegister from "@atom/PwaRegister";
 
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -15,9 +16,28 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
+
 export const metadata: Metadata = {
-  title: "ジュース購入用ポイント管理アプリ",
-  description: "ジュース購入用ポイントを管理するアプリです。",
+  title: "おてつだいポイント",
+  description: "子供のお手伝いを申請・承認でポイント管理",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "おてつだいポイント",
+  },
+  icons: {
+    icon: [
+      { url: "/favicon-orange.svg", type: "image/svg+xml" },
+      { url: "/favicon-orange.png", type: "image/png" },
+    ],
+    apple: "/favicon-orange.png",
+  },
 };
 
 export default function RootLayout({
@@ -26,16 +46,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <head>
-        <link rel="icon" type="image/svg+xml" href="/favicon-orange.svg" />
-        <link rel="icon" type="image/png" href="/favicon-orange.png" />
-      </head>
+    <html lang="ja">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <QueryProvider>
           {children}
           <ToasterClient />
         </QueryProvider>
+        <PwaRegister />
       </body>
     </html>
   );
