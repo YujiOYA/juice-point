@@ -3,10 +3,10 @@ import Link from "next/link";
 import { getRewards, getSubmissions, getTasks, getUsers } from "@lib/dynamoDbApi";
 import Tabs from "@atom/Tabs";
 import PushNotificationToggle from "@organism/PushNotificationToggle";
-import RewardManagerClient from "./RewardManagerClient";
-import SubmissionManagerClient from "./SubmissionManagerClient";
-import TaskManagerClient from "./TaskManagerClient";
-import UserManagerClient from "./UserManagerClient";
+import RewardManagerClient from "@app/admin/RewardManagerClient";
+import SubmissionManagerClient from "@app/admin/SubmissionManagerClient";
+import TaskManagerClient from "@app/admin/TaskManagerClient";
+import UserManagerClient from "@app/admin/UserManagerClient";
 
 export const dynamic = "force-dynamic";
 

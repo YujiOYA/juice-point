@@ -1,4 +1,4 @@
-import AppScreenCarousel from "./AppScreenCarousel";
+import AppScreenCarousel from "@app/lp/AppScreenCarousel";
 
 export const metadata = {
   title: "おてつだいポイント | 子供のお手伝いを申請・承認でポイント管理",
