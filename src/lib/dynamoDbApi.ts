@@ -13,12 +13,13 @@ import { Reward } from "@type/reward";
 import { Submission, SubmissionType } from "@type/submission";
 import { Task } from "@type/task";
 import { User } from "@type/user";
+import { ENV } from "@const/constDefinition";
 
-const TABLE_USER = process.env.TABLE_MASTER_USER!;
-const TABLE_TASK = process.env.TABLE_MASTER_TASK!;
-const TABLE_SUBMISSIONS = process.env.TABLE_SUBMISSIONS!;
-const TABLE_REWARD = process.env.TABLE_MASTER_REWARD!;
-const TABLE_PUSH_SUBSCRIPTIONS = process.env.TABLE_PUSH_SUBSCRIPTIONS!;
+const TABLE_USER             = ENV.tableUser;
+const TABLE_TASK             = ENV.tableTask;
+const TABLE_SUBMISSIONS      = ENV.tableSubmissions;
+const TABLE_REWARD           = ENV.tableReward;
+const TABLE_PUSH_SUBSCRIPTIONS = ENV.tablePushSubs;
 
 export async function getUsers(id?: string): Promise<User[]> {
   let res;
