@@ -6,6 +6,7 @@ type Status = "unsupported" | "denied" | "subscribed" | "unsubscribed" | "loadin
 
 export default function PushNotificationToggle() {
   const [status, setStatus] = useState<Status>("loading");
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   useEffect(() => {
     if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
@@ -19,12 +20,22 @@ export default function PushNotificationToggle() {
     navigator.serviceWorker.ready.then(async (reg) => {
       const existing = await reg.pushManager.getSubscription();
       setStatus(existing ? "subscribed" : "unsubscribed");
+    }).catch((e) => {
+      setErrorMsg("SW準備エラー: " + String(e));
+      setStatus("unsubscribed");
     });
   }, []);
 
   const subscribe = async () => {
     setStatus("loading");
+    setErrorMsg(null);
     try {
+      const vapidKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+      if (!vapidKey) {
+        setErrorMsg("VAPIDキーが設定されていません（Vercel環境変数を確認してください）");
+        setStatus("unsubscribed");
+        return;
+      }
       const reg = await navigator.serviceWorker.ready;
       const permission = await Notification.requestPermission();
       if (permission !== "granted") {
@@ -33,23 +44,26 @@ export default function PushNotificationToggle() {
       }
       const sub = await reg.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(
-          process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
-        ),
+        applicationServerKey: urlBase64ToUint8Array(vapidKey),
       });
-      await fetch("/api/push-subscription", {
+      const res = await fetch("/api/push-subscription", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ endpoint: sub.endpoint, subscription: sub.toJSON() }),
       });
+      if (!res.ok) {
+        throw new Error("サーバー登録失敗: " + res.status);
+      }
       setStatus("subscribed");
-    } catch {
+    } catch (e) {
+      setErrorMsg("エラー: " + String(e));
       setStatus("unsubscribed");
     }
   };
 
   const unsubscribe = async () => {
     setStatus("loading");
+    setErrorMsg(null);
     try {
       const reg = await navigator.serviceWorker.ready;
       const sub = await reg.pushManager.getSubscription();
@@ -62,7 +76,8 @@ export default function PushNotificationToggle() {
         await sub.unsubscribe();
       }
       setStatus("unsubscribed");
-    } catch {
+    } catch (e) {
+      setErrorMsg("エラー: " + String(e));
       setStatus("subscribed");
     }
   };
@@ -96,6 +111,9 @@ export default function PushNotificationToggle() {
         <button className="push-notification-toggle__btn" disabled>
           ...
         </button>
+      )}
+      {errorMsg && (
+        <p className="push-notification-toggle__error">{errorMsg}</p>
       )}
     </div>
   );
