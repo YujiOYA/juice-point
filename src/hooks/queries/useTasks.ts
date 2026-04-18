@@ -1,11 +1,14 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Task } from "@type/task";
+import { API } from "@const/apiEndpoint";
 
 export const TASKS_KEY = ["tasks"] as const;
 
+const { path, method, action } = API.tasks;
+
 const post = (body: unknown) =>
-  fetch("/api/tasks", {
-    method: "POST",
+  fetch(path, {
+    method: method.POST,
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   }).then((r) => (r.ok ? r.json() : r.text().then((t) => Promise.reject(t))));
@@ -13,7 +16,7 @@ const post = (body: unknown) =>
 export function useTasks(initialData?: Task[]) {
   return useQuery<Task[]>({
     queryKey: TASKS_KEY,
-    queryFn: () => fetch("/api/tasks").then((r) => r.json()),
+    queryFn: () => fetch(path).then((r) => r.json()),
     initialData,
   });
 }
@@ -24,18 +27,18 @@ export function useTaskMutations() {
 
   const create = useMutation({
     mutationFn: (data: { task: string; point: string; whose: string }) =>
-      post({ type: "create", ...data }),
+      post({ type: action.create, ...data }),
     onSuccess: invalidate,
   });
 
   const update = useMutation({
     mutationFn: (data: { id: string; task: string; point: string; whose: string }) =>
-      post({ type: "update", ...data }),
+      post({ type: action.update, ...data }),
     onSuccess: invalidate,
   });
 
   const remove = useMutation({
-    mutationFn: (id: string) => post({ type: "delete", id }),
+    mutationFn: (id: string) => post({ type: action.delete, id }),
     onSuccess: invalidate,
   });
 

@@ -7,6 +7,8 @@ import { toast } from "sonner";
 import Button from "@atom/Button";
 import Card from "@atom/Card";
 import TextInput from "@atom/TextInput";
+import { API } from "@const/apiEndpoint";
+import { ROUTES } from "@const/routesConfig";
 
 export default function InitialSetupClient() {
   const router = useRouter();
@@ -24,14 +26,14 @@ export default function InitialSetupClient() {
     }
     setIsLoading(true);
     try {
-      const res = await fetch("/api/setup", {
-        method: "POST",
+      const res = await fetch(API.setup.path, {
+        method: API.setup.method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ user: name, pin }),
       });
       if (!res.ok) throw new Error(await res.text());
       toast.success("管理者アカウントを作成しました！管理画面へ移動します");
-      setTimeout(() => router.push("/admin"), 1500);
+      setTimeout(() => router.push(ROUTES.admin), 1500);
     } catch (e) {
       toast.error(`作成に失敗しました: ${e}`);
     } finally {

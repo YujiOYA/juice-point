@@ -3,6 +3,7 @@ import { toast } from "sonner";
 
 import { useSubmissionMutations } from "@hook/queries/useSubmissions";
 import { Submission, SubmissionType } from "@type/submission";
+import { SUBMISSION_STATUS } from "@const/constDefinition";
 
 export function useManagerPanel(submissions: Submission[]) {
   const [isDoing, setIsDoing] = useState(false);
@@ -15,10 +16,10 @@ export function useManagerPanel(submissions: Submission[]) {
 
   const byDateDesc = (a: Submission, b: Submission) => b.createdAt.localeCompare(a.createdAt);
 
-  const pending = submissions.filter((s) => s.status === "未承認" && s.submissionType !== SubmissionType.TaskRequest).sort(byDateDesc);
-  const rejected = submissions.filter((s) => s.status === "却下" && s.submissionType !== SubmissionType.TaskRequest).sort(byDateDesc);
-  const pendingTaskRequests = submissions.filter((s) => s.status === "未承認" && s.submissionType === SubmissionType.TaskRequest).sort(byDateDesc);
-  const rejectedTaskRequests = submissions.filter((s) => s.status === "却下" && s.submissionType === SubmissionType.TaskRequest).sort(byDateDesc);
+  const pending = submissions.filter((s) => s.status === SUBMISSION_STATUS.pending && s.submissionType !== SubmissionType.TaskRequest).sort(byDateDesc);
+  const rejected = submissions.filter((s) => s.status === SUBMISSION_STATUS.rejected && s.submissionType !== SubmissionType.TaskRequest).sort(byDateDesc);
+  const pendingTaskRequests = submissions.filter((s) => s.status === SUBMISSION_STATUS.pending && s.submissionType === SubmissionType.TaskRequest).sort(byDateDesc);
+  const rejectedTaskRequests = submissions.filter((s) => s.status === SUBMISSION_STATUS.rejected && s.submissionType === SubmissionType.TaskRequest).sort(byDateDesc);
 
   const mutations = useSubmissionMutations();
 
