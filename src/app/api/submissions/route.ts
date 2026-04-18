@@ -1,7 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { createSubmission, createTask, deleteSubmission, getSubmissions, updateSubmissionPoint, updateSubmissionStatus } from "@lib/dynamoDbApi";
+import { createSubmission, createTask, deleteSubmission, getPushSubscriptions, getSubmissions, updateSubmissionPoint, updateSubmissionStatus } from "@lib/dynamoDbApi";
+import { sendPushNotification } from "@lib/webPush";
 import { SubmissionType } from "@type/submission";
+
+async function notifyAdmins(title: string, body: string): Promise<void> {
+  try {
+    const subscriptions = await getPushSubscriptions();
+    await Promise.allSettled(
+      subscriptions.map((s) => sendPushNotification(JSON.parse(s), { title, body })),
+    );
+  } catch {
+    // 通知失敗は申請処理をブロックしない
+  }
+}
 
 export async function GET() {
   const submissions = await getSubmissions();
@@ -18,6 +30,10 @@ export async function POST(req: NextRequest) {
       whoDid: body.whoDid,
       point: body.point,
     });
+    await notifyAdmins(
+      "📋 お手伝い申請が届きました",
+      `${body.whoDid} が「${body.whatYouDid}」（${body.point}pt）を申請しました`,
+    );
     return NextResponse.json({ ok: true });
   }
 
@@ -28,6 +44,10 @@ export async function POST(req: NextRequest) {
       point: body.point,
       submissionType: SubmissionType.OneTimeTask,
     });
+    await notifyAdmins(
+      "📋 一度きりタスクの申請が届きました",
+      `${body.whoDid} が「${body.whatYouDid}」（${body.point}pt）を申請しました`,
+    );
     return NextResponse.json({ ok: true });
   }
 
@@ -44,6 +64,10 @@ export async function POST(req: NextRequest) {
       point: body.point,
       submissionType: SubmissionType.TaskRequest,
     });
+    await notifyAdmins(
+      "💡 タスク追加リクエストが届きました",
+      `${body.whoDid} が「${body.whatYouDid}」のタスク登録をリクエストしました`,
+    );
     return NextResponse.json({ ok: true });
   }
 
