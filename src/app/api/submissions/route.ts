@@ -2,7 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { createSubmission, createTask, deleteSubmission, getPushSubscriptions, getSubmissions, updateSubmissionPoint, updateSubmissionStatus } from "@lib/dynamoDbApi";
 import { sendPushNotification } from "@lib/webPush";
+import { forbidden, getSessionUser, unauthorized } from "@lib/authGuard";
+import { AUTHORITY } from "@const/constDefinition";
 import { SubmissionType } from "@type/submission";
+
+const ADMIN_ONLY_TYPES = new Set([
+  "approve", "approveOneTimeTask", "approveTaskRequest",
+  "disapprove", "restore", "delete", "updatePoint",
+]);
 
 async function notifyAdmins(title: string, body: string): Promise<void> {
   try {
@@ -16,13 +23,20 @@ async function notifyAdmins(title: string, body: string): Promise<void> {
 }
 
 export async function GET() {
+  const user = await getSessionUser();
+  if (!user) return unauthorized();
   const submissions = await getSubmissions();
   return NextResponse.json(submissions);
 }
 
 export async function POST(req: NextRequest) {
+  const user = await getSessionUser();
+  if (!user) return unauthorized();
+
   const body = await req.json();
   const { type } = body;
+
+  if (ADMIN_ONLY_TYPES.has(type) && user.authority !== AUTHORITY.admin) return forbidden();
 
   if (type === "register") {
     await createSubmission({

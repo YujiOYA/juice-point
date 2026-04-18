@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { deletePushSubscription, savePushSubscription } from "@lib/dynamoDbApi";
+import { getSessionUser, unauthorized } from "@lib/authGuard";
 
 export async function POST(req: NextRequest) {
+  const user = await getSessionUser();
+  if (!user) return unauthorized();
   const { endpoint, subscription } = await req.json();
   if (!endpoint || !subscription) {
     return NextResponse.json({ error: "Invalid body" }, { status: 400 });
@@ -12,6 +15,8 @@ export async function POST(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
+  const user = await getSessionUser();
+  if (!user) return unauthorized();
   const { endpoint } = await req.json();
   if (!endpoint) {
     return NextResponse.json({ error: "Invalid body" }, { status: 400 });
