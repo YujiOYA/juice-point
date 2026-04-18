@@ -1,13 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { createUser, deleteUser, getUsers, updateUser } from "@lib/dynamoDbApi";
+import { forbidden, getSessionUser, unauthorized } from "@lib/authGuard";
+import { AUTHORITY } from "@const/constDefinition";
 
 export async function GET() {
+  const user = await getSessionUser();
+  if (!user) return unauthorized();
+  if (user.authority !== AUTHORITY.admin) return forbidden();
   const users = await getUsers();
   return NextResponse.json(users);
 }
 
 export async function POST(req: NextRequest) {
+  const user = await getSessionUser();
+  if (!user) return unauthorized();
+  if (user.authority !== AUTHORITY.admin) return forbidden();
+
   const body = await req.json();
   const { type } = body;
 

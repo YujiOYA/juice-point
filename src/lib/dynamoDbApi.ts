@@ -1,5 +1,6 @@
 import { randomUUID } from "crypto";
 
+import bcrypt from "bcryptjs";
 import {
   ScanCommand,
   QueryCommand,
@@ -46,13 +47,14 @@ export async function getUsers(id?: string): Promise<User[]> {
 }
 
 export async function createUser(data: { user: string; pin: string; authority: string }): Promise<void> {
+  const hashedPin = await bcrypt.hash(data.pin, 10);
   await dynamo.send(
     new PutItemCommand({
       TableName: TABLE_USER,
       Item: {
         id: { S: randomUUID() },
         user: { S: data.user },
-        pin: { S: data.pin },
+        pin: { S: hashedPin },
         authority: { S: data.authority },
       },
     }),
@@ -64,6 +66,7 @@ export async function updateUser(
   data: { user: string; pin?: string; authority: string },
 ): Promise<void> {
   if (data.pin) {
+    const hashedPin = await bcrypt.hash(data.pin, 10);
     await dynamo.send(
       new UpdateItemCommand({
         TableName: TABLE_USER,
@@ -72,7 +75,7 @@ export async function updateUser(
         ExpressionAttributeNames: { "#u": "user" },
         ExpressionAttributeValues: {
           ":user": { S: data.user },
-          ":pin": { S: data.pin },
+          ":pin": { S: hashedPin },
           ":authority": { S: data.authority },
         },
       }),
@@ -112,7 +115,9 @@ export async function verifyUserPin(id: string, pin: string): Promise<User | nul
     }),
   );
   const item = res.Items?.[0];
-  if (!item || item.pin?.S !== pin) return null;
+  if (!item) return null;
+  const match = await bcrypt.compare(pin, item.pin?.S ?? "");
+  if (!match) return null;
   return {
     id: item.id.S!,
     user: item.user.S!,
