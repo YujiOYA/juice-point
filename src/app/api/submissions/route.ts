@@ -1,8 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { createSubmission, createTask, deleteSubmission, getPushSubscriptions, getSubmissions, updateSubmissionPoint, updateSubmissionStatus } from "@lib/dynamoDbApi";
+import { createSubmission, createTask, deleteSubmission, getPushSubscriptions, getSubmissions, getUsers, updateSubmissionPoint, updateSubmissionStatus } from "@lib/dynamoDbApi";
 import { sendPushNotification } from "@lib/webPush";
 import { SubmissionType } from "@type/submission";
+
+async function resolveUserName(userId: string): Promise<string> {
+  try {
+    const users = await getUsers(userId);
+    return users[0]?.user ?? userId;
+  } catch {
+    return userId;
+  }
+}
 
 async function notifyAdmins(title: string, body: string): Promise<void> {
   try {
@@ -30,9 +39,10 @@ export async function POST(req: NextRequest) {
       whoDid: body.whoDid,
       point: body.point,
     });
+    const userName = await resolveUserName(body.whoDid);
     await notifyAdmins(
       "📋 お手伝い申請が届きました",
-      `${body.whoDid} が「${body.whatYouDid}」（${body.point}pt）を申請しました`,
+      `${userName} が「${body.whatYouDid}」（${body.point}pt）を申請しました`,
     );
     return NextResponse.json({ ok: true });
   }
@@ -44,9 +54,10 @@ export async function POST(req: NextRequest) {
       point: body.point,
       submissionType: SubmissionType.OneTimeTask,
     });
+    const userName = await resolveUserName(body.whoDid);
     await notifyAdmins(
       "📋 一度きりタスクの申請が届きました",
-      `${body.whoDid} が「${body.whatYouDid}」（${body.point}pt）を申請しました`,
+      `${userName} が「${body.whatYouDid}」（${body.point}pt）を申請しました`,
     );
     return NextResponse.json({ ok: true });
   }
@@ -64,9 +75,10 @@ export async function POST(req: NextRequest) {
       point: body.point,
       submissionType: SubmissionType.TaskRequest,
     });
+    const userName = await resolveUserName(body.whoDid);
     await notifyAdmins(
       "💡 タスク追加リクエストが届きました",
-      `${body.whoDid} が「${body.whatYouDid}」のタスク登録をリクエストしました`,
+      `${userName} が「${body.whatYouDid}」のタスク登録をリクエストしました`,
     );
     return NextResponse.json({ ok: true });
   }
