@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { unsealData } from "iron-session";
 
 import { COOKIE_NAME, SessionData } from "@lib/session";
+import { ENV } from "@const/constDefinition";
 
 // 認証不要のAPIパス
 const PUBLIC_API_PATHS = ["/api/auth", "/api/setup"];
@@ -17,7 +18,7 @@ export async function middleware(request: NextRequest) {
     }
     try {
       const data = await unsealData<SessionData>(cookieValue, {
-        password: process.env.SESSION_SECRET!,
+        password: ENV.sessionSecret,
       });
       if (!data.user || data.user.authority !== "admin") {
         return NextResponse.redirect(new URL("/", request.url));
@@ -45,7 +46,7 @@ export async function middleware(request: NextRequest) {
   }
   try {
     const data = await unsealData<SessionData>(cookieValue, {
-      password: process.env.SESSION_SECRET!,
+      password: ENV.sessionSecret,
     });
     if (!data.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

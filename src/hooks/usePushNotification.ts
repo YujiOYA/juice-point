@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { API } from "@const/apiEndpoint";
+import { ENV } from "@const/constDefinition";
 
 export type PushStatus = "unsupported" | "denied" | "subscribed" | "unsubscribed" | "loading";
 
@@ -40,7 +41,7 @@ export function usePushNotification() {
     setStatus("loading");
     setErrorMsg(null);
     try {
-      const vapidKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+      const vapidKey = ENV.vapidPublicKey;
       if (!vapidKey) {
         setErrorMsg("VAPIDキーが設定されていません（Vercel環境変数を確認してください）");
         setStatus("unsubscribed");
