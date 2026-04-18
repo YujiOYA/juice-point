@@ -12,11 +12,11 @@ const ADMIN_ONLY_TYPES = new Set([
   "disapprove", "restore", "delete", "updatePoint",
 ]);
 
-async function notifyAdmins(title: string, body: string): Promise<void> {
+async function notifyAdmins(title: string, body: string, data?: Record<string, string>): Promise<void> {
   try {
     const subscriptions = await getPushSubscriptions();
     await Promise.allSettled(
-      subscriptions.map((s) => sendPushNotification(JSON.parse(s), { title, body })),
+      subscriptions.map((s) => sendPushNotification(JSON.parse(s), { title, body, data })),
     );
   } catch {
     // 通知失敗は申請処理をブロックしない
@@ -47,9 +47,13 @@ export async function POST(req: NextRequest) {
 
   try {
     if (body.type === "register") {
-      await createSubmission({ whatYouDid: body.whatYouDid, whoDid: user.id, point: body.point });
+      const submissionId = await createSubmission({ whatYouDid: body.whatYouDid, whoDid: user.id, point: body.point });
       const userName = body.whoDidName ?? user.user;
-      await notifyAdmins("📋 お手伝い申請が届きました", `${userName} が「${body.whatYouDid}」（${body.point}pt）を申請しました`);
+      await notifyAdmins(
+        "📋 お手伝い申請が届きました",
+        `${userName} が「${body.whatYouDid}」（${body.point}pt）を申請しました`,
+        { submissionId },
+      );
       return NextResponse.json({ ok: true });
     }
 

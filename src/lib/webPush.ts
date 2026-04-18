@@ -3,7 +3,7 @@ import { ENV } from "@const/constDefinition";
 
 export async function sendPushNotification(
   subscription: webpush.PushSubscription,
-  payload: { title: string; body: string },
+  payload: { title: string; body: string; data?: Record<string, string> },
 ): Promise<void> {
   webpush.setVapidDetails(
     ENV.vapidSubject,

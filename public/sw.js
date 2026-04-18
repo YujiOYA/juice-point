@@ -42,7 +42,7 @@ self.addEventListener("fetch", (event) => {
 });
 
 self.addEventListener("push", (event) => {
-  let data = { title: "おてつだいポイント", body: "新しいお知らせがあります" };
+  let data = { title: "おてつだいポイント", body: "新しいお知らせがあります", data: null };
   if (event.data) {
     try {
       data = event.data.json();
@@ -50,17 +50,45 @@ self.addEventListener("push", (event) => {
       data.body = event.data.text();
     }
   }
-  event.waitUntil(
-    self.registration.showNotification(data.title, {
-      body: data.body,
-      icon: "/favicon-orange.png",
-      badge: "/favicon-orange.png",
-    })
-  );
+
+  const options = {
+    body: data.body,
+    icon: "/favicon-orange.png",
+    badge: "/favicon-orange.png",
+    data: data.data,
+  };
+
+  if (data.data?.submissionId) {
+    options.actions = [
+      { action: "approve",    title: "承認" },
+      { action: "disapprove", title: "却下" },
+    ];
+  }
+
+  event.waitUntil(self.registration.showNotification(data.title, options));
 });
 
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
+
+  const action = event.action;
+  const submissionId = event.notification.data?.submissionId;
+
+  if ((action === "approve" || action === "disapprove") && submissionId) {
+    event.waitUntil(
+      fetch("/api/submissions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ type: action, id: submissionId }),
+      }).catch(() => {
+        // 失敗時はフォールバックとして管理画面を開く
+        if (clients.openWindow) clients.openWindow("/admin");
+      })
+    );
+    return;
+  }
+
   event.waitUntil(
     clients.matchAll({ type: "window", includeUncontrolled: true }).then((clientList) => {
       for (const client of clientList) {
