@@ -2,13 +2,18 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { createTask, deleteTask, getTasks, updateTask } from "@lib/dynamoDbApi";
 import { forbidden, getSessionUser, unauthorized } from "@lib/authGuard";
+import { taskPostSchema } from "@lib/schemas";
 import { AUTHORITY } from "@const/constDefinition";
 
 export async function GET() {
   const user = await getSessionUser();
   if (!user) return unauthorized();
-  const tasks = await getTasks();
-  return NextResponse.json(tasks);
+  try {
+    const tasks = await getTasks();
+    return NextResponse.json(tasks);
+  } catch (e) {
+    return NextResponse.json({ error: String(e) }, { status: 500 });
+  }
 }
 
 export async function POST(req: NextRequest) {
@@ -16,23 +21,24 @@ export async function POST(req: NextRequest) {
   if (!user) return unauthorized();
   if (user.authority !== AUTHORITY.admin) return forbidden();
 
-  const body = await req.json();
-  const { type } = body;
+  const parsed = taskPostSchema.safeParse(await req.json());
+  if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
+  const body = parsed.data;
 
-  if (type === "create") {
-    await createTask({ task: body.task, point: body.point, whose: body.whose });
-    return NextResponse.json({ ok: true });
+  try {
+    if (body.type === "create") {
+      await createTask({ task: body.task, point: body.point, whose: body.whose });
+      return NextResponse.json({ ok: true });
+    }
+    if (body.type === "update") {
+      await updateTask(body.id, { task: body.task, point: body.point, whose: body.whose });
+      return NextResponse.json({ ok: true });
+    }
+    if (body.type === "delete") {
+      await deleteTask(body.id);
+      return NextResponse.json({ ok: true });
+    }
+  } catch (e) {
+    return NextResponse.json({ error: String(e) }, { status: 500 });
   }
-
-  if (type === "update") {
-    await updateTask(body.id, { task: body.task, point: body.point, whose: body.whose });
-    return NextResponse.json({ ok: true });
-  }
-
-  if (type === "delete") {
-    await deleteTask(body.id);
-    return NextResponse.json({ ok: true });
-  }
-
-  return NextResponse.json({ error: "Invalid type" }, { status: 400 });
 }
