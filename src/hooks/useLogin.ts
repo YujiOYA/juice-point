@@ -18,9 +18,10 @@ interface Args {
   loggedInUser: User | null;
   setLoggedInUser: (user: User | null) => void;
   submissions: Submission[];
+  next?: string | null;
 }
 
-export function useLogin({ loggedInUser, setLoggedInUser, submissions }: Args) {
+export function useLogin({ loggedInUser, setLoggedInUser, submissions, next }: Args) {
   const router = useRouter();
   const [selectedId, setSelectedId] = useState("");
   const [pin, setPin] = useState("");
@@ -41,7 +42,7 @@ export function useLogin({ loggedInUser, setLoggedInUser, submissions }: Args) {
       if (!res.ok) return false;
       const user: User = await res.json();
       setLoggedInUser(user);
-      if (user.authority === AUTHORITY.admin) router.push(ROUTES.admin);
+      if (user.authority === AUTHORITY.admin) router.push(next ?? ROUTES.admin);
       return true;
     } catch {
       return false;

@@ -17,11 +17,12 @@ interface Props {
   loggedInUser: User | null;
   setLoggedInUser: (user: User | null) => void;
   submissions: Submission[];
+  next?: string | null;
 }
 
-export default function LoginForm({ users, loggedInUser, setLoggedInUser, submissions }: Props) {
+export default function LoginForm({ users, loggedInUser, setLoggedInUser, submissions, next }: Props) {
   const { selectedId, pin, setPin, error, isLoading, userPoint, handleSelectChange, handleLogin, handleLogout } =
-    useLogin({ loggedInUser, setLoggedInUser, submissions });
+    useLogin({ loggedInUser, setLoggedInUser, submissions, next });
 
   const pinRef = useRef<HTMLInputElement>(null);
 

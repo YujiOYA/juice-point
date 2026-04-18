@@ -5,6 +5,7 @@ import {
   AttributeValue,
   ScanCommand,
   QueryCommand,
+  GetItemCommand,
   PutItemCommand,
   UpdateItemCommand,
   DeleteItemCommand,
@@ -181,6 +182,24 @@ export async function getSubmissions(): Promise<Submission[]> {
     createdAt: item.createdAt.S!,
     submissionType: item.submissionType?.S as SubmissionType | undefined,
   }));
+}
+
+export async function getSubmissionById(id: string): Promise<Submission | null> {
+  const result = await dynamo.send(new GetItemCommand({
+    TableName: TABLE_SUBMISSIONS,
+    Key: { id: { S: id } },
+  }));
+  const item = result.Item;
+  if (!item) return null;
+  return {
+    id: item.id.S!,
+    whatYouDid: item.whatYouDid.S!,
+    whoDid: item.whoDid.S!,
+    point: item.point.S!,
+    status: item.status.S!,
+    createdAt: item.createdAt.S!,
+    submissionType: item.submissionType?.S as SubmissionType | undefined,
+  };
 }
 
 export async function createSubmission(data: {

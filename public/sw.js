@@ -89,15 +89,18 @@ self.addEventListener("notificationclick", (event) => {
     return;
   }
 
+  const targetUrl = submissionId ? `/admin/quick?id=${submissionId}` : "/admin";
+
   event.waitUntil(
     clients.matchAll({ type: "window", includeUncontrolled: true }).then((clientList) => {
       for (const client of clientList) {
-        if (client.url.includes("/admin") && "focus" in client) {
+        if ("focus" in client) {
+          client.navigate(targetUrl);
           return client.focus();
         }
       }
       if (clients.openWindow) {
-        return clients.openWindow("/admin");
+        return clients.openWindow(targetUrl);
       }
     })
   );
