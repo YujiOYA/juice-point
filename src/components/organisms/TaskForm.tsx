@@ -23,26 +23,19 @@ interface Props {
 export default function TaskForm({ user, initialTasks, initialSubmissions, initialRewards }: Props) {
   const [pendingOpen, setPendingOpen] = useState(false);
   const [pendingRequestOpen, setPendingRequestOpen] = useState(false);
+  const { data, taskForm, requestForm, isSubmitting, isRequesting, handleUsePoints } =
+    useTaskForm(user, initialTasks, initialSubmissions, initialRewards);
+  const { userTasks, userPoint, rewards: userRewards, submittedTaskIds } = data;
+  const { selectedTask, point, onChange: handleChangeSelect, onSubmit: handleSubmit } = taskForm;
   const {
-    point,
-    selectedTask,
-    isSubmitting,
-    submittedTaskIds,
-    userTasks,
-    userPoint,
-    rewards: userRewards,
-    requestTaskName,
-    requestPoint,
-    isRequesting,
+    taskName: requestTaskName,
+    point: requestPoint,
     registerTaskAlso,
-    setRequestTaskName,
-    setRequestPoint,
+    setTaskName: setRequestTaskName,
+    setPoint: setRequestPoint,
     setRegisterTaskAlso,
-    handleChangeSelect,
-    handleSubmit,
-    handleUsePoints,
-    handleRequestSubmit,
-  } = useTaskForm(user, initialTasks, initialSubmissions, initialRewards);
+    onSubmit: handleRequestSubmit,
+  } = requestForm;
 
   const { data: submissions = [] } = useSubmissions(initialSubmissions);
   const userPending = submissions.filter((s) => s.whoDid === user.id && s.status === "未承認");

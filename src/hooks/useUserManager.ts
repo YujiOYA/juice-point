@@ -89,11 +89,10 @@ export function useUserManager(initialUsers: User[]) {
 
   return {
     users: sortedUsers,
-    sortKey, sortDir, handleSort,
-    form, setForm,
-    editingId, setEditingId,
-    editForm, setEditForm,
+    sort: { key: sortKey, dir: sortDir, handle: handleSort },
+    newForm: { values: form, setValues: setForm, onCreate: handleCreate },
+    editForm: { id: editingId, setId: setEditingId, values: editForm, setValues: setEditForm, start: startEdit, onUpdate: handleUpdate },
     isLoading,
-    handleCreate, startEdit, handleUpdate, handleDelete,
+    handleDelete,
   };
 }

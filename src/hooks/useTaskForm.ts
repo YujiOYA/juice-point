@@ -115,23 +115,19 @@ export function useTaskForm(
   };
 
   return {
-    point,
-    selectedTask,
+    data: { userTasks, userPoint, rewards: userRewards, submittedTaskIds },
+    taskForm: { selectedTask, point, onChange: handleChangeSelect, onSubmit: handleSubmit },
+    requestForm: {
+      taskName: requestTaskName,
+      point: requestPoint,
+      registerTaskAlso,
+      setTaskName: setRequestTaskName,
+      setPoint: setRequestPoint,
+      setRegisterTaskAlso,
+      onSubmit: handleRequestSubmit,
+    },
     isSubmitting,
-    submittedTaskIds,
-    userTasks,
-    userPoint,
-    rewards: userRewards,
-    requestTaskName,
-    requestPoint,
     isRequesting,
-    registerTaskAlso,
-    setRequestTaskName,
-    setRequestPoint,
-    setRegisterTaskAlso,
-    handleChangeSelect,
-    handleSubmit,
     handleUsePoints,
-    handleRequestSubmit,
   };
 }

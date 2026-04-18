@@ -16,23 +16,7 @@ interface Props {
 const authorityLabel = (a: string) => (a === "admin" ? "管理者" : "一般");
 
 export default function UserManagerClient({ initialUsers }: Props) {
-  const {
-    users,
-    sortKey,
-    sortDir,
-    handleSort,
-    form,
-    setForm,
-    editingId,
-    setEditingId,
-    editForm,
-    setEditForm,
-    isLoading,
-    handleCreate,
-    startEdit,
-    handleUpdate,
-    handleDelete,
-  } = useUserManager(initialUsers);
+  const { users, sort, newForm, editForm, isLoading, handleDelete } = useUserManager(initialUsers);
 
   type SortKey = "user" | "authority";
   const SORT_OPTIONS: { value: SortKey; label: string }[] = [
@@ -45,22 +29,22 @@ export default function UserManagerClient({ initialUsers }: Props) {
       {/* 追加フォーム */}
       <Card variant="add" className="task-add-card">
         <h2 style={{ marginBottom: "1rem" }}>ユーザーを追加</h2>
-        <form onSubmit={handleCreate} className="task-add-form">
+        <form onSubmit={newForm.onCreate} className="task-add-form">
           <TextInput
             placeholder="ユーザー名"
-            value={form.user}
-            onChange={(e) => setForm({ ...form, user: e.target.value })}
+            value={newForm.values.user}
+            onChange={(e) => newForm.setValues({ ...newForm.values, user: e.target.value })}
           />
           <TextInput
             type="password"
             placeholder="PIN"
-            value={form.pin}
-            onChange={(e) => setForm({ ...form, pin: e.target.value })}
+            value={newForm.values.pin}
+            onChange={(e) => newForm.setValues({ ...newForm.values, pin: e.target.value })}
             style={{ maxWidth: "150px" }}
           />
           <SelectInput
-            value={form.authority}
-            onChange={(e) => setForm({ ...form, authority: e.target.value })}
+            value={newForm.values.authority}
+            onChange={(e) => newForm.setValues({ ...newForm.values, authority: e.target.value })}
           >
             <option value="user">一般</option>
             <option value="admin">管理者</option>
@@ -78,29 +62,29 @@ export default function UserManagerClient({ initialUsers }: Props) {
         {/* スマホ: ソート */}
         <div className="task-sort-bar">
           <span className="task-sort-label">並び替え</span>
-          <SelectInput value={sortKey} onChange={(e) => handleSort(e.target.value as SortKey)}>
+          <SelectInput value={sort.key} onChange={(e) => sort.handle(e.target.value as SortKey)}>
             {SORT_OPTIONS.map((o) => (
               <option key={o.value} value={o.value}>{o.label}</option>
             ))}
           </SelectInput>
-          <Button variant="logout" onClick={() => handleSort(sortKey)}>
-            {sortDir === "asc" ? "↑" : "↓"}
+          <Button variant="logout" onClick={() => sort.handle(sort.key)}>
+            {sort.dir === "asc" ? "↑" : "↓"}
           </Button>
         </div>
 
         {/* スマホ: カード */}
         <div className="task-list">
           {users.map((u) =>
-            editingId === u.id ? (
+            editForm.id === u.id ? (
               <UserCard
                 key={u.id}
                 isEditing={true}
                 user={u}
-                editForm={editForm}
+                editForm={editForm.values}
                 isLoading={isLoading}
-                onChangeForm={setEditForm}
-                onSave={handleUpdate}
-                onCancel={() => setEditingId(null)}
+                onChangeForm={editForm.setValues}
+                onSave={editForm.onUpdate}
+                onCancel={() => editForm.setId(null)}
               />
             ) : (
               <UserCard
@@ -108,7 +92,7 @@ export default function UserManagerClient({ initialUsers }: Props) {
                 isEditing={false}
                 user={u}
                 isLoading={isLoading}
-                onEdit={startEdit}
+                onEdit={editForm.start}
                 onDelete={handleDelete}
               />
             )
@@ -122,27 +106,27 @@ export default function UserManagerClient({ initialUsers }: Props) {
             { key: "authority", label: "権限",       sortable: true },
             { key: "actions",   label: "" },
           ]}
-          sortKey={sortKey}
-          sortDir={sortDir}
+          sortKey={sort.key}
+          sortDir={sort.dir}
           sortKey2={null}
           sortDir2="asc"
-          onSort={(k) => handleSort(k as SortKey)}
+          onSort={(k) => sort.handle(k as SortKey)}
           onSort2={() => {}}
         >
           {users.map((u) => (
             <tr key={u.id}>
-              {editingId === u.id ? (
+              {editForm.id === u.id ? (
                 <>
                   <td>
                     <TextInput
-                      value={editForm.user}
-                      onChange={(e) => setEditForm({ ...editForm, user: e.target.value })}
+                      value={editForm.values.user}
+                      onChange={(e) => editForm.setValues({ ...editForm.values, user: e.target.value })}
                     />
                   </td>
                   <td>
                     <SelectInput
-                      value={editForm.authority}
-                      onChange={(e) => setEditForm({ ...editForm, authority: e.target.value })}
+                      value={editForm.values.authority}
+                      onChange={(e) => editForm.setValues({ ...editForm.values, authority: e.target.value })}
                     >
                       <option value="user">一般</option>
                       <option value="admin">管理者</option>
@@ -152,12 +136,12 @@ export default function UserManagerClient({ initialUsers }: Props) {
                     <TextInput
                       type="password"
                       placeholder="PIN（空欄で変更なし）"
-                      value={editForm.pin}
-                      onChange={(e) => setEditForm({ ...editForm, pin: e.target.value })}
+                      value={editForm.values.pin}
+                      onChange={(e) => editForm.setValues({ ...editForm.values, pin: e.target.value })}
                       style={{ width: "160px" }}
                     />
-                    <Button variant="approve" disabled={isLoading} onClick={() => handleUpdate(u.id)}>保存</Button>
-                    <Button variant="logout" onClick={() => setEditingId(null)}>キャンセル</Button>
+                    <Button variant="approve" disabled={isLoading} onClick={() => editForm.onUpdate(u.id)}>保存</Button>
+                    <Button variant="logout" onClick={() => editForm.setId(null)}>キャンセル</Button>
                   </td>
                 </>
               ) : (
@@ -165,7 +149,7 @@ export default function UserManagerClient({ initialUsers }: Props) {
                   <td>{u.user}</td>
                   <td>{authorityLabel(u.authority)}</td>
                   <td className="task-table__actions">
-                    <Button variant="primary" disabled={isLoading} onClick={() => startEdit(u)}>編集</Button>
+                    <Button variant="primary" disabled={isLoading} onClick={() => editForm.start(u)}>編集</Button>
                     <Button variant="disapprove" disabled={isLoading} onClick={() => handleDelete(u.id)}>削除</Button>
                   </td>
                 </>
