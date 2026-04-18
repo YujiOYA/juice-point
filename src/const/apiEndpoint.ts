@@ -1,17 +1,17 @@
 export const API = {
   auth: {
-    login:  { path: "/api/auth",        method: "POST" as const },
-    logout: { path: "/api/auth/logout", method: "POST" as const },
+    login:  { path: "/api/auth",        method: "POST" },
+    logout: { path: "/api/auth/logout", method: "POST" },
   },
 
   setup: {
     path:   "/api/setup",
-    method: "POST" as const,
+    method: "POST",
   },
 
   submissions: {
     path:   "/api/submissions",
-    method: { GET: "GET", POST: "POST" } as const,
+    method: { GET: "GET", POST: "POST" },
     action: {
       register:            "register",
       registerOneTimeTask: "registerOneTimeTask",
@@ -24,41 +24,41 @@ export const API = {
       delete:              "delete",
       updatePoint:         "updatePoint",
       usePoints:           "usePoints",
-    } as const,
+    },
   },
 
   tasks: {
     path:   "/api/tasks",
-    method: { GET: "GET", POST: "POST" } as const,
+    method: { GET: "GET", POST: "POST" },
     action: {
       create: "create",
       update: "update",
       delete: "delete",
-    } as const,
+    },
   },
 
   users: {
     path:   "/api/users",
-    method: { GET: "GET", POST: "POST" } as const,
+    method: { GET: "GET", POST: "POST" },
     action: {
       create: "create",
       update: "update",
       delete: "delete",
-    } as const,
+    },
   },
 
   rewards: {
     path:   "/api/rewards",
-    method: { GET: "GET", POST: "POST" } as const,
+    method: { GET: "GET", POST: "POST" },
     action: {
       create: "create",
       update: "update",
       delete: "delete",
-    } as const,
+    },
   },
 
   pushSubscription: {
     path:   "/api/push-subscription",
-    method: { POST: "POST", DELETE: "DELETE" } as const,
+    method: { POST: "POST", DELETE: "DELETE" },
   },
 } as const;
