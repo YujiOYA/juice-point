@@ -18,5 +18,5 @@ export default async function Page() {
     ? await Promise.all([getTasks(), getSubmissions(), getRewards()])
     : [[], [], []];
 
-  return <PageClient users={users} tasks={tasks} submissions={submissions} rewards={rewards} />;
+  return <PageClient users={users} tasks={tasks} submissions={submissions} rewards={rewards} sessionUser={sessionUser ?? null} />;
 }

@@ -17,10 +17,11 @@ interface Props {
   tasks: Task[];
   submissions: Submission[];
   rewards: Reward[];
+  sessionUser: User | null;
 }
 
-export default function PageClient({ users, tasks, submissions: initialSubmissions, rewards }: Props) {
-  const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
+export default function PageClient({ users, tasks, submissions: initialSubmissions, rewards, sessionUser }: Props) {
+  const [loggedInUser, setLoggedInUser] = useState<User | null>(sessionUser);
   const { data: submissions = [] } = useSubmissions(initialSubmissions);
 
   const isAdmin = loggedInUser?.authority === AUTHORITY.admin;
