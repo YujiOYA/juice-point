@@ -24,7 +24,8 @@
       "@organism/*": ["src/components/organisms/*"],
       "@hook/*": ["src/hooks/*"],
       "@lib/*": ["src/lib/*"],
-      "@type/*": ["src/types/*"]
+      "@type/*":  ["src/types/*"],
+      "@const/*": ["src/const/*"]
     }
   },
   "include": [

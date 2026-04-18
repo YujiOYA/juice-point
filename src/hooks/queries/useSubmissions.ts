@@ -1,12 +1,15 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Submission } from "@type/submission";
+import { API } from "@const/apiEndpoint";
 import { TASKS_KEY } from "./useTasks";
 
 export const SUBMISSIONS_KEY = ["submissions"] as const;
 
+const { path, method, action } = API.submissions;
+
 const post = (body: unknown) =>
-  fetch("/api/submissions", {
-    method: "POST",
+  fetch(path, {
+    method: method.POST,
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   }).then((r) => (r.ok ? r.json() : r.text().then((t) => Promise.reject(t))));
@@ -14,7 +17,7 @@ const post = (body: unknown) =>
 export function useSubmissions(initialData?: Submission[]) {
   return useQuery<Submission[]>({
     queryKey: SUBMISSIONS_KEY,
-    queryFn: () => fetch("/api/submissions").then((r) => r.json()),
+    queryFn: () => fetch(path).then((r) => r.json()),
     initialData,
   });
 }
@@ -25,35 +28,35 @@ export function useSubmissionMutations() {
   const invalidateTasks = () => queryClient.invalidateQueries({ queryKey: TASKS_KEY });
 
   const approve = useMutation({
-    mutationFn: (id: string) => post({ type: "approve", id }),
+    mutationFn: (id: string) => post({ type: action.approve, id }),
     onSuccess: invalidateSubs,
   });
 
   const disapprove = useMutation({
-    mutationFn: (id: string) => post({ type: "disapprove", id }),
+    mutationFn: (id: string) => post({ type: action.disapprove, id }),
     onSuccess: invalidateSubs,
   });
 
   const restore = useMutation({
-    mutationFn: (id: string) => post({ type: "restore", id }),
+    mutationFn: (id: string) => post({ type: action.restore, id }),
     onSuccess: invalidateSubs,
   });
 
   const remove = useMutation({
-    mutationFn: (id: string) => post({ type: "delete", id }),
+    mutationFn: (id: string) => post({ type: action.delete, id }),
     onSuccess: invalidateSubs,
   });
 
   const approveOneTimeTask = useMutation({
     mutationFn: ({ id, newPoint }: { id: string; newPoint: string }) =>
-      post({ type: "approveOneTimeTask", id, newPoint }),
+      post({ type: action.approveOneTimeTask, id, newPoint }),
     onSuccess: invalidateSubs,
   });
 
   const approveTaskRequest = useMutation({
     mutationFn: (submission: Submission) =>
       post({
-        type: "approveTaskRequest",
+        type: action.approveTaskRequest,
         id: submission.id,
         taskName: submission.whatYouDid,
         point: submission.point,
@@ -67,31 +70,31 @@ export function useSubmissionMutations() {
 
   const register = useMutation({
     mutationFn: (data: { whatYouDid: string; whoDid: string; whoDidName: string; point: string }) =>
-      post({ type: "register", ...data }),
+      post({ type: action.register, ...data }),
     onSuccess: invalidateSubs,
   });
 
   const registerOneTimeTask = useMutation({
     mutationFn: (data: { whatYouDid: string; whoDid: string; whoDidName: string; point: string }) =>
-      post({ type: "registerOneTimeTask", ...data }),
+      post({ type: action.registerOneTimeTask, ...data }),
     onSuccess: invalidateSubs,
   });
 
   const requestTask = useMutation({
     mutationFn: (data: { whatYouDid: string; whoDid: string; whoDidName: string; point: string }) =>
-      post({ type: "requestTask", ...data }),
+      post({ type: action.requestTask, ...data }),
     onSuccess: invalidateSubs,
   });
 
   const usePoints = useMutation({
     mutationFn: ({ userId, point }: { userId: string; point: number }) =>
-      post({ type: "usePoints", userId, point }),
+      post({ type: action.usePoints, userId, point }),
     onSuccess: invalidateSubs,
   });
 
   const updatePoint = useMutation({
     mutationFn: ({ id, newPoint }: { id: string; newPoint: string }) =>
-      post({ type: "updatePoint", id, newPoint }),
+      post({ type: action.updatePoint, id, newPoint }),
     onSuccess: invalidateSubs,
   });
 

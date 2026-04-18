@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { API } from "@const/apiEndpoint";
 
 export type PushStatus = "unsupported" | "denied" | "subscribed" | "unsubscribed" | "loading";
 
@@ -55,8 +56,8 @@ export function usePushNotification() {
         userVisibleOnly: true,
         applicationServerKey: urlBase64ToUint8Array(vapidKey),
       });
-      const res = await fetch("/api/push-subscription", {
-        method: "POST",
+      const res = await fetch(API.pushSubscription.path, {
+        method: API.pushSubscription.method.POST,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ endpoint: sub.endpoint, subscription: sub.toJSON() }),
       });
@@ -77,8 +78,8 @@ export function usePushNotification() {
       const reg = await navigator.serviceWorker.ready;
       const sub = await reg.pushManager.getSubscription();
       if (sub) {
-        await fetch("/api/push-subscription", {
-          method: "DELETE",
+        await fetch(API.pushSubscription.path, {
+          method: API.pushSubscription.method.DELETE,
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ endpoint: sub.endpoint }),
         });

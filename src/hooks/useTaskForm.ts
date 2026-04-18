@@ -8,6 +8,7 @@ import { Reward } from "@type/reward";
 import { Submission } from "@type/submission";
 import { Task } from "@type/task";
 import { User } from "@type/user";
+import { SUBMISSION_STATUS } from "@const/constDefinition";
 
 export function useTaskForm(
   user: User,
@@ -32,7 +33,7 @@ export function useTaskForm(
   const userTasks = tasks.filter((t) => t.whose === user.id);
   const userRewards = rewards.filter((r) => r.whose === user.id).sort((a, b) => Number(a.point) - Number(b.point));
   const userPoint = submissions
-    .filter((s) => s.whoDid === user.id && s.status === "承認")
+    .filter((s) => s.whoDid === user.id && s.status === SUBMISSION_STATUS.approved)
     .reduce((sum, s) => sum + (Number(s.point) || 0), 0);
 
   const handleChangeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {

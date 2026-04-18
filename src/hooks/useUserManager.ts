@@ -3,9 +3,10 @@ import { toast } from "sonner";
 
 import { useUsers, useUserMutations } from "@hook/queries/useUsers";
 import { User } from "@type/user";
+import { AUTHORITY } from "@const/constDefinition";
 
-const emptyForm = { user: "", pin: "", authority: "user" };
-const emptyEditForm = { user: "", pin: "", authority: "user" };
+const emptyForm: { user: string; pin: string; authority: string } = { user: "", pin: "", authority: AUTHORITY.user };
+const emptyEditForm: { user: string; pin: string; authority: string } = { user: "", pin: "", authority: AUTHORITY.user };
 
 type SortKey = "user" | "authority";
 type SortDir = "asc" | "desc";

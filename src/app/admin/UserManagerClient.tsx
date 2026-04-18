@@ -8,12 +8,13 @@ import TextInput from "@atom/TextInput";
 import UserCard from "@molecule/UserCard";
 import { useUserManager } from "@hook/useUserManager";
 import { User } from "@type/user";
+import { AUTHORITY } from "@const/constDefinition";
 
 interface Props {
   initialUsers: User[];
 }
 
-const authorityLabel = (a: string) => (a === "admin" ? "管理者" : "一般");
+const authorityLabel = (a: string) => (a === AUTHORITY.admin ? "管理者" : "一般");
 
 export default function UserManagerClient({ initialUsers }: Props) {
   const { users, sort, newForm, editForm, isLoading, handleDelete } = useUserManager(initialUsers);
