@@ -1,4 +1,4 @@
-const CACHE_NAME = "otetusdai-point-v1";
+const CACHE_NAME = "otetusdai-point-v2";
 const STATIC_PREFIX = "/_next/static/";
 
 self.addEventListener("install", (event) => {
