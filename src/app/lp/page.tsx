@@ -1,9 +1,9 @@
 import AppScreenCarousel from "./AppScreenCarousel";
 
 export const metadata = {
-  title: "おてつだいポイント | スクリーンも、リアルも、どちらも楽しめる子に。",
+  title: "おてつだいポイント | 子供のお手伝いを申請・承認でポイント管理",
   description:
-    "SNSもゲームもあっていい。でもリアルにも居場所を。お手伝いの申請・承認を通じて、家族の中にも「認められる体験」を作る家族向けアプリ。",
+    "子供がお手伝いを申請して親が承認。ポイントを貯めてご褒美と交換できる家族向けアプリ。登録不要・完全無料。",
 };
 
 export default function LpPage() {
@@ -24,18 +24,16 @@ export default function LpPage() {
         <div className="lp-hero__inner">
           <p className="lp-hero__eyebrow">家族向けお手伝い管理アプリ</p>
           <h1 className="lp-hero__title">
-            スクリーンも、
+            お手伝いが、
             <br />
-            リアルも、
-            <br />
-            どちらも楽しめる子に。
+            ちゃんと認められる。
           </h1>
           <p className="lp-hero__sub">
-            SNSもゲームも、あっていい。
+            子供が申請して、親が確認・承認。
             <br />
-            でも家族の中にも「認められる場所」を。
+            ポイントを貯めてご褒美と交換。
             <br />
-            お手伝い申請・承認で、リアルを充実させる。
+            シンプルな仕組みで、お手伝いを続ける習慣を。
           </p>
           <a href="/" className="lp-btn lp-btn--primary lp-btn--lg">
             無料で始める →
@@ -56,74 +54,39 @@ export default function LpPage() {
       {/* 課題提起 */}
       <section className="lp-section lp-section--gray">
         <div className="lp-section__inner">
-          <p className="lp-section__label">子育ての、リアルな悩み</p>
+          <p className="lp-section__label">お手伝い管理の、あるある</p>
           <h2 className="lp-section__title">
-            スクリーンは楽しい。
+            頑張ったのに、
             <br />
-            でもリアルが薄くなっていく。
+            記録に残らない。
           </h2>
           <ul className="lp-problems">
             <li className="lp-problem">
-              <span className="lp-problem__icon">🎮</span>
+              <span className="lp-problem__icon">😓</span>
               <div>
-                <strong>SNS・ゲームは悪くない。でもバランスが難しい</strong>
-                <p>友達とのコミュニケーションや創造の場として優れている一方、気づけば一日中スクリーンの前に。</p>
+                <strong>「やったよ！」のタイミングが合わない</strong>
+                <p>親が忙しいときに言いに行けず、そのまま流れてしまう。結果、頑張りが伝わらない。</p>
               </div>
             </li>
             <li className="lp-problem">
-              <span className="lp-problem__icon">😶</span>
+              <span className="lp-problem__icon">📝</span>
               <div>
-                <strong>「やめなさい」だけでは解決しない</strong>
-                <p>禁止するだけでは反発を生む。リアルに戻ってくる理由を子供自身が持てることが大切。</p>
+                <strong>口約束のポイントはいつの間にか曖昧に</strong>
+                <p>「何ポイント貯まったっけ？」と親も子も分からなくなり、うやむやのまま終わる。</p>
               </div>
             </li>
             <li className="lp-problem">
-              <span className="lp-problem__icon">🏠</span>
+              <span className="lp-problem__icon">🏆</span>
               <div>
-                <strong>家族の中に「認められる体験」が少ない</strong>
-                <p>スクリーンの外にも頑張りを見てもらえる場があれば、子供は自然にバランスをとれるようになる。</p>
+                <strong>頑張っても「認められた実感」が残りにくい</strong>
+                <p>形として残らないと達成感が薄れ、お手伝いへの意欲が続かない。</p>
               </div>
             </li>
           </ul>
         </div>
       </section>
 
-      {/* 差別化 */}
-      <section className="lp-section lp-section--dark">
-        <div className="lp-section__inner">
-          <p className="lp-section__label lp-section__label--light">既存の解決策との違い</p>
-          <h2 className="lp-section__title lp-section__title--light">
-            どちらかを諦めるアプリは、
-            <br />
-            たくさんある。
-          </h2>
-          <div className="lp-comparison">
-            <div className="lp-comparison__col lp-comparison__col--other">
-              <p className="lp-comparison__col-label">既存のアプローチ</p>
-              <ul>
-                <li>⛔ フィルタリングで見せない</li>
-                <li>⛔ 時間制限でやめさせる</li>
-                <li>⛔ スクリーンを悪者にする</li>
-                <li>⛔ 子供は不満を抱えたまま</li>
-              </ul>
-            </div>
-            <div className="lp-comparison__col lp-comparison__col--ours">
-              <p className="lp-comparison__col-label">おてつだいポイント</p>
-              <ul>
-                <li>✅ スクリーンもリアルも否定しない</li>
-                <li>✅ リアルに戻ってくる理由を作る</li>
-                <li>✅ 頑張りを親が毎回「認める」</li>
-                <li>✅ 子供が自分でバランスをとれるようになる</li>
-              </ul>
-            </div>
-          </div>
-          <p className="lp-comparison__note">
-            スクリーンとリアルを両立する仕組みを作ったのは、ここだけです。
-          </p>
-        </div>
-      </section>
-
-      {/* 解決策 */}
+      {/* 機能紹介 */}
       <section className="lp-section">
         <div className="lp-section__inner">
           <p className="lp-section__label">おてつだいポイントなら</p>
@@ -156,7 +119,7 @@ export default function LpPage() {
               <p className="lp-feature__desc">
                 「これもお手伝いに入れてほしい！」と子供が提案できる。
                 <strong>自分で良いことを見つける</strong>
-                クリエイティブな力を育てる。
+                力を育てる。
               </p>
             </div>
             <div className="lp-feature">
@@ -204,9 +167,9 @@ export default function LpPage() {
             </div>
           </div>
           <p className="lp-why__note">
-            SNSの「いいね」が効果的なのは、<strong>即座に・記録されて・見返せる</strong>からです。
+            承認が記録に残ることで、子供は「ちゃんとやった」という実感を積み重ねられます。
             <br />
-            同じ仕組みを、家族のリアルな行動に持ち込んだのがこのアプリです。
+            見返せる記録が、続けるモチベーションになります。
           </p>
         </div>
       </section>
@@ -269,9 +232,9 @@ export default function LpPage() {
       <section className="lp-cta">
         <div className="lp-section__inner">
           <h2 className="lp-cta__title">
-            スクリーンの外にも、
+            子供の「やった！」を、
             <br />
-            子供の居場所をつくろう。
+            ちゃんと残そう。
           </h2>
           <p className="lp-cta__sub">
             登録不要。ブラウザからすぐ使えます。

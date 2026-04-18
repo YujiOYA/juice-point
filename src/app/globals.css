@@ -1502,68 +1502,6 @@ body {
   max-width: 620px;
 }
 
-/* ---- 差別化セクション ---- */
-.lp-section--dark {
-  background: #1a1a2e;
-}
-
-.lp-comparison {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  margin-bottom: 32px;
-  text-align: left;
-}
-
-.lp-comparison__col {
-  border-radius: 16px;
-  padding: 24px 20px;
-}
-
-.lp-comparison__col--other {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.lp-comparison__col--ours {
-  background: linear-gradient(135deg, rgba(255, 152, 0, 0.2), rgba(230, 81, 0, 0.2));
-  border: 1px solid rgba(255, 152, 0, 0.4);
-}
-
-.lp-comparison__col-label {
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  margin: 0 0 14px;
-  color: rgba(255, 255, 255, 0.5);
-}
-
-.lp-comparison__col--ours .lp-comparison__col-label {
-  color: #ffb300;
-}
-
-.lp-comparison__col ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.75);
-}
-
-.lp-comparison__col--ours ul {
-  color: #fff;
-}
-
-.lp-comparison__note {
-  font-size: 18px;
-  font-weight: 700;
-  color: #fff;
-  margin: 0;
-  text-align: left;
-}
 
 /* ---- 最後のCTA ---- */
 .lp-cta {
@@ -1601,9 +1539,6 @@ body {
     grid-template-columns: 1fr;
   }
 
-  .lp-comparison {
-    grid-template-columns: 1fr;
-  }
 
   .lp-why-grid {
     grid-template-columns: 1fr;
@@ -1641,10 +1576,6 @@ body {
 
   .lp-cta__title {
     font-size: clamp(20px, 6vw, 28px);
-  }
-
-  .lp-comparison__note {
-    font-size: 15px;
   }
 
   .lp-why__note {
