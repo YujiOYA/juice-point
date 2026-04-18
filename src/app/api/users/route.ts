@@ -39,6 +39,7 @@ export async function POST(req: NextRequest) {
       await deleteUser(body.id);
       return NextResponse.json({ ok: true });
     }
+    return NextResponse.json({ error: "Unknown type" }, { status: 400 });
   } catch (e) {
     return NextResponse.json({ error: String(e) }, { status: 500 });
   }
