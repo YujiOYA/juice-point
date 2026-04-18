@@ -1,118 +1,39 @@
-import { useState, useMemo } from "react";
-import { toast } from "sonner";
-
 import { useRewards, useRewardMutations } from "@hook/queries/useRewards";
 import { Reward } from "@type/reward";
+import { useTableManager } from "@hook/useTableManager";
 import { LABELS } from "@const/labels";
 
 const T = LABELS.toast;
-const C = LABELS.common;
+
+type RewardSortKey = "name" | "point";
 
 const emptyForm = { name: "", point: "", whose: "" };
 
-type SortKey = "name" | "point";
-type SortDir = "asc" | "desc";
+const sortKeyExtractor = (r: Reward, key: RewardSortKey): string | number =>
+  key === "point" ? Number(r[key]) : r[key];
+
+const startEditForm = (r: Reward) => ({ name: r.name, point: r.point, whose: r.whose });
 
 export function useRewardManager(initialRewards: Reward[]) {
   const { data: rewards = [] } = useRewards(initialRewards);
-  const { create, update, remove } = useRewardMutations();
+  const mutations = useRewardMutations();
 
-  const [form, setForm] = useState(emptyForm);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [editForm, setEditForm] = useState(emptyForm);
-  const [isLoading, setIsLoading] = useState(false);
-  const [sortKey, setSortKey] = useState<SortKey>("name");
-  const [sortDir, setSortDir] = useState<SortDir>("asc");
-  const [sortKey2, setSortKey2] = useState<SortKey | null>(null);
-  const [sortDir2, setSortDir2] = useState<SortDir>("asc");
-  const [filterWhose, setFilterWhose] = useState<string>("");
+  const { items, ...rest } = useTableManager<Reward, RewardSortKey, typeof emptyForm>({
+    items: rewards,
+    mutations,
+    defaultSortKey: "name",
+    sortKeyExtractor,
+    emptyForm,
+    startEditForm,
+    messages: {
+      addSuccess:    T.rewardAddSuccess,
+      addError:      T.rewardAddError,
+      editSuccess:   T.rewardEditSuccess,
+      editError:     T.rewardEditError,
+      deleteConfirm: T.rewardDeleteConfirm,
+      deleteSuccess: T.rewardDeleteSuccess,
+    },
+  });
 
-  const sortedRewards = useMemo(() => {
-    const val = (r: Reward, key: SortKey) => key === "point" ? Number(r[key]) : r[key];
-    return [...rewards]
-      .filter((r) => !filterWhose || r.whose === filterWhose)
-      .sort((a, b) => {
-        const av = val(a, sortKey), bv = val(b, sortKey);
-        if (av !== bv) return (av < bv ? -1 : 1) * (sortDir === "asc" ? 1 : -1);
-        if (!sortKey2) return 0;
-        const av2 = val(a, sortKey2), bv2 = val(b, sortKey2);
-        if (av2 !== bv2) return (av2 < bv2 ? -1 : 1) * (sortDir2 === "asc" ? 1 : -1);
-        return 0;
-      });
-  }, [rewards, sortKey, sortDir, sortKey2, sortDir2, filterWhose]);
-
-  const handleSort = (key: SortKey) => {
-    if (sortKey === key) setSortDir((d) => (d === "asc" ? "desc" : "asc"));
-    else { setSortKey(key); setSortDir("asc"); }
-  };
-
-  const handleSort2 = (key: SortKey | null) => {
-    if (key === null) { setSortKey2(null); return; }
-    if (sortKey2 === key) setSortDir2((d) => (d === "asc" ? "desc" : "asc"));
-    else { setSortKey2(key); setSortDir2("asc"); }
-  };
-
-  const handleCreate = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!form.name || !form.point || !form.whose) return;
-    setIsLoading(true);
-    try {
-      await create.mutateAsync(form);
-      setForm(emptyForm);
-      toast.success(T.rewardAddSuccess);
-    } catch (e) {
-      toast.error(T.rewardAddError(e));
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const startEdit = (reward: Reward) => {
-    setEditingId(reward.id);
-    setEditForm({ name: reward.name, point: reward.point, whose: reward.whose });
-  };
-
-  const handleUpdate = async (id: string) => {
-    setIsLoading(true);
-    try {
-      await update.mutateAsync({ id, ...editForm });
-      setEditingId(null);
-      toast.success(T.rewardEditSuccess);
-    } catch (e) {
-      toast.error(T.rewardEditError(e));
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleDelete = (id: string) => {
-    toast(T.rewardDeleteConfirm, {
-      action: { label: C.delete, onClick: () => performDelete(id) },
-      cancel: { label: C.cancel, onClick: () => {} },
-    });
-  };
-
-  const performDelete = async (id: string) => {
-    setIsLoading(true);
-    try {
-      await remove.mutateAsync(id);
-      toast.success(T.rewardDeleteSuccess);
-    } catch {
-      toast.error(T.deleteError);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  return {
-    rewards: sortedRewards,
-    sortKey, sortDir, handleSort,
-    sortKey2, sortDir2, handleSort2,
-    filterWhose, setFilterWhose,
-    form, setForm,
-    editingId, setEditingId,
-    editForm, setEditForm,
-    isLoading,
-    handleCreate, startEdit, handleUpdate, handleDelete,
-  };
+  return { rewards: items, ...rest };
 }
