@@ -15,7 +15,8 @@ export async function POST(req: NextRequest) {
     await savePushSubscription(parsed.data.endpoint, JSON.stringify(parsed.data.subscription));
     return NextResponse.json({ ok: true });
   } catch (e) {
-    return NextResponse.json({ error: String(e) }, { status: 500 });
+    console.error(e);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
 
@@ -30,6 +31,7 @@ export async function DELETE(req: NextRequest) {
     await deletePushSubscription(parsed.data.endpoint);
     return NextResponse.json({ ok: true });
   } catch (e) {
-    return NextResponse.json({ error: String(e) }, { status: 500 });
+    console.error(e);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

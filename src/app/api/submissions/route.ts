@@ -30,7 +30,8 @@ export async function GET() {
     const submissions = await getSubmissions();
     return NextResponse.json(submissions);
   } catch (e) {
-    return NextResponse.json({ error: String(e) }, { status: 500 });
+    console.error(e);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
 
@@ -137,6 +138,7 @@ export async function POST(req: NextRequest) {
     }
     return NextResponse.json({ error: "Unknown type" }, { status: 400 });
   } catch (e) {
-    return NextResponse.json({ error: String(e) }, { status: 500 });
+    console.error(e);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
