@@ -42,7 +42,7 @@ export function useLogin({ loggedInUser, setLoggedInUser, submissions, next }: A
       if (!res.ok) return false;
       const user: User = await res.json();
       setLoggedInUser(user);
-      if (user.authority === AUTHORITY.admin) router.push(next ?? ROUTES.admin);
+      if (user.authority === AUTHORITY.admin) { window.location.href = next ?? ROUTES.admin; return true; }
       return true;
     } catch {
       return false;
