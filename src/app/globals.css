@@ -519,6 +519,12 @@ body {
   color: #9e9e9e;
   margin: 0;
 }
+.push-notification-toggle__error {
+  font-size: 0.8rem;
+  color: #c62828;
+  margin: 0.4rem 0 0;
+  word-break: break-all;
+}
 
 /* ===== タスク管理ページ ===== */
 .task-admin-wrap {
