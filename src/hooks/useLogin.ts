@@ -79,12 +79,13 @@ export function useLogin({ loggedInUser, setLoggedInUser, submissions }: Args) {
     if (!ok) setError("PINが違います");
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     setLoggedInUser(null);
     setSelectedId("");
     setPin("");
     setError("");
     // sessionStorageは維持（セッション内で再選択時に自動ログインできるようにするため）
+    await fetch("/api/auth/logout", { method: "POST" });
   };
 
   return { selectedId, pin, setPin, error, isLoading, userPoint, handleSelectChange, handleLogin, handleLogout };

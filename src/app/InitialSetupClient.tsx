@@ -24,10 +24,10 @@ export default function InitialSetupClient() {
     }
     setIsLoading(true);
     try {
-      const res = await fetch("/api/users", {
+      const res = await fetch("/api/setup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "create", user: name, pin, authority: "admin" }),
+        body: JSON.stringify({ user: name, pin }),
       });
       if (!res.ok) throw new Error(await res.text());
       toast.success("管理者アカウントを作成しました！管理画面へ移動します");
