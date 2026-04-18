@@ -39,5 +39,3 @@ export const SUBMISSION_STATUS = {
   rejected: "却下",
 } as const;
 
-/** sessionStorage キー生成 */
-export const sessionStorageKey = (userId: string) => `pin_${userId}`;

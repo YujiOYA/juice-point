@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { Submission } from "@type/submission";
 import { User } from "@type/user";
 import { API } from "@const/apiEndpoint";
-import { AUTHORITY, SUBMISSION_STATUS, sessionStorageKey } from "@const/constDefinition";
+import { AUTHORITY, SUBMISSION_STATUS } from "@const/constDefinition";
 import { ROUTES } from "@const/routesConfig";
 import { LABELS } from "@const/labels";
 
@@ -38,12 +38,8 @@ export function useLogin({ loggedInUser, setLoggedInUser, submissions }: Args) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id, pin: pinToUse }),
       });
-      if (!res.ok) {
-        try { sessionStorage.removeItem(sessionStorageKey(id)); } catch { /* ignore */ }
-        return false;
-      }
+      if (!res.ok) return false;
       const user: User = await res.json();
-      try { sessionStorage.setItem(sessionStorageKey(id), pinToUse); } catch { /* ignore */ }
       setLoggedInUser(user);
       if (user.authority === AUTHORITY.admin) router.push(ROUTES.admin);
       return true;
@@ -55,22 +51,9 @@ export function useLogin({ loggedInUser, setLoggedInUser, submissions }: Args) {
   };
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const id = e.target.value;
-    setSelectedId(id);
+    setSelectedId(e.target.value);
     setPin("");
     setError("");
-
-    // セッションに保存済みPINがあれば自動ログイン
-    try {
-      const savedPin = sessionStorage.getItem(sessionStorageKey(id));
-      if (savedPin) {
-        loginWithPin(id, savedPin);
-        // 失敗時はsessionStorageが削除され、PIN入力欄がそのまま表示される
-      }
-    } catch {
-      alert("このブラウザではセッションの保存ができないため、毎回PINの入力が必要になります。");
-      // Safari プライベートブラウズ等でsessionStorageが使えない場合は無視
-    }
   };
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -86,7 +69,6 @@ export function useLogin({ loggedInUser, setLoggedInUser, submissions }: Args) {
     setSelectedId("");
     setPin("");
     setError("");
-    // sessionStorageは維持（セッション内で再選択時に自動ログインできるようにするため）
     await fetch(API.auth.logout.path, { method: API.auth.logout.method });
   };
 
