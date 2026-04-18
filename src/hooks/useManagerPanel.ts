@@ -13,10 +13,12 @@ export function useManagerPanel(submissions: Submission[]) {
     setEditedPoints((prev) => new Map(prev).set(id, point));
   };
 
-  const pending = submissions.filter((s) => s.status === "未承認" && s.submissionType !== SubmissionType.TaskRequest);
-  const rejected = submissions.filter((s) => s.status === "却下" && s.submissionType !== SubmissionType.TaskRequest);
-  const pendingTaskRequests = submissions.filter((s) => s.status === "未承認" && s.submissionType === SubmissionType.TaskRequest);
-  const rejectedTaskRequests = submissions.filter((s) => s.status === "却下" && s.submissionType === SubmissionType.TaskRequest);
+  const byDateDesc = (a: Submission, b: Submission) => b.createdAt.localeCompare(a.createdAt);
+
+  const pending = submissions.filter((s) => s.status === "未承認" && s.submissionType !== SubmissionType.TaskRequest).sort(byDateDesc);
+  const rejected = submissions.filter((s) => s.status === "却下" && s.submissionType !== SubmissionType.TaskRequest).sort(byDateDesc);
+  const pendingTaskRequests = submissions.filter((s) => s.status === "未承認" && s.submissionType === SubmissionType.TaskRequest).sort(byDateDesc);
+  const rejectedTaskRequests = submissions.filter((s) => s.status === "却下" && s.submissionType === SubmissionType.TaskRequest).sort(byDateDesc);
 
   const mutations = useSubmissionMutations();
 
