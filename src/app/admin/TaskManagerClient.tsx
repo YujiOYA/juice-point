@@ -58,6 +58,7 @@ export default function TaskManagerClient({ users, initialTasks }: Props) {
           <TextInput
             placeholder={L.placeholderPoint}
             type="number"
+            min="1"
             value={form.point}
             onChange={(e) => setForm({ ...form, point: e.target.value })}
             style={{ maxWidth: "120px" }}
@@ -68,7 +69,7 @@ export default function TaskManagerClient({ users, initialTasks }: Props) {
               <option key={u.id} value={u.id}>{u.user}</option>
             ))}
           </SelectInput>
-          <Button type="submit" variant="primary" disabled={isLoading || !form.task || !form.point || !form.whose}>
+          <Button type="submit" variant="primary" disabled={isLoading || !form.task || Number(form.point) <= 0 || !form.whose}>
             {C.add}
           </Button>
         </form>
@@ -194,6 +195,7 @@ export default function TaskManagerClient({ users, initialTasks }: Props) {
                   <td>
                     <TextInput
                       type="number"
+                      min="1"
                       value={editForm.point}
                       onChange={(e) => setEditForm({ ...editForm, point: e.target.value })}
                       style={{ width: "80px" }}
