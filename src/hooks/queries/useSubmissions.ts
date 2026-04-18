@@ -66,19 +66,19 @@ export function useSubmissionMutations() {
   });
 
   const register = useMutation({
-    mutationFn: (data: { whatYouDid: string; whoDid: string; point: string }) =>
+    mutationFn: (data: { whatYouDid: string; whoDid: string; whoDidName: string; point: string }) =>
       post({ type: "register", ...data }),
     onSuccess: invalidateSubs,
   });
 
   const registerOneTimeTask = useMutation({
-    mutationFn: (data: { whatYouDid: string; whoDid: string; point: string }) =>
+    mutationFn: (data: { whatYouDid: string; whoDid: string; whoDidName: string; point: string }) =>
       post({ type: "registerOneTimeTask", ...data }),
     onSuccess: invalidateSubs,
   });
 
   const requestTask = useMutation({
-    mutationFn: (data: { whatYouDid: string; whoDid: string; point: string }) =>
+    mutationFn: (data: { whatYouDid: string; whoDid: string; whoDidName: string; point: string }) =>
       post({ type: "requestTask", ...data }),
     onSuccess: invalidateSubs,
   });
