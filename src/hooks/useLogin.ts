@@ -41,8 +41,13 @@ export function useLogin({ loggedInUser, setLoggedInUser, submissions, next }: A
       });
       if (!res.ok) return false;
       const user: User = await res.json();
+      // 管理者の場合は setLoggedInUser を呼ばずにナビゲーション
+      // (React再レンダリングとナビゲーションの競合を避ける: iOS PWA対策)
+      if (user.authority === AUTHORITY.admin) {
+        location.replace(next ?? ROUTES.admin);
+        return true;
+      }
       setLoggedInUser(user);
-      if (user.authority === AUTHORITY.admin) { window.location.href = next ?? ROUTES.admin; return true; }
       return true;
     } catch {
       return false;
