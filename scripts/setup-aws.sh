@@ -37,6 +37,7 @@ TABLE_USER="TABLE_MASTER_USER"
 TABLE_TASK="TABLE_MASTER_TASK"
 TABLE_SUBMISSIONS="TABLE_SUBMISSIONS"
 TABLE_REWARD="TABLE_MASTER_REWARD"
+TABLE_PUSH_SUBS="TABLE_PUSH_SUBSCRIPTIONS"
 IAM_POLICY_NAME="family-point-app-dynamodb-policy"
 IAM_USER_NAME="family-point-app-local"
 
@@ -102,6 +103,12 @@ create_table_if_not_exists \
   "$TABLE_REWARD" \
   "AttributeName=id,KeyType=HASH AttributeName=name,KeyType=RANGE" \
   "AttributeName=id,AttributeType=S AttributeName=name,AttributeType=S"
+
+# TABLE_PUSH_SUBSCRIPTIONS: PK=endpoint
+create_table_if_not_exists \
+  "$TABLE_PUSH_SUBS" \
+  "AttributeName=endpoint,KeyType=HASH" \
+  "AttributeName=endpoint,AttributeType=S"
 
 echo ""
 
@@ -267,6 +274,7 @@ echo "  │ TABLE_MASTER_USER=${TABLE_USER}"
 echo "  │ TABLE_MASTER_TASK=${TABLE_TASK}"
 echo "  │ TABLE_SUBMISSIONS=${TABLE_SUBMISSIONS}"
 echo "  │ TABLE_MASTER_REWARD=${TABLE_REWARD}"
+echo "  │ TABLE_PUSH_SUBSCRIPTIONS=${TABLE_PUSH_SUBS}"
 echo "  └─────────────────────────────────────────────────┘"
 
 if [[ -n "${VERCEL_ROLE_ARN:-}" ]]; then
@@ -280,6 +288,7 @@ echo "  │ TABLE_MASTER_USER=${TABLE_USER}"
 echo "  │ TABLE_MASTER_TASK=${TABLE_TASK}"
 echo "  │ TABLE_SUBMISSIONS=${TABLE_SUBMISSIONS}"
 echo "  │ TABLE_MASTER_REWARD=${TABLE_REWARD}"
+echo "  │ TABLE_PUSH_SUBSCRIPTIONS=${TABLE_PUSH_SUBS}"
 echo "  └─────────────────────────────────────────────────┘"
 fi
 

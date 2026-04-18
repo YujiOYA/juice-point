@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { getRewards, getSubmissions, getTasks, getUsers } from "@lib/dynamoDbApi";
 import Tabs from "@atom/Tabs";
+import PushNotificationToggle from "@atom/PushNotificationToggle";
 import RewardManagerClient from "./RewardManagerClient";
 import SubmissionManagerClient from "./SubmissionManagerClient";
 import TaskManagerClient from "./TaskManagerClient";
@@ -17,7 +18,8 @@ export default async function AdminPage() {
       <Link href="/">
         <button className="logout-button" style={{ marginBottom: "1rem" }}>← 戻る</button>
       </Link>
-      <h1 style={{ marginBottom: "1.5rem" }}>🛠 管理画面</h1>
+      <h1 style={{ marginBottom: "1rem" }}>🛠 管理画面</h1>
+      <PushNotificationToggle />
 
       <Tabs
         items={[

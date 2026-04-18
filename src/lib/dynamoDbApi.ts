@@ -18,6 +18,7 @@ const TABLE_USER = process.env.TABLE_MASTER_USER!;
 const TABLE_TASK = process.env.TABLE_MASTER_TASK!;
 const TABLE_SUBMISSIONS = process.env.TABLE_SUBMISSIONS!;
 const TABLE_REWARD = process.env.TABLE_MASTER_REWARD!;
+const TABLE_PUSH_SUBSCRIPTIONS = process.env.TABLE_PUSH_SUBSCRIPTIONS!;
 
 export async function getUsers(id?: string): Promise<User[]> {
   let res;
@@ -321,6 +322,37 @@ export async function updateReward(id: string, data: { name: string; point: stri
       }),
     );
   }
+}
+
+// ===== Push Subscriptions =====
+
+export async function getPushSubscriptions(): Promise<string[]> {
+  const res = await dynamo.send(
+    new ScanCommand({ TableName: TABLE_PUSH_SUBSCRIPTIONS, Limit: 100 }),
+  );
+  if (!res.Items) return [];
+  return res.Items.map((item) => item.subscription.S!);
+}
+
+export async function savePushSubscription(endpoint: string, subscription: string): Promise<void> {
+  await dynamo.send(
+    new PutItemCommand({
+      TableName: TABLE_PUSH_SUBSCRIPTIONS,
+      Item: {
+        endpoint: { S: endpoint },
+        subscription: { S: subscription },
+      },
+    }),
+  );
+}
+
+export async function deletePushSubscription(endpoint: string): Promise<void> {
+  await dynamo.send(
+    new DeleteItemCommand({
+      TableName: TABLE_PUSH_SUBSCRIPTIONS,
+      Key: { endpoint: { S: endpoint } },
+    }),
+  );
 }
 
 export async function deleteReward(id: string): Promise<void> {
