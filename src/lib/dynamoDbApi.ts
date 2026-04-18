@@ -188,9 +188,10 @@ export async function createSubmission(data: {
   whoDid: string;
   point: string;
   submissionType?: string;
-}): Promise<void> {
+}): Promise<string> {
+  const id = randomUUID();
   const item: Record<string, { S: string }> = {
-    id: { S: randomUUID() },
+    id: { S: id },
     whatYouDid: { S: data.whatYouDid },
     whoDid: { S: data.whoDid },
     point: { S: data.point },
@@ -201,6 +202,7 @@ export async function createSubmission(data: {
     item.submissionType = { S: data.submissionType };
   }
   await dynamo.send(new PutItemCommand({ TableName: TABLE_SUBMISSIONS, Item: item }));
+  return id;
 }
 
 export async function createTask(data: {
