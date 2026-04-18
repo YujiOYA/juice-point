@@ -4,6 +4,9 @@ import { toast } from "sonner";
 import { useSubmissionMutations } from "@hook/queries/useSubmissions";
 import { Submission, SubmissionType } from "@type/submission";
 import { SUBMISSION_STATUS } from "@const/constDefinition";
+import { LABELS } from "@const/labels";
+
+const T = LABELS.toast;
 
 export function useManagerPanel(submissions: Submission[]) {
   const [isDoing, setIsDoing] = useState(false);
@@ -27,9 +30,9 @@ export function useManagerPanel(submissions: Submission[]) {
     setIsDoing(true);
     try {
       await mutations.approve.mutateAsync(id);
-      toast.success("承認しました！");
+      toast.success(T.approveSuccess);
     } catch {
-      toast.error("承認に失敗しました");
+      toast.error(T.approveError);
     } finally {
       setIsDoing(false);
     }
@@ -39,9 +42,9 @@ export function useManagerPanel(submissions: Submission[]) {
     setIsDoing(true);
     try {
       await mutations.disapprove.mutateAsync(id);
-      toast.success("却下しました");
+      toast.success(T.disapproveSuccess);
     } catch {
-      toast.error("却下に失敗しました");
+      toast.error(T.disapproveError);
     } finally {
       setIsDoing(false);
     }
@@ -51,9 +54,9 @@ export function useManagerPanel(submissions: Submission[]) {
     setIsDoing(true);
     try {
       await mutations.restore.mutateAsync(id);
-      toast.success("申請一覧に戻しました");
+      toast.success(T.restoreSuccess);
     } catch {
-      toast.error("操作に失敗しました");
+      toast.error(T.restoreError);
     } finally {
       setIsDoing(false);
     }
@@ -63,9 +66,9 @@ export function useManagerPanel(submissions: Submission[]) {
     setIsDoing(true);
     try {
       await mutations.remove.mutateAsync(id);
-      toast.success("削除しました");
+      toast.success(T.deleteSuccess);
     } catch {
-      toast.error("削除に失敗しました");
+      toast.error(T.deleteError);
     } finally {
       setIsDoing(false);
     }
@@ -75,9 +78,9 @@ export function useManagerPanel(submissions: Submission[]) {
     setIsDoing(true);
     try {
       await mutations.approveOneTimeTask.mutateAsync({ id, newPoint });
-      toast.success("承認しました！");
+      toast.success(T.approveSuccess);
     } catch {
-      toast.error("承認に失敗しました");
+      toast.error(T.approveError);
     } finally {
       setIsDoing(false);
     }
@@ -87,9 +90,9 @@ export function useManagerPanel(submissions: Submission[]) {
     setIsDoing(true);
     try {
       await mutations.approveTaskRequest.mutateAsync(submission);
-      toast.success("承認してタスクに追加しました！");
+      toast.success(T.taskApproveSuccess);
     } catch {
-      toast.error("承認に失敗しました");
+      toast.error(T.approveError);
     } finally {
       setIsDoing(false);
     }

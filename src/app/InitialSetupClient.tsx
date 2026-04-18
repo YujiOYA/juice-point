@@ -9,6 +9,10 @@ import Card from "@atom/Card";
 import TextInput from "@atom/TextInput";
 import { API } from "@const/apiEndpoint";
 import { ROUTES } from "@const/routesConfig";
+import { LABELS } from "@const/labels";
+
+const L = LABELS.setup;
+const T = LABELS.toast;
 
 export default function InitialSetupClient() {
   const router = useRouter();
@@ -21,7 +25,7 @@ export default function InitialSetupClient() {
     e.preventDefault();
     if (!name || !pin) return;
     if (pin !== pinConfirm) {
-      toast.error("PINが一致しません");
+      toast.error(T.setupPinMismatch);
       return;
     }
     setIsLoading(true);
@@ -32,10 +36,10 @@ export default function InitialSetupClient() {
         body: JSON.stringify({ user: name, pin }),
       });
       if (!res.ok) throw new Error(await res.text());
-      toast.success("管理者アカウントを作成しました！管理画面へ移動します");
+      toast.success(T.setupSuccess);
       setTimeout(() => router.push(ROUTES.admin), 1500);
     } catch (e) {
-      toast.error(`作成に失敗しました: ${e}`);
+      toast.error(T.setupError(e));
     } finally {
       setIsLoading(false);
     }
@@ -43,43 +47,41 @@ export default function InitialSetupClient() {
 
   return (
     <div className="container">
-      <h1 className="page-title">⭐ ポイント管理アプリ ⭐</h1>
+      <h1 className="page-title">{LABELS.app.title}</h1>
       <Card>
         <div style={{ textAlign: "center", marginBottom: "1.5rem" }}>
-          <p style={{ fontSize: "22px", fontWeight: 800, marginBottom: "0.5rem" }}>🛠️ 初期設定</p>
-          <p style={{ color: "#757575", fontSize: "15px" }}>
-            最初の管理者アカウントを作成してください
-          </p>
+          <p style={{ fontSize: "22px", fontWeight: 800, marginBottom: "0.5rem" }}>{L.heading}</p>
+          <p style={{ color: "#757575", fontSize: "15px" }}>{L.description}</p>
         </div>
         <form onSubmit={handleSubmit} className="task-form">
           <div>
-            <label className="task-label">👤 管理者名</label>
+            <label className="task-label">{L.labelName}</label>
             <TextInput
-              placeholder="名前を入力"
+              placeholder={L.placeholderName}
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
           </div>
           <div>
-            <label className="task-label">🔑 PIN</label>
+            <label className="task-label">{L.labelPin}</label>
             <TextInput
               type="password"
-              placeholder="PINを入力"
+              placeholder={L.placeholderPin}
               value={pin}
               onChange={(e) => setPin(e.target.value)}
             />
           </div>
           <div>
-            <label className="task-label">🔑 PIN（確認）</label>
+            <label className="task-label">{L.labelPinConfirm}</label>
             <TextInput
               type="password"
-              placeholder="PINをもう一度入力"
+              placeholder={L.placeholderPinConfirm}
               value={pinConfirm}
               onChange={(e) => setPinConfirm(e.target.value)}
             />
           </div>
           <Button type="submit" variant="primary" disabled={isLoading || !name || !pin || !pinConfirm}>
-            管理者アカウントを作成
+            {L.buttonSubmit}
           </Button>
         </form>
       </Card>

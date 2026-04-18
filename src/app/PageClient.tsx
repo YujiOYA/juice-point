@@ -9,6 +9,8 @@ import { Reward } from "@type/reward";
 import { Submission } from "@type/submission";
 import { Task } from "@type/task";
 import { User } from "@type/user";
+import { AUTHORITY } from "@const/constDefinition";
+import { LABELS } from "@const/labels";
 
 interface Props {
   users: User[];
@@ -21,11 +23,11 @@ export default function PageClient({ users, tasks, submissions: initialSubmissio
   const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
   const { data: submissions = [] } = useSubmissions(initialSubmissions);
 
-  const isAdmin = loggedInUser?.authority === "admin";
+  const isAdmin = loggedInUser?.authority === AUTHORITY.admin;
 
   return (
     <div className="container">
-      <h1 className="page-title">⭐ ポイント管理アプリ ⭐</h1>
+      <h1 className="page-title">{LABELS.app.title}</h1>
       <Card>
         <LoginForm
           users={users}

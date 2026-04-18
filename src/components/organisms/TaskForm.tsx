@@ -12,6 +12,10 @@ import { Reward } from "@type/reward";
 import { Submission, SubmissionType } from "@type/submission";
 import { Task } from "@type/task";
 import { User } from "@type/user";
+import { SUBMISSION_STATUS } from "@const/constDefinition";
+import { LABELS } from "@const/labels";
+
+const L = LABELS.taskForm;
 
 interface Props {
   user: User;
@@ -38,22 +42,22 @@ export default function TaskForm({ user, initialTasks, initialSubmissions, initi
   } = requestForm;
 
   const { data: submissions = [] } = useSubmissions(initialSubmissions);
-  const userPending = submissions.filter((s) => s.whoDid === user.id && s.status === "未承認");
+  const userPending = submissions.filter((s) => s.whoDid === user.id && s.status === SUBMISSION_STATUS.pending);
   const pendingSubmit  = userPending.filter((s) => s.submissionType !== SubmissionType.TaskRequest);
   const pendingRequest = userPending.filter((s) => s.submissionType === SubmissionType.TaskRequest);
 
   const tabSubmit = (
     <form onSubmit={handleSubmit}>
-      <FormField label="🎯 タスクをえらんでね" htmlFor="task">
+      <FormField label={L.labelTask} htmlFor="task">
         <SelectInput id="task" defaultValue="" onChange={handleChangeSelect}>
-          <option value="" disabled>タスクを選んでね！</option>
+          <option value="" disabled>{L.placeholderTask}</option>
           {userTasks.map((t) => (
             <option key={t.id} value={t.id}>{t.task}</option>
           ))}
         </SelectInput>
       </FormField>
 
-      <FormField label="💰 もらえるポイント" htmlFor="points">
+      <FormField label={L.labelPoints} htmlFor="points">
         <TextInput id="points" name="points" type="number" value={point} readOnly className="input highlight" />
       </FormField>
 
@@ -63,7 +67,7 @@ export default function TaskForm({ user, initialTasks, initialSubmissions, initi
         disabled={isSubmitting || !selectedTask || submittedTaskIds.has(selectedTask.id)}
         style={{ marginTop: "16px" }}
       >
-        ✅ 申請する
+        {L.buttonSubmit}
       </Button>
 
       {pendingSubmit.length > 0 && (
@@ -74,7 +78,7 @@ export default function TaskForm({ user, initialTasks, initialSubmissions, initi
             style={{ background: "none", border: "none", padding: 0, cursor: "pointer", display: "flex", alignItems: "center", gap: "0.4rem", color: "#757575", width: "100%" }}
           >
             <span style={{ display: "inline-block", transition: "transform 0.2s", transform: pendingOpen ? "rotate(90deg)" : "rotate(0deg)" }}>▶</span>
-            ⏳ 承認待ち（{pendingSubmit.length}件）
+            {L.pendingCount(pendingSubmit.length)}
           </button>
           <div style={{ overflow: "hidden", maxHeight: pendingOpen ? "500px" : "0", transition: "max-height 0.3s ease" }}>
             <ul style={{ listStyle: "none", padding: 0, margin: "0.5rem 0 0", display: "flex", flexDirection: "column", gap: "0.25rem" }}>
@@ -93,17 +97,17 @@ export default function TaskForm({ user, initialTasks, initialSubmissions, initi
 
   const tabRequest = (
     <div>
-      <FormField label="タスク名" htmlFor="requestTaskName">
+      <FormField label={L.labelTaskName} htmlFor="requestTaskName">
         <TextInput
           id="requestTaskName"
           name="requestTaskName"
           type="text"
           value={requestTaskName}
           onChange={(e) => setRequestTaskName(e.target.value)}
-          placeholder="例: 🧺洗濯物をたたむ"
+          placeholder={L.placeholderTaskName}
         />
       </FormField>
-      <FormField label="希望ポイント" htmlFor="requestPoint">
+      <FormField label={L.labelRequestPoint} htmlFor="requestPoint">
         <TextInput
           id="requestPoint"
           name="requestPoint"
@@ -111,7 +115,7 @@ export default function TaskForm({ user, initialTasks, initialSubmissions, initi
           value={requestPoint}
           onChange={(e) => setRequestPoint(e.target.value)}
           onBlur={(e) => { const v = parseFloat(e.target.value); if (!isNaN(v)) setRequestPoint(String(v)); }}
-          placeholder="例: 1.5"
+          placeholder={L.placeholderRequestPoint}
           step={0.5}
           min={0}
         />
@@ -122,7 +126,7 @@ export default function TaskForm({ user, initialTasks, initialSubmissions, initi
           checked={registerTaskAlso}
           onChange={(e) => setRegisterTaskAlso(e.target.checked)}
         />
-        タスクとして登録
+        {L.checkboxRegisterTask}
       </label>
       <Button
         type="button"
@@ -131,7 +135,7 @@ export default function TaskForm({ user, initialTasks, initialSubmissions, initi
         onClick={handleRequestSubmit}
         style={{ marginTop: "1rem" }}
       >
-        ✅ 申請する
+        {L.buttonSubmit}
       </Button>
 
       {pendingRequest.length > 0 && (
@@ -142,7 +146,7 @@ export default function TaskForm({ user, initialTasks, initialSubmissions, initi
             style={{ background: "none", border: "none", padding: 0, cursor: "pointer", display: "flex", alignItems: "center", gap: "0.4rem", color: "#757575", width: "100%" }}
           >
             <span style={{ display: "inline-block", transition: "transform 0.2s", transform: pendingRequestOpen ? "rotate(90deg)" : "rotate(0deg)" }}>▶</span>
-            ⏳ 承認待ち（{pendingRequest.length}件）
+            {L.pendingCount(pendingRequest.length)}
           </button>
           <div style={{ overflow: "hidden", maxHeight: pendingRequestOpen ? "500px" : "0", transition: "max-height 0.3s ease" }}>
             <ul style={{ listStyle: "none", padding: 0, margin: "0.5rem 0 0", display: "flex", flexDirection: "column", gap: "0.25rem" }}>
@@ -161,7 +165,7 @@ export default function TaskForm({ user, initialTasks, initialSubmissions, initi
 
   const tabRewards = (
     <div>
-      <p style={{ marginBottom: "0.75rem" }}>💰 現在のポイント: <strong>{userPoint}pt</strong></p>
+      <p style={{ marginBottom: "0.75rem" }}>{L.currentPoints(userPoint)}</p>
       {userRewards.length > 0 ? (
         <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
           {userRewards.map((reward) => (
@@ -171,12 +175,12 @@ export default function TaskForm({ user, initialTasks, initialSubmissions, initi
               disabled={isSubmitting || userPoint < Number(reward.point)}
               onClick={() => handleUsePoints(reward)}
             >
-              {reward.name}（{reward.point}pt）と交換する
+              {L.buttonExchange(reward.name, reward.point)}
             </Button>
           ))}
         </div>
       ) : (
-        <p style={{ color: "#9ca3af", fontSize: "0.875rem" }}>交換できる報酬がありません</p>
+        <p style={{ color: "#9ca3af", fontSize: "0.875rem" }}>{L.noRewards}</p>
       )}
     </div>
   );
@@ -185,9 +189,9 @@ export default function TaskForm({ user, initialTasks, initialSubmissions, initi
     <div className="task-form">
       <Tabs
         items={[
-          { id: "submit",  label: "✅ タスク完了", content: tabSubmit },
-          { id: "request", label: "📝 新規タスク追加", content: tabRequest },
-          { id: "rewards", label: "🎁 ポイント交換", content: tabRewards },
+          { id: "submit",  label: L.tabSubmit,  content: tabSubmit },
+          { id: "request", label: L.tabRequest, content: tabRequest },
+          { id: "rewards", label: L.tabRewards, content: tabRewards },
         ]}
       />
     </div>

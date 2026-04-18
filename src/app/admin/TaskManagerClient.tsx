@@ -9,6 +9,10 @@ import TaskCard from "@molecule/TaskCard";
 import { useTaskManager } from "@hook/useTaskManager";
 import { Task } from "@type/task";
 import { User } from "@type/user";
+import { LABELS } from "@const/labels";
+
+const L = LABELS.taskManager;
+const C = LABELS.common;
 
 interface Props {
   users: User[];
@@ -20,72 +24,61 @@ export default function TaskManagerClient({ users, initialTasks }: Props) {
 
   const {
     tasks,
-    sortKey,
-    sortDir,
-    handleSort,
-    sortKey2,
-    sortDir2,
-    handleSort2,
-    filterWhose,
-    setFilterWhose,
-    form,
-    setForm,
-    editingId,
-    setEditingId,
-    editForm,
-    setEditForm,
+    sortKey, sortDir, handleSort,
+    sortKey2, sortDir2, handleSort2,
+    filterWhose, setFilterWhose,
+    form, setForm,
+    editingId, setEditingId,
+    editForm, setEditForm,
     isLoading,
-    handleCreate,
-    startEdit,
-    handleUpdate,
-    handleDelete,
+    handleCreate, startEdit, handleUpdate, handleDelete,
   } = useTaskManager(initialTasks);
 
   type SortKey = "task" | "point";
   const SORT_OPTIONS: { value: SortKey; label: string }[] = [
-    { value: "task", label: "タスク名" },
-    { value: "point", label: "ポイント" },
+    { value: "task",  label: L.sortByTask },
+    { value: "point", label: L.sortByPoint },
   ];
 
   return (
     <div>
       {/* 追加フォーム */}
       <Card variant="add" className="task-add-card">
-        <h2 style={{ marginBottom: "1rem" }}>タスクを追加</h2>
+        <h2 style={{ marginBottom: "1rem" }}>{L.headingAdd}</h2>
         <form onSubmit={handleCreate} className="task-add-form">
           <TextInput
-            placeholder="タスク名"
+            placeholder={L.placeholderTask}
             value={form.task}
             onChange={(e) => setForm({ ...form, task: e.target.value })}
           />
           <TextInput
-            placeholder="ポイント"
+            placeholder={L.placeholderPoint}
             type="number"
             value={form.point}
             onChange={(e) => setForm({ ...form, point: e.target.value })}
             style={{ maxWidth: "120px" }}
           />
           <SelectInput value={form.whose} onChange={(e) => setForm({ ...form, whose: e.target.value })}>
-            <option value="" disabled>担当者を選択</option>
+            <option value="" disabled>{C.selectPerson}</option>
             {users.map((u) => (
               <option key={u.id} value={u.id}>{u.user}</option>
             ))}
           </SelectInput>
           <Button type="submit" variant="primary" disabled={isLoading}>
-            追加
+            {C.add}
           </Button>
         </form>
       </Card>
 
       {/* タスク一覧 */}
       <section>
-        <h2 style={{ marginBottom: "1rem" }}>タスク一覧</h2>
+        <h2 style={{ marginBottom: "1rem" }}>{L.headingList}</h2>
 
         {/* フィルター */}
         <div className="task-filter-bar">
-          <span className="task-sort-label">担当者</span>
+          <span className="task-sort-label">{C.filterPerson}</span>
           <SelectInput value={filterWhose} onChange={(e) => setFilterWhose(e.target.value)}>
-            <option value="">全員</option>
+            <option value="">{C.filterAll}</option>
             {users.map((u) => (
               <option key={u.id} value={u.id}>{u.user}</option>
             ))}
@@ -94,33 +87,30 @@ export default function TaskManagerClient({ users, initialTasks }: Props) {
 
         {/* スマホ: ソート */}
         <div className="task-sort-bar">
-          <span className="task-sort-label">第1</span>
-          <SelectInput
-            value={sortKey}
-            onChange={(e) => handleSort(e.target.value as SortKey)}
-          >
+          <span className="task-sort-label">{C.sortFirst}</span>
+          <SelectInput value={sortKey} onChange={(e) => handleSort(e.target.value as SortKey)}>
             {SORT_OPTIONS.map((o) => (
               <option key={o.value} value={o.value}>{o.label}</option>
             ))}
           </SelectInput>
           <Button variant="logout" onClick={() => handleSort(sortKey)}>
-            {sortDir === "asc" ? "↑" : "↓"}
+            {sortDir === "asc" ? C.sortAsc : C.sortDesc}
           </Button>
         </div>
         <div className="task-sort-bar">
-          <span className="task-sort-label">第2</span>
+          <span className="task-sort-label">{C.sortSecond}</span>
           <SelectInput
             value={sortKey2 ?? ""}
             onChange={(e) => handleSort2((e.target.value || null) as SortKey | null)}
           >
-            <option value="">なし</option>
+            <option value="">{C.sortNone}</option>
             {SORT_OPTIONS.filter((o) => o.value !== sortKey).map((o) => (
               <option key={o.value} value={o.value}>{o.label}</option>
             ))}
           </SelectInput>
           {sortKey2 && (
             <Button variant="logout" onClick={() => handleSort2(sortKey2)}>
-              {sortDir2 === "asc" ? "↑" : "↓"}
+              {sortDir2 === "asc" ? C.sortAsc : C.sortDesc}
             </Button>
           )}
         </div>
@@ -157,9 +147,9 @@ export default function TaskManagerClient({ users, initialTasks }: Props) {
         {/* PC: テーブル */}
         <AdminTable
           columns={[
-            { key: "task",    label: "タスク名", sortable: true },
-            { key: "point",   label: "ポイント", sortable: true },
-            { key: "whose",   label: "担当者" },
+            { key: "task",    label: L.colTask,   sortable: true },
+            { key: "point",   label: L.colPoint,  sortable: true },
+            { key: "whose",   label: L.colPerson },
             { key: "actions", label: "" },
           ]}
           sortKey={sortKey}
@@ -195,8 +185,8 @@ export default function TaskManagerClient({ users, initialTasks }: Props) {
                     </SelectInput>
                   </td>
                   <td className="task-table__actions">
-                    <Button variant="approve" disabled={isLoading} onClick={() => handleUpdate(t.id)}>保存</Button>
-                    <Button variant="logout" onClick={() => setEditingId(null)}>キャンセル</Button>
+                    <Button variant="approve" disabled={isLoading} onClick={() => handleUpdate(t.id)}>{C.save}</Button>
+                    <Button variant="logout" onClick={() => setEditingId(null)}>{C.cancel}</Button>
                   </td>
                 </>
               ) : (
@@ -205,8 +195,8 @@ export default function TaskManagerClient({ users, initialTasks }: Props) {
                   <td>{t.point}pt</td>
                   <td>{userName(t.whose)}</td>
                   <td className="task-table__actions">
-                    <Button variant="primary" disabled={isLoading} onClick={() => startEdit(t)}>編集</Button>
-                    <Button variant="disapprove" disabled={isLoading} onClick={() => handleDelete(t.id)}>削除</Button>
+                    <Button variant="primary" disabled={isLoading} onClick={() => startEdit(t)}>{C.edit}</Button>
+                    <Button variant="disapprove" disabled={isLoading} onClick={() => handleDelete(t.id)}>{C.delete}</Button>
                   </td>
                 </>
               )}

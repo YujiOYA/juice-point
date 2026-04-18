@@ -7,6 +7,10 @@ import PointsBadge from "@molecule/PointsBadge";
 import { useLogin } from "@hook/useLogin";
 import { Submission } from "@type/submission";
 import { User } from "@type/user";
+import { AUTHORITY } from "@const/constDefinition";
+import { LABELS } from "@const/labels";
+
+const L = LABELS.login;
 
 interface Props {
   users: User[];
@@ -24,9 +28,9 @@ export default function LoginForm({ users, loggedInUser, setLoggedInUser, submis
   if (!loggedInUser) {
     return (
       <div>
-        <label className="login-label">👤 だれがつかうの？</label>
+        <label className="login-label">{L.labelWho}</label>
         <SelectInput className="login-select" value={selectedId} onChange={handleSelectChange}>
-          <option value="" disabled>えらんでね</option>
+          <option value="" disabled>{L.placeholderSelect}</option>
           {users.map((u) => (
             <option key={u.id} value={u.id}>{u.user}</option>
           ))}
@@ -35,14 +39,14 @@ export default function LoginForm({ users, loggedInUser, setLoggedInUser, submis
         {selectedId && (
           <form onSubmit={handleLogin}>
             <div style={{ marginTop: "1rem" }}>
-              <label className="login-label">🔑 PIN</label>
+              <label className="login-label">{L.labelPin}</label>
               <input
                 ref={pinRef}
                 type="password"
                 value={pin}
                 onChange={(e) => setPin(e.target.value)}
                 className="input"
-                placeholder="PINを入力"
+                placeholder={L.placeholderPin}
                 inputMode="numeric"
               />
             </div>
@@ -51,7 +55,7 @@ export default function LoginForm({ users, loggedInUser, setLoggedInUser, submis
 
             <div style={{ marginTop: "1rem" }}>
               <Button type="submit" variant="primary" disabled={isLoading || !pin}>
-                ログイン
+                {L.buttonLogin}
               </Button>
             </div>
           </form>
@@ -62,10 +66,10 @@ export default function LoginForm({ users, loggedInUser, setLoggedInUser, submis
 
   return (
     <div className="user-info">
-      <p className="user-name">👤 {loggedInUser.user} でログイン中</p>
-      {loggedInUser.authority !== "admin" && <PointsBadge points={userPoint} />}
+      <p className="user-name">{L.loggedInAs(loggedInUser.user)}</p>
+      {loggedInUser.authority !== AUTHORITY.admin && <PointsBadge points={userPoint} />}
       <Button variant="logout" onClick={handleLogout}>
-        ログアウト
+        {L.buttonLogout}
       </Button>
     </div>
   );

@@ -6,6 +6,11 @@ import UserPointsSummary from "@molecule/UserPointsSummary";
 import { useManagerPanel } from "@hook/useManagerPanel";
 import { Submission, SubmissionType } from "@type/submission";
 import { User } from "@type/user";
+import { AUTHORITY } from "@const/constDefinition";
+import { LABELS } from "@const/labels";
+
+const L  = LABELS.manager;
+const C  = LABELS.common;
 
 interface Props {
   submissions: Submission[];
@@ -19,10 +24,10 @@ export default function ManagerPanel({ submissions, users }: Props) {
 
   return (
     <div>
-      <p className="manager-title">📋 申請一覧</p>
+      <p className="manager-title">{L.titlePending}</p>
 
       {pending.length === 0 ? (
-        <p className="no-submissions">申請はありません 🎉</p>
+        <p className="no-submissions">{L.noPending}</p>
       ) : (
         <>
           {/* スマホ: カード形式 */}
@@ -48,13 +53,13 @@ export default function ManagerPanel({ submissions, users }: Props) {
           <table className="manager-table">
             <thead>
               <tr>
-                <th>タスク</th>
-                <th>実施者</th>
-                <th>ポイント</th>
-                <th>ステータス</th>
-                <th>申請日時</th>
-                <th>承認</th>
-                <th>却下</th>
+                <th>{L.thTask}</th>
+                <th>{L.thPerson}</th>
+                <th>{L.thPoint}</th>
+                <th>{L.thStatus}</th>
+                <th>{L.thDate}</th>
+                <th>{C.approve}</th>
+                <th>{C.reject}</th>
               </tr>
             </thead>
             <tbody>
@@ -66,7 +71,7 @@ export default function ManagerPanel({ submissions, users }: Props) {
                       {isOneTime && (
                         <>
                           <span style={{ display: "inline-block", fontSize: "0.7rem", fontWeight: 600, color: "#fff", background: "#f59e0b", borderRadius: "4px", padding: "0.1rem 0.4rem" }}>
-                            未登録タスク
+                            {L.unregisteredTask}
                           </span>
                           <br />
                         </>
@@ -94,12 +99,12 @@ export default function ManagerPanel({ submissions, users }: Props) {
                         disabled={isDoing}
                         onClick={() => isOneTime ? actions.approveOneTimeTask(s.id, editPoint.get(s.id, s.point)) : actions.approve(s.id)}
                       >
-                        承認
+                        {C.approve}
                       </Button>
                     </td>
                     <td>
                       <Button variant="disapprove" disabled={isDoing} onClick={() => actions.disapprove(s.id)}>
-                        却下
+                        {C.reject}
                       </Button>
                     </td>
                   </tr>
@@ -112,7 +117,7 @@ export default function ManagerPanel({ submissions, users }: Props) {
 
       {rejected.length > 0 && (
         <div style={{ marginTop: "2rem" }}>
-          <p className="manager-title">❌ 却下済み</p>
+          <p className="manager-title">{L.titleRejected}</p>
 
           {/* スマホ: カード形式 */}
           <div className="submission-list">
@@ -132,13 +137,13 @@ export default function ManagerPanel({ submissions, users }: Props) {
           <table className="manager-table">
             <thead>
               <tr>
-                <th>タスク</th>
-                <th>実施者</th>
-                <th>ポイント</th>
-                <th>ステータス</th>
-                <th>申請日時</th>
-                <th>戻す</th>
-                <th>削除</th>
+                <th>{L.thTask}</th>
+                <th>{L.thPerson}</th>
+                <th>{L.thPoint}</th>
+                <th>{L.thStatus}</th>
+                <th>{L.thDate}</th>
+                <th>{C.restore}</th>
+                <th>{C.delete}</th>
               </tr>
             </thead>
             <tbody>
@@ -150,7 +155,7 @@ export default function ManagerPanel({ submissions, users }: Props) {
                       {isOneTime && (
                         <>
                           <span style={{ display: "inline-block", fontSize: "0.7rem", fontWeight: 600, color: "#fff", background: "#f59e0b", borderRadius: "4px", padding: "0.1rem 0.4rem" }}>
-                            未登録タスク
+                            {L.unregisteredTask}
                           </span>
                           <br />
                         </>
@@ -163,12 +168,12 @@ export default function ManagerPanel({ submissions, users }: Props) {
                     <td>{new Date(s.createdAt).toLocaleString("ja-JP")}</td>
                     <td>
                       <Button variant="approve" disabled={isDoing} onClick={() => actions.restore(s.id)}>
-                        🔄 戻す
+                        {C.restore}
                       </Button>
                     </td>
                     <td>
                       <Button variant="disapprove" disabled={isDoing} onClick={() => actions.delete(s.id)}>
-                        🗑️ 削除
+                        {C.deleteIcon}
                       </Button>
                     </td>
                   </tr>
@@ -179,13 +184,13 @@ export default function ManagerPanel({ submissions, users }: Props) {
         </div>
       )}
 
-      <p className="manager-title" style={{ marginTop: "2rem" }}>💰 未使用ポイント</p>
-      <UserPointsSummary users={users.filter((u) => u.authority !== "admin")} submissions={submissions} />
+      <p className="manager-title" style={{ marginTop: "2rem" }}>{L.titlePoints}</p>
+      <UserPointsSummary users={users.filter((u) => u.authority !== AUTHORITY.admin)} submissions={submissions} />
 
-      <p className="manager-title" style={{ marginTop: "2rem" }}>📝 タスク追加リクエスト</p>
+      <p className="manager-title" style={{ marginTop: "2rem" }}>{L.titleTaskRequests}</p>
 
       {pendingTaskRequests.length === 0 ? (
-        <p className="no-submissions">リクエストはありません 🎉</p>
+        <p className="no-submissions">{L.noRequests}</p>
       ) : (
         <>
           <div className="submission-list">
@@ -204,13 +209,13 @@ export default function ManagerPanel({ submissions, users }: Props) {
           <table className="manager-table">
             <thead>
               <tr>
-                <th>タスク名</th>
-                <th>リクエスト者</th>
-                <th>希望ポイント</th>
-                <th>ステータス</th>
-                <th>申請日時</th>
-                <th>承認</th>
-                <th>却下</th>
+                <th>{L.thTaskName}</th>
+                <th>{L.thRequester}</th>
+                <th>{L.thRequestedPt}</th>
+                <th>{L.thStatus}</th>
+                <th>{L.thDate}</th>
+                <th>{C.approve}</th>
+                <th>{C.reject}</th>
               </tr>
             </thead>
             <tbody>
@@ -223,12 +228,12 @@ export default function ManagerPanel({ submissions, users }: Props) {
                   <td>{new Date(s.createdAt).toLocaleString("ja-JP")}</td>
                   <td>
                     <Button variant="approve" disabled={isDoing} onClick={() => actions.approveTaskRequest(s)}>
-                      承認
+                      {C.approve}
                     </Button>
                   </td>
                   <td>
                     <Button variant="disapprove" disabled={isDoing} onClick={() => actions.disapprove(s.id)}>
-                      却下
+                      {C.reject}
                     </Button>
                   </td>
                 </tr>
@@ -240,7 +245,7 @@ export default function ManagerPanel({ submissions, users }: Props) {
 
       {rejectedTaskRequests.length > 0 && (
         <div style={{ marginTop: "2rem" }}>
-          <p className="manager-title">❌ 却下済みタスク追加リクエスト</p>
+          <p className="manager-title">{L.titleRejectedRequests}</p>
           <div className="submission-list">
             {rejectedTaskRequests.map((s) => (
               <SubmissionCard
@@ -256,13 +261,13 @@ export default function ManagerPanel({ submissions, users }: Props) {
           <table className="manager-table">
             <thead>
               <tr>
-                <th>タスク名</th>
-                <th>リクエスト者</th>
-                <th>希望ポイント</th>
-                <th>ステータス</th>
-                <th>申請日時</th>
-                <th>戻す</th>
-                <th>削除</th>
+                <th>{L.thTaskName}</th>
+                <th>{L.thRequester}</th>
+                <th>{L.thRequestedPt}</th>
+                <th>{L.thStatus}</th>
+                <th>{L.thDate}</th>
+                <th>{C.restore}</th>
+                <th>{C.delete}</th>
               </tr>
             </thead>
             <tbody>
@@ -275,12 +280,12 @@ export default function ManagerPanel({ submissions, users }: Props) {
                   <td>{new Date(s.createdAt).toLocaleString("ja-JP")}</td>
                   <td>
                     <Button variant="approve" disabled={isDoing} onClick={() => actions.restore(s.id)}>
-                      🔄 戻す
+                      {C.restore}
                     </Button>
                   </td>
                   <td>
                     <Button variant="disapprove" disabled={isDoing} onClick={() => actions.delete(s.id)}>
-                      🗑️ 削除
+                      {C.deleteIcon}
                     </Button>
                   </td>
                 </tr>
