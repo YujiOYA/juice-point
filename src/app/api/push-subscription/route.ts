@@ -2,25 +2,34 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { deletePushSubscription, savePushSubscription } from "@lib/dynamoDbApi";
 import { getSessionUser, unauthorized } from "@lib/authGuard";
+import { pushSubscriptionDeleteSchema, pushSubscriptionPostSchema } from "@lib/schemas";
 
 export async function POST(req: NextRequest) {
   const user = await getSessionUser();
   if (!user) return unauthorized();
-  const { endpoint, subscription } = await req.json();
-  if (!endpoint || !subscription) {
-    return NextResponse.json({ error: "Invalid body" }, { status: 400 });
+
+  const parsed = pushSubscriptionPostSchema.safeParse(await req.json());
+  if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
+
+  try {
+    await savePushSubscription(parsed.data.endpoint, JSON.stringify(parsed.data.subscription));
+    return NextResponse.json({ ok: true });
+  } catch (e) {
+    return NextResponse.json({ error: String(e) }, { status: 500 });
   }
-  await savePushSubscription(endpoint, JSON.stringify(subscription));
-  return NextResponse.json({ ok: true });
 }
 
 export async function DELETE(req: NextRequest) {
   const user = await getSessionUser();
   if (!user) return unauthorized();
-  const { endpoint } = await req.json();
-  if (!endpoint) {
-    return NextResponse.json({ error: "Invalid body" }, { status: 400 });
+
+  const parsed = pushSubscriptionDeleteSchema.safeParse(await req.json());
+  if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
+
+  try {
+    await deletePushSubscription(parsed.data.endpoint);
+    return NextResponse.json({ ok: true });
+  } catch (e) {
+    return NextResponse.json({ error: String(e) }, { status: 500 });
   }
-  await deletePushSubscription(endpoint);
-  return NextResponse.json({ ok: true });
 }
