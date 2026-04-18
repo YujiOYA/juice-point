@@ -4,6 +4,9 @@ import { z } from "zod";
 
 const id = z.string().min(1);
 const nonEmpty = z.string().min(1);
+const positivePoint = z.string().refine((v) => Number.isInteger(Number(v)) && Number(v) > 0, {
+  message: "1以上の整数を入力してください",
+});
 
 // ===== auth =====
 
@@ -22,16 +25,16 @@ export const setupSchema = z.object({
 // ===== tasks =====
 
 export const taskPostSchema = z.discriminatedUnion("type", [
-  z.object({ type: z.literal("create"), task: nonEmpty, point: nonEmpty, whose: nonEmpty }),
-  z.object({ type: z.literal("update"), id, task: nonEmpty, point: nonEmpty, whose: nonEmpty }),
+  z.object({ type: z.literal("create"), task: nonEmpty, point: positivePoint, whose: nonEmpty }),
+  z.object({ type: z.literal("update"), id, task: nonEmpty, point: positivePoint, whose: nonEmpty }),
   z.object({ type: z.literal("delete"), id }),
 ]);
 
 // ===== rewards =====
 
 export const rewardPostSchema = z.discriminatedUnion("type", [
-  z.object({ type: z.literal("create"), name: nonEmpty, point: nonEmpty, whose: nonEmpty }),
-  z.object({ type: z.literal("update"), id, name: nonEmpty, point: nonEmpty, whose: nonEmpty }),
+  z.object({ type: z.literal("create"), name: nonEmpty, point: positivePoint, whose: nonEmpty }),
+  z.object({ type: z.literal("update"), id, name: nonEmpty, point: positivePoint, whose: nonEmpty }),
   z.object({ type: z.literal("delete"), id }),
 ]);
 
