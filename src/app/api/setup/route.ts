@@ -26,6 +26,7 @@ export async function POST(req: NextRequest) {
     if (e instanceof ConditionalCheckFailedException) {
       return NextResponse.json({ error: "Already initialized" }, { status: 403 });
     }
-    return NextResponse.json({ error: String(e) }, { status: 500 });
+    console.error(e);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

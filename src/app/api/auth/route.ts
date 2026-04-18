@@ -21,6 +21,7 @@ export async function POST(req: NextRequest) {
     await session.save();
     return NextResponse.json(user);
   } catch (e) {
-    return NextResponse.json({ error: String(e) }, { status: 500 });
+    console.error(e);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
