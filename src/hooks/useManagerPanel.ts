@@ -96,18 +96,15 @@ export function useManagerPanel(submissions: Submission[]) {
 
   return {
     isDoing,
-    pending,
-    rejected,
-    pendingTaskRequests,
-    rejectedTaskRequests,
-    editedPoints,
-    getEditedPoint,
-    setEditedPoint,
-    handleApprove,
-    handleApproveOneTimeTask,
-    handleDisapprove,
-    handleRestore,
-    handleDelete,
-    handleApproveTaskRequest,
+    data: { pending, rejected, pendingTaskRequests, rejectedTaskRequests },
+    editPoint: { get: getEditedPoint, set: setEditedPoint },
+    actions: {
+      approve: handleApprove,
+      approveOneTimeTask: handleApproveOneTimeTask,
+      disapprove: handleDisapprove,
+      restore: handleRestore,
+      delete: handleDelete,
+      approveTaskRequest: handleApproveTaskRequest,
+    },
   };
 }

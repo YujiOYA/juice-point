@@ -13,7 +13,8 @@ interface Props {
 }
 
 export default function ManagerPanel({ submissions, users }: Props) {
-  const { isDoing, pending, rejected, pendingTaskRequests, rejectedTaskRequests, getEditedPoint, setEditedPoint, handleApprove, handleApproveOneTimeTask, handleDisapprove, handleRestore, handleDelete, handleApproveTaskRequest } = useManagerPanel(submissions);
+  const { isDoing, data, editPoint, actions } = useManagerPanel(submissions);
+  const { pending, rejected, pendingTaskRequests, rejectedTaskRequests } = data;
   const userName = (id: string) => users.find((u) => u.id === id)?.user ?? id;
 
   return (
@@ -34,10 +35,10 @@ export default function ManagerPanel({ submissions, users }: Props) {
                   submission={s}
                   whoseName={userName(s.whoDid)}
                   isDoing={isDoing}
-                  editablePoint={isOneTime ? getEditedPoint(s.id, s.point) : undefined}
-                  onPointChange={isOneTime ? (point) => setEditedPoint(s.id, point) : undefined}
-                  onApprove={isOneTime ? () => handleApproveOneTimeTask(s.id, getEditedPoint(s.id, s.point)) : handleApprove}
-                  onDisapprove={handleDisapprove}
+                  editablePoint={isOneTime ? editPoint.get(s.id, s.point) : undefined}
+                  onPointChange={isOneTime ? (point) => editPoint.set(s.id, point) : undefined}
+                  onApprove={isOneTime ? () => actions.approveOneTimeTask(s.id, editPoint.get(s.id, s.point)) : actions.approve}
+                  onDisapprove={actions.disapprove}
                 />
               );
             })}
@@ -77,8 +78,8 @@ export default function ManagerPanel({ submissions, users }: Props) {
                       {isOneTime ? (
                         <input
                           type="number"
-                          value={getEditedPoint(s.id, s.point)}
-                          onChange={(e) => setEditedPoint(s.id, e.target.value)}
+                          value={editPoint.get(s.id, s.point)}
+                          onChange={(e) => editPoint.set(s.id, e.target.value)}
                           style={{ width: "4rem", padding: "0.1rem 0.3rem", border: "1px solid #d1d5db", borderRadius: "4px", fontSize: "0.9rem" }}
                         />
                       ) : (
@@ -91,13 +92,13 @@ export default function ManagerPanel({ submissions, users }: Props) {
                       <Button
                         variant="approve"
                         disabled={isDoing}
-                        onClick={() => isOneTime ? handleApproveOneTimeTask(s.id, getEditedPoint(s.id, s.point)) : handleApprove(s.id)}
+                        onClick={() => isOneTime ? actions.approveOneTimeTask(s.id, editPoint.get(s.id, s.point)) : actions.approve(s.id)}
                       >
                         承認
                       </Button>
                     </td>
                     <td>
-                      <Button variant="disapprove" disabled={isDoing} onClick={() => handleDisapprove(s.id)}>
+                      <Button variant="disapprove" disabled={isDoing} onClick={() => actions.disapprove(s.id)}>
                         却下
                       </Button>
                     </td>
@@ -121,8 +122,8 @@ export default function ManagerPanel({ submissions, users }: Props) {
                 submission={s}
                 whoseName={userName(s.whoDid)}
                 isDoing={isDoing}
-                onRestore={handleRestore}
-                onDelete={handleDelete}
+                onRestore={actions.restore}
+                onDelete={actions.delete}
               />
             ))}
           </div>
@@ -161,12 +162,12 @@ export default function ManagerPanel({ submissions, users }: Props) {
                     <td>{s.status}</td>
                     <td>{new Date(s.createdAt).toLocaleString("ja-JP")}</td>
                     <td>
-                      <Button variant="approve" disabled={isDoing} onClick={() => handleRestore(s.id)}>
+                      <Button variant="approve" disabled={isDoing} onClick={() => actions.restore(s.id)}>
                         🔄 戻す
                       </Button>
                     </td>
                     <td>
-                      <Button variant="disapprove" disabled={isDoing} onClick={() => handleDelete(s.id)}>
+                      <Button variant="disapprove" disabled={isDoing} onClick={() => actions.delete(s.id)}>
                         🗑️ 削除
                       </Button>
                     </td>
@@ -194,8 +195,8 @@ export default function ManagerPanel({ submissions, users }: Props) {
                 submission={s}
                 whoseName={userName(s.whoDid)}
                 isDoing={isDoing}
-                onApprove={() => handleApproveTaskRequest(s)}
-                onDisapprove={handleDisapprove}
+                onApprove={() => actions.approveTaskRequest(s)}
+                onDisapprove={actions.disapprove}
               />
             ))}
           </div>
@@ -221,12 +222,12 @@ export default function ManagerPanel({ submissions, users }: Props) {
                   <td>{s.status}</td>
                   <td>{new Date(s.createdAt).toLocaleString("ja-JP")}</td>
                   <td>
-                    <Button variant="approve" disabled={isDoing} onClick={() => handleApproveTaskRequest(s)}>
+                    <Button variant="approve" disabled={isDoing} onClick={() => actions.approveTaskRequest(s)}>
                       承認
                     </Button>
                   </td>
                   <td>
-                    <Button variant="disapprove" disabled={isDoing} onClick={() => handleDisapprove(s.id)}>
+                    <Button variant="disapprove" disabled={isDoing} onClick={() => actions.disapprove(s.id)}>
                       却下
                     </Button>
                   </td>
@@ -247,8 +248,8 @@ export default function ManagerPanel({ submissions, users }: Props) {
                 submission={s}
                 whoseName={userName(s.whoDid)}
                 isDoing={isDoing}
-                onRestore={handleRestore}
-                onDelete={handleDelete}
+                onRestore={actions.restore}
+                onDelete={actions.delete}
               />
             ))}
           </div>
@@ -273,12 +274,12 @@ export default function ManagerPanel({ submissions, users }: Props) {
                   <td>{s.status}</td>
                   <td>{new Date(s.createdAt).toLocaleString("ja-JP")}</td>
                   <td>
-                    <Button variant="approve" disabled={isDoing} onClick={() => handleRestore(s.id)}>
+                    <Button variant="approve" disabled={isDoing} onClick={() => actions.restore(s.id)}>
                       🔄 戻す
                     </Button>
                   </td>
                   <td>
-                    <Button variant="disapprove" disabled={isDoing} onClick={() => handleDelete(s.id)}>
+                    <Button variant="disapprove" disabled={isDoing} onClick={() => actions.delete(s.id)}>
                       🗑️ 削除
                     </Button>
                   </td>
