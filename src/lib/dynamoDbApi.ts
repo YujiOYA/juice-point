@@ -116,13 +116,31 @@ export async function verifyUserPin(id: string, pin: string): Promise<User | nul
   );
   const item = res.Items?.[0];
   if (!item) return null;
-  const match = await bcrypt.compare(pin, item.pin?.S ?? "");
+
+  const storedPin = item.pin?.S ?? "";
+  const isBcrypt = storedPin.startsWith("$2b$") || storedPin.startsWith("$2a$");
+
+  let match: boolean;
+  if (isBcrypt) {
+    match = await bcrypt.compare(pin, storedPin);
+  } else {
+    // 平文PIN（移行前）：そのまま比較し、成功時に自動ハッシュ化
+    match = storedPin === pin;
+    if (match) {
+      const hashedPin = await bcrypt.hash(pin, 10);
+      await dynamo.send(
+        new UpdateItemCommand({
+          TableName: TABLE_USER,
+          Key: { id: { S: id } },
+          UpdateExpression: "SET pin = :pin",
+          ExpressionAttributeValues: { ":pin": { S: hashedPin } },
+        }),
+      );
+    }
+  }
+
   if (!match) return null;
-  return {
-    id: item.id.S!,
-    user: item.user.S!,
-    authority: item.authority.S!,
-  };
+  return { id: item.id.S!, user: item.user.S!, authority: item.authority.S! };
 }
 
 export async function getTasks(): Promise<Task[]> {
