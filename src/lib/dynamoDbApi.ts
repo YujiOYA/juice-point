@@ -2,6 +2,7 @@ import { randomUUID } from "crypto";
 
 import bcrypt from "bcryptjs";
 import {
+  AttributeValue,
   ScanCommand,
   QueryCommand,
   PutItemCommand,
@@ -16,30 +17,45 @@ import { Task } from "@type/task";
 import { User } from "@type/user";
 import { ENV } from "@const/constDefinition";
 
-const TABLE_USER             = ENV.tableUser;
-const TABLE_TASK             = ENV.tableTask;
-const TABLE_SUBMISSIONS      = ENV.tableSubmissions;
-const TABLE_REWARD           = ENV.tableReward;
+const TABLE_USER               = ENV.tableUser;
+const TABLE_TASK               = ENV.tableTask;
+const TABLE_SUBMISSIONS        = ENV.tableSubmissions;
+const TABLE_REWARD             = ENV.tableReward;
 const TABLE_PUSH_SUBSCRIPTIONS = ENV.tablePushSubs;
 
+/** ScanCommand で全件取得するページネーションヘルパー */
+async function scanAll(tableName: string): Promise<Record<string, AttributeValue>[]> {
+  const items: Record<string, AttributeValue>[] = [];
+  let lastKey: Record<string, AttributeValue> | undefined;
+  do {
+    const res = await dynamo.send(
+      new ScanCommand({ TableName: tableName, ExclusiveStartKey: lastKey }),
+    );
+    items.push(...(res.Items ?? []));
+    lastKey = res.LastEvaluatedKey;
+  } while (lastKey);
+  return items;
+}
+
 export async function getUsers(id?: string): Promise<User[]> {
-  let res;
   if (id) {
-    res = await dynamo.send(
+    const res = await dynamo.send(
       new QueryCommand({
         TableName: TABLE_USER,
         KeyConditionExpression: "id = :id",
         ExpressionAttributeValues: { ":id": { S: id } },
-        Limit: 100,
       }),
     );
-  } else {
-    res = await dynamo.send(
-      new ScanCommand({ TableName: TABLE_USER, Limit: 100 }),
-    );
+    if (!res.Items) return [];
+    return res.Items.map((item) => ({
+      id: item.id.S!,
+      user: item.user.S!,
+      authority: item.authority.S!,
+    }));
   }
-  if (!res.Items) return [];
-  return res.Items.map((item) => ({
+
+  const items = await scanAll(TABLE_USER);
+  return items.map((item) => ({
     id: item.id.S!,
     user: item.user.S!,
     authority: item.authority.S!,
@@ -144,11 +160,8 @@ export async function verifyUserPin(id: string, pin: string): Promise<User | nul
 }
 
 export async function getTasks(): Promise<Task[]> {
-  const res = await dynamo.send(
-    new ScanCommand({ TableName: TABLE_TASK, Limit: 100 }),
-  );
-  if (!res.Items) return [];
-  return res.Items.map((item) => ({
+  const items = await scanAll(TABLE_TASK);
+  return items.map((item) => ({
     id: item.id.S!,
     task: item.task.S!,
     point: item.point.S!,
@@ -157,11 +170,8 @@ export async function getTasks(): Promise<Task[]> {
 }
 
 export async function getSubmissions(): Promise<Submission[]> {
-  const res = await dynamo.send(
-    new ScanCommand({ TableName: TABLE_SUBMISSIONS, Limit: 500 }),
-  );
-  if (!res.Items) return [];
-  return res.Items.map((item) => ({
+  const items = await scanAll(TABLE_SUBMISSIONS);
+  return items.map((item) => ({
     id: item.id.S!,
     whatYouDid: item.whatYouDid.S!,
     whoDid: item.whoDid.S!,
@@ -276,11 +286,8 @@ export async function updateSubmissionStatus(
 // ===== Rewards =====
 
 export async function getRewards(): Promise<Reward[]> {
-  const res = await dynamo.send(
-    new ScanCommand({ TableName: TABLE_REWARD, Limit: 100 }),
-  );
-  if (!res.Items) return [];
-  return res.Items.map((item) => ({
+  const items = await scanAll(TABLE_REWARD);
+  return items.map((item) => ({
     id: item.id.S!,
     name: item.name.S!,
     point: item.point.S!,
@@ -351,11 +358,8 @@ export async function updateReward(id: string, data: { name: string; point: stri
 // ===== Push Subscriptions =====
 
 export async function getPushSubscriptions(): Promise<string[]> {
-  const res = await dynamo.send(
-    new ScanCommand({ TableName: TABLE_PUSH_SUBSCRIPTIONS, Limit: 100 }),
-  );
-  if (!res.Items) return [];
-  return res.Items.map((item) => item.subscription.S!);
+  const items = await scanAll(TABLE_PUSH_SUBSCRIPTIONS);
+  return items.map((item) => item.subscription.S!);
 }
 
 export async function savePushSubscription(endpoint: string, subscription: string): Promise<void> {
