@@ -1,15 +1,109 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
-  <!-- グラス -->
-  <rect x="16" y="16" width="32" height="40" rx="4" ry="4" fill="#ffffff" stroke="#000000" stroke-width="2"/>
-  <!-- ジュース -->
-  <rect x="16" y="24" width="32" height="32" fill="#FFA500"/>
-  <!-- ストロー -->
-  <rect x="40" y="4" width="4" height="20" fill="orange"/>
-  <line x1="40" y1="4" x2="44" y2="24" stroke="white" stroke-width="2"/>
-  <!-- オレンジのスライス -->
-  <circle cx="48" cy="24" r="6" fill="#FFA500" stroke="#FF8C00" stroke-width="2"/>
-  <line x1="48" y1="24" x2="48" y2="18" stroke="#FF8C00" stroke-width="1"/>
-  <line x1="48" y1="24" x2="52" y2="26" stroke="#FF8C00" stroke-width="1"/>
-  <line x1="48" y1="24" x2="44" y2="26" stroke="#FF8C00" stroke-width="1"/>
-  <line x1="48" y1="24" x2="46" y2="20" stroke="#FF8C00" stroke-width="1"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <!-- App background -->
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FF8C20"/>
+      <stop offset="100%" stop-color="#E84400"/>
+    </linearGradient>
+    <linearGradient id="bgShine" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.18)"/>
+      <stop offset="55%" stop-color="rgba(255,255,255,0)"/>
+    </linearGradient>
+    <!-- Juice -->
+    <linearGradient id="juiceGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFD060"/>
+      <stop offset="100%" stop-color="#FF7800"/>
+    </linearGradient>
+    <!-- Glass sheen (frosted) -->
+    <linearGradient id="glassSheen" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%"   stop-color="rgba(255,255,255,0.50)"/>
+      <stop offset="22%"  stop-color="rgba(255,255,255,0.08)"/>
+      <stop offset="78%"  stop-color="rgba(255,255,255,0.04)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,0.32)"/>
+    </linearGradient>
+    <!-- Orange slice -->
+    <radialGradient id="sliceGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%"   stop-color="#FFF5C0"/>
+      <stop offset="45%"  stop-color="#FFBB30"/>
+      <stop offset="100%" stop-color="#FF8000"/>
+    </radialGradient>
+    <!-- Clip to glass shape -->
+    <clipPath id="glassClip">
+      <path d="M174,128 L338,128 L306,400 Q256,418 206,400 Z"/>
+    </clipPath>
+    <!-- Drop shadow on glass -->
+    <filter id="glassShadow" x="-30%" y="-20%" width="160%" height="150%">
+      <feDropShadow dx="4" dy="10" stdDeviation="14" flood-color="rgba(0,0,0,0.22)"/>
+    </filter>
+    <!-- Soft glow on juice surface -->
+    <filter id="juiceGlow" x="-10%" y="-40%" width="120%" height="180%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- ── Background ── -->
+  <rect width="512" height="512" rx="114" fill="url(#bgGrad)"/>
+  <rect width="512" height="512" rx="114" fill="url(#bgShine)"/>
+
+  <!-- ── Ground shadow ── -->
+  <ellipse cx="256" cy="418" rx="82" ry="13" fill="rgba(0,0,0,0.18)"/>
+
+  <!-- ── Juice (clipped inside glass) ── -->
+  <g clip-path="url(#glassClip)">
+    <rect x="154" y="234" width="208" height="190" fill="url(#juiceGrad)"/>
+    <!-- Juice surface sheen -->
+    <ellipse cx="256" cy="234" rx="82" ry="12" fill="#FFD878" filter="url(#juiceGlow)"/>
+    <!-- Bubbles -->
+    <circle cx="224" cy="344" r="7"  fill="rgba(255,255,255,0.32)"/>
+    <circle cx="270" cy="312" r="5"  fill="rgba(255,255,255,0.28)"/>
+    <circle cx="248" cy="372" r="6"  fill="rgba(255,255,255,0.28)"/>
+    <circle cx="294" cy="356" r="8"  fill="rgba(255,255,255,0.25)"/>
+    <circle cx="238" cy="290" r="4"  fill="rgba(255,255,255,0.22)"/>
+  </g>
+
+  <!-- ── Glass body ── -->
+  <path d="M174,128 L338,128 L306,400 Q256,418 206,400 Z"
+        fill="url(#glassSheen)"
+        stroke="rgba(255,255,255,0.82)"
+        stroke-width="5.5"
+        stroke-linejoin="round"
+        filter="url(#glassShadow)"/>
+
+  <!-- ── Top rim ellipse ── -->
+  <ellipse cx="256" cy="128" rx="82" ry="14"
+           fill="rgba(255,255,255,0.22)"
+           stroke="rgba(255,255,255,0.82)"
+           stroke-width="5.5"/>
+
+  <!-- ── Left reflection streak ── -->
+  <path d="M188,152 Q191,274 197,392"
+        stroke="rgba(255,255,255,0.50)"
+        stroke-width="11"
+        stroke-linecap="round"
+        fill="none"/>
+
+  <!-- ── Straw ── -->
+  <rect x="0" y="0" width="18" height="224" rx="9"
+        fill="#CC3300"
+        transform="translate(296,52) rotate(6)"/>
+  <!-- Straw highlight -->
+  <rect x="0" y="0" width="6" height="220" rx="3"
+        fill="rgba(255,255,255,0.42)"
+        transform="translate(299,54) rotate(6)"/>
+
+  <!-- ── Orange slice (on rim, right side) ── -->
+  <circle cx="356" cy="128" r="58"
+          fill="url(#sliceGrad)"
+          stroke="#C85800"
+          stroke-width="5"/>
+  <!-- Peel band -->
+  <circle cx="356" cy="128" r="58"  fill="none" stroke="#C85800"  stroke-width="12" opacity="0.55"/>
+  <circle cx="356" cy="128" r="50"  fill="none" stroke="#FFAA30"  stroke-width="2.5" opacity="0.90"/>
+  <!-- 6 segments -->
+  <line x1="356" y1="70"  x2="356" y2="186" stroke="#C06000" stroke-width="2.5" opacity="0.75"/>
+  <line x1="306" y1="99"  x2="406" y2="157" stroke="#C06000" stroke-width="2.5" opacity="0.75"/>
+  <line x1="306" y1="157" x2="406" y2="99"  stroke="#C06000" stroke-width="2.5" opacity="0.75"/>
+  <!-- Center pip -->
+  <circle cx="356" cy="128" r="10" fill="#FFF0A0" stroke="#D07000" stroke-width="2.5"/>
 </svg>
