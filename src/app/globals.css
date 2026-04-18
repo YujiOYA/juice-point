@@ -54,6 +54,7 @@ body {
   font-size: 28px;
   font-weight: 900;
   margin: 20px 0 24px;
+  white-space: nowrap;
   color: #e65100;
   letter-spacing: 0.03em;
 }
