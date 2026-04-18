@@ -46,22 +46,22 @@ export async function POST(req: NextRequest) {
 
   try {
     if (body.type === "register") {
-      await createSubmission({ whatYouDid: body.whatYouDid, whoDid: body.whoDid, point: body.point });
-      const userName = body.whoDidName ?? body.whoDid;
+      await createSubmission({ whatYouDid: body.whatYouDid, whoDid: user.id, point: body.point });
+      const userName = body.whoDidName ?? user.user;
       await notifyAdmins("📋 お手伝い申請が届きました", `${userName} が「${body.whatYouDid}」（${body.point}pt）を申請しました`);
       return NextResponse.json({ ok: true });
     }
 
     if (body.type === "registerOneTimeTask") {
-      await createSubmission({ whatYouDid: body.whatYouDid, whoDid: body.whoDid, point: body.point, submissionType: SubmissionType.OneTimeTask });
-      const userName = body.whoDidName ?? body.whoDid;
+      await createSubmission({ whatYouDid: body.whatYouDid, whoDid: user.id, point: body.point, submissionType: SubmissionType.OneTimeTask });
+      const userName = body.whoDidName ?? user.user;
       await notifyAdmins("📋 一度きりタスクの申請が届きました", `${userName} が「${body.whatYouDid}」（${body.point}pt）を申請しました`);
       return NextResponse.json({ ok: true });
     }
 
     if (body.type === "requestTask") {
-      await createSubmission({ whatYouDid: body.whatYouDid, whoDid: body.whoDid, point: body.point, submissionType: SubmissionType.TaskRequest });
-      const userName = body.whoDidName ?? body.whoDid;
+      await createSubmission({ whatYouDid: body.whatYouDid, whoDid: user.id, point: body.point, submissionType: SubmissionType.TaskRequest });
+      const userName = body.whoDidName ?? user.user;
       await notifyAdmins("💡 タスク追加リクエストが届きました", `${userName} が「${body.whatYouDid}」のタスク登録をリクエストしました`);
       return NextResponse.json({ ok: true });
     }

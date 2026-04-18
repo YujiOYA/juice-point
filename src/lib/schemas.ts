@@ -47,7 +47,6 @@ export const userPostSchema = z.discriminatedUnion("type", [
 
 const submissionRegisterBase = z.object({
   whatYouDid:  nonEmpty,
-  whoDid:      nonEmpty,
   point:       nonEmpty,
   whoDidName:  z.string().optional(),
 });
