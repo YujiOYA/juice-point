@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 import { getRewards, getSubmissions, getTasks, getUsers } from "@lib/dynamoDbApi";
 import Tabs from "@atom/Tabs";
 import PushNotificationToggle from "@organism/PushNotificationToggle";
@@ -7,6 +5,7 @@ import RewardManagerClient from "@app/admin/RewardManagerClient";
 import SubmissionManagerClient from "@app/admin/SubmissionManagerClient";
 import TaskManagerClient from "@app/admin/TaskManagerClient";
 import UserManagerClient from "@app/admin/UserManagerClient";
+import AdminLogoutButton from "@app/admin/AdminLogoutButton";
 
 export const dynamic = "force-dynamic";
 
@@ -15,9 +14,9 @@ export default async function AdminPage() {
   const nonAdminUsers = users.filter((u) => u.authority !== "admin");
   return (
     <div className="task-admin-wrap">
-      <Link href="/">
-        <button className="logout-button" style={{ marginBottom: "1rem" }}>← 戻る</button>
-      </Link>
+      <div style={{ marginBottom: "1rem" }}>
+        <AdminLogoutButton />
+      </div>
       <h1 style={{ marginBottom: "1rem" }}>🛠 管理画面</h1>
       <PushNotificationToggle />
 
