@@ -17,7 +17,8 @@ body {
     system-ui, sans-serif;
   font-size: 18px;
   line-height: 1.7;
-  min-height: 100vh;
+  min-height: 100svh;
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 /* ===== レイアウト ===== */

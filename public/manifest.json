@@ -1,0 +1,25 @@
+{
+  "name": "おてつだいポイント",
+  "short_name": "おてつだいPt",
+  "description": "子供のお手伝いを申請・承認でポイント管理",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fff8f0",
+  "theme_color": "#ff9800",
+  "orientation": "portrait-primary",
+  "lang": "ja",
+  "icons": [
+    {
+      "src": "/favicon-orange.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon-orange.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
