@@ -62,17 +62,18 @@ export async function getUsers(id?: string): Promise<User[]> {
   }));
 }
 
-export async function createUser(data: { user: string; pin: string; authority: string }): Promise<void> {
+export async function createUser(data: { id?: string; user: string; pin: string; authority: string }): Promise<void> {
   const hashedPin = await bcrypt.hash(data.pin, 10);
   await dynamo.send(
     new PutItemCommand({
       TableName: TABLE_USER,
       Item: {
-        id: { S: randomUUID() },
+        id: { S: data.id ?? randomUUID() },
         user: { S: data.user },
         pin: { S: hashedPin },
         authority: { S: data.authority },
       },
+      ConditionExpression: "attribute_not_exists(id)",
     }),
   );
 }
