@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { getRewards, getSubmissions, getTasks, getUsers } from "@lib/dynamoDbApi";
 import Tabs from "@atom/Tabs";
-import PushNotificationToggle from "@atom/PushNotificationToggle";
+import PushNotificationToggle from "@organism/PushNotificationToggle";
 import RewardManagerClient from "./RewardManagerClient";
 import SubmissionManagerClient from "./SubmissionManagerClient";
 import TaskManagerClient from "./TaskManagerClient";
