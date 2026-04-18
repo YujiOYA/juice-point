@@ -68,7 +68,7 @@ export default function RewardManagerClient({ users, initialRewards }: Props) {
               <option key={u.id} value={u.id}>{u.user}</option>
             ))}
           </SelectInput>
-          <Button type="submit" variant="primary" disabled={isLoading}>
+          <Button type="submit" variant="primary" disabled={isLoading || !form.name || !form.point || !form.whose}>
             {C.add}
           </Button>
         </form>
