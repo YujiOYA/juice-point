@@ -15,7 +15,7 @@ const sortKeyExtractor = (t: Task, key: TaskSortKey): string | number =>
 const startEditForm = (t: Task) => ({ task: t.task, point: t.point, whose: t.whose });
 
 export function useTaskManager(initialTasks: Task[]) {
-  const { data: tasks = [] } = useTasks(initialTasks);
+  const { data: tasks = [], isFetching } = useTasks(initialTasks);
   const mutations = useTaskMutations();
 
   const { items, ...rest } = useTableManager<Task, TaskSortKey, typeof emptyForm>({
@@ -35,5 +35,5 @@ export function useTaskManager(initialTasks: Task[]) {
     },
   });
 
-  return { tasks: items, ...rest };
+  return { tasks: items, isFetching, ...rest };
 }

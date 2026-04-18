@@ -4,6 +4,7 @@ import AdminTable from "@molecule/AdminTable";
 import Button from "@atom/Button";
 import Card from "@atom/Card";
 import SelectInput from "@atom/SelectInput";
+import Skeleton from "@atom/Skeleton";
 import TextInput from "@atom/TextInput";
 import TaskCard from "@molecule/TaskCard";
 import { useTaskManager } from "@hook/useTaskManager";
@@ -24,6 +25,7 @@ export default function TaskManagerClient({ users, initialTasks }: Props) {
 
   const {
     tasks,
+    isFetching,
     sortKey, sortDir, handleSort,
     sortKey2, sortDir2, handleSort2,
     filterWhose, setFilterWhose,
@@ -33,6 +35,8 @@ export default function TaskManagerClient({ users, initialTasks }: Props) {
     isLoading,
     handleCreate, startEdit, handleUpdate, handleDelete,
   } = useTaskManager(initialTasks);
+
+  const SKELETON_COUNT = 3;
 
   type SortKey = "task" | "point";
   const SORT_OPTIONS: { value: SortKey; label: string }[] = [
@@ -117,31 +121,40 @@ export default function TaskManagerClient({ users, initialTasks }: Props) {
 
         {/* スマホ: カード */}
         <div className="task-list">
-          {tasks.map((t) =>
-            editingId === t.id ? (
-              <TaskCard
-                key={t.id}
-                isEditing={true}
-                task={t}
-                editForm={editForm}
-                users={users}
-                isLoading={isLoading}
-                onChangeForm={setEditForm}
-                onSave={handleUpdate}
-                onCancel={() => setEditingId(null)}
-              />
-            ) : (
-              <TaskCard
-                key={t.id}
-                isEditing={false}
-                task={t}
-                users={users}
-                isLoading={isLoading}
-                onEdit={startEdit}
-                onDelete={handleDelete}
-              />
-            )
-          )}
+          {isFetching
+            ? Array.from({ length: SKELETON_COUNT }, (_, i) => (
+                <div key={i} className="card" style={{ padding: "1rem", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+                  <Skeleton height="1.1rem" width="55%" />
+                  <Skeleton height="0.9rem" width="25%" />
+                  <Skeleton height="0.9rem" width="35%" />
+                </div>
+              ))
+            : tasks.map((t) =>
+                editingId === t.id ? (
+                  <TaskCard
+                    key={t.id}
+                    isEditing={true}
+                    task={t}
+                    editForm={editForm}
+                    users={users}
+                    isLoading={isLoading}
+                    onChangeForm={setEditForm}
+                    onSave={handleUpdate}
+                    onCancel={() => setEditingId(null)}
+                  />
+                ) : (
+                  <TaskCard
+                    key={t.id}
+                    isEditing={false}
+                    task={t}
+                    users={users}
+                    isLoading={isLoading}
+                    onEdit={startEdit}
+                    onDelete={handleDelete}
+                  />
+                )
+              )
+          }
         </div>
 
         {/* PC: テーブル */}
@@ -159,7 +172,16 @@ export default function TaskManagerClient({ users, initialTasks }: Props) {
           onSort={(k) => handleSort(k as SortKey)}
           onSort2={(k) => handleSort2(k as SortKey | null)}
         >
-          {tasks.map((t) => (
+          {isFetching
+            ? Array.from({ length: SKELETON_COUNT }, (_, i) => (
+                <tr key={i}>
+                  <td><Skeleton height="1rem" /></td>
+                  <td><Skeleton height="1rem" width="60px" /></td>
+                  <td><Skeleton height="1rem" width="80px" /></td>
+                  <td />
+                </tr>
+              ))
+            : tasks.map((t) => (
             <tr key={t.id}>
               {editingId === t.id ? (
                 <>
@@ -201,7 +223,8 @@ export default function TaskManagerClient({ users, initialTasks }: Props) {
                 </>
               )}
             </tr>
-          ))}
+          ))
+          }
         </AdminTable>
       </section>
     </div>
