@@ -15,7 +15,7 @@ const sortKeyExtractor = (r: Reward, key: RewardSortKey): string | number =>
 const startEditForm = (r: Reward) => ({ name: r.name, point: r.point, whose: r.whose });
 
 export function useRewardManager(initialRewards: Reward[]) {
-  const { data: rewards = [] } = useRewards(initialRewards);
+  const { data: rewards = [], isFetching } = useRewards(initialRewards);
   const mutations = useRewardMutations();
 
   const { items, ...rest } = useTableManager<Reward, RewardSortKey, typeof emptyForm>({
@@ -35,5 +35,5 @@ export function useRewardManager(initialRewards: Reward[]) {
     },
   });
 
-  return { rewards: items, ...rest };
+  return { rewards: items, isFetching, ...rest };
 }
