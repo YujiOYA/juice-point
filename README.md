@@ -250,7 +250,7 @@ flowchart TD
     MW -->|セッションなし / 子ユーザー| HOME_RENDER
 
     HOME_RENDER --> LOGIN["LoginForm<br/>PINログイン"]
-    LOGIN -->|子ユーザー| TASK["TaskForm<br/>タスク申請・報酬交換"]
+    LOGIN -->|子ユーザー| TASK["TaskForm<br/>タスク申請・報酬交換・リマインド"]
     LOGIN -->|管理者| ADMIN_NAV[location.replace]
     ADMIN_NAV --> ADMIN
 
@@ -261,7 +261,8 @@ flowchart TD
     TABS --> RM[報酬管理]
     TABS --> UM[ユーザー管理]
 
-    ADMIN --> QA["/admin/quick?id=xxx<br/>通知タップ → 即承認"]
+    NOTIF([Push通知タップ]) -->|Service Worker<br/>が開く| QA
+    QA["/admin/quick?id=xxx<br/>即承認画面"]
 
     ADMIN -->|ログアウト GET /api/auth/logout| HOME
 ```
@@ -339,24 +340,80 @@ sequenceDiagram
     participant API as /api/submissions
     participant DB as DynamoDB
     participant Push as Web Push
+    participant SW as Service Worker
     actor Admin as 管理者
 
     Child->>App: タスク選択・申請ボタン
-    App->>API: POST {type:"register", ...}
+    App->>API: POST register / registerOneTimeTask
     API->>DB: Submission 作成 (status:pending)
-    API->>Push: 管理者へ Push通知
-    Push-->>Admin: 「申請が届きました」通知
-    Admin->>API: POST {type:"approve", id}
-    API->>DB: status を approved に更新
+    API->>Push: Push通知（submissionId付き）
+    Push-->>SW: 通知受信
+    SW-->>Admin: 「申請が届きました」バナー表示
+
+    opt 承認が遅い場合：リマインド
+        Child->>App: 🔔 リマインドボタン
+        App->>API: POST remind（submissionType付き）
+        API->>Push: リマインド通知（submissionId付き）
+        Push-->>SW: 通知受信
+        SW-->>Admin: 「⏰ リマインド」バナー表示
+    end
+
+    alt 管理画面から承認
+        Admin->>API: POST approve
+        API->>DB: status を 承認 に更新
+    else 通知タップ → Quick Approve
+        Admin->>SW: 通知タップ
+        SW->>Admin: /admin/quick?id=xxx を開く
+        Admin->>API: POST approve
+        API->>DB: status を 承認 に更新
+    end
+
     App->>App: TanStack Query invalidate → 再フェッチ
     App-->>Child: ポイント反映
+```
+
+### タスク追加リクエストフロー
+
+```mermaid
+sequenceDiagram
+    actor Child as 子ユーザー
+    participant App as アプリ (/)
+    participant API as /api/submissions
+    participant DB as DynamoDB
+    participant Push as Web Push
+    participant SW as Service Worker
+    actor Admin as 管理者
+
+    Child->>App: タスク追加リクエスト送信
+    App->>API: POST requestTask
+    API->>DB: Submission 作成 (type:taskRequest, status:pending)
+    API->>Push: Push通知（submissionId付き）
+    Push-->>SW: 通知受信
+    SW-->>Admin: 「💡 タスク追加リクエスト」バナー表示
+
+    opt リマインド
+        Child->>App: 🔔 リマインドボタン
+        App->>API: POST remind（submissionType:taskRequest）
+        API->>Push: 「⏰ タスク追加リクエストが承認待ち」通知
+        Push-->>SW: 通知受信
+        SW-->>Admin: リマインドバナー表示
+    end
+
+    alt 管理画面 or Quick Approve から承認
+        Admin->>API: POST approveTaskRequest
+        API->>DB: Task 新規作成
+        API->>DB: Submission 削除（ポイント付与なし）
+    else 却下
+        Admin->>API: POST disapprove
+        API->>DB: status を 却下 に更新
+    end
 ```
 
 ### 状態管理
 
 ```mermaid
 flowchart LR
-    SSR["Server Component\n(SSR初期データ)"] -->|initialData| TQ
+    SSR["Server Component<br/>(SSR初期データ)"] -->|initialData| TQ
 
     subgraph TQ["TanStack Query キャッシュ"]
         tasks["tasks[]"]
@@ -371,8 +428,8 @@ flowchart LR
     API -->|invalidateQueries| TQ
 
     subgraph Local["ローカル State (useState)"]
-        loggedInUser["loggedInUser\n(LoginForm)"]
+        loggedInUser["loggedInUser<br/>(LoginForm)"]
     end
 
-    iron-session["iron-session\n(HttpOnly Cookie)"] -->|sessionUser prop| loggedInUser
+    iron-session["iron-session<br/>(HttpOnly Cookie)"] -->|sessionUser prop| loggedInUser
 ```
