@@ -16,7 +16,7 @@ const post = (body: unknown) =>
 export function useRewards(initialData?: Reward[]) {
   return useQuery<Reward[]>({
     queryKey: REWARDS_KEY,
-    queryFn: () => fetch(path).then((r) => r.json()),
+    queryFn: () => fetch(path).then((r) => r.ok ? r.json() : Promise.reject(r.status)),
     initialData,
   });
 }

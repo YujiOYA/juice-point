@@ -16,7 +16,7 @@ const post = (body: unknown) =>
 export function useTasks(initialData?: Task[]) {
   return useQuery<Task[]>({
     queryKey: TASKS_KEY,
-    queryFn: () => fetch(path).then((r) => r.json()),
+    queryFn: () => fetch(path).then((r) => r.ok ? r.json() : Promise.reject(r.status)),
     initialData,
   });
 }

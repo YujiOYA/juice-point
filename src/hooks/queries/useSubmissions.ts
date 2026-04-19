@@ -17,7 +17,7 @@ const post = (body: unknown) =>
 export function useSubmissions(initialData?: Submission[]) {
   return useQuery<Submission[]>({
     queryKey: SUBMISSIONS_KEY,
-    queryFn: () => fetch(path).then((r) => r.json()),
+    queryFn: () => fetch(path).then((r) => r.ok ? r.json() : Promise.reject(r.status)),
     initialData,
   });
 }
