@@ -241,27 +241,27 @@ graph TB
 
 ```mermaid
 flowchart TD
-    START([アクセス]) --> LP[/lp\nランディングページ]
+    START([アクセス]) --> LP["/lp<br/>ランディングページ"]
     START --> HOME
 
-    HOME[/ \nメインページ]
+    HOME["/<br/>メインページ"]
     HOME --> MW{Middleware}
     MW -->|管理者セッションあり| ADMIN
     MW -->|セッションなし / 子ユーザー| HOME_RENDER
 
-    HOME_RENDER --> LOGIN[LoginForm\nPINログイン]
-    LOGIN -->|子ユーザー| TASK[TaskForm\nタスク申請・報酬交換]
+    HOME_RENDER --> LOGIN["LoginForm<br/>PINログイン"]
+    LOGIN -->|子ユーザー| TASK["TaskForm<br/>タスク申請・報酬交換"]
     LOGIN -->|管理者| ADMIN_NAV[location.replace]
     ADMIN_NAV --> ADMIN
 
-    ADMIN[/admin\n管理画面]
+    ADMIN["/admin<br/>管理画面"]
     ADMIN --> TABS[Tabs]
     TABS --> SM[申請管理]
     TABS --> TM[タスク管理]
     TABS --> RM[報酬管理]
     TABS --> UM[ユーザー管理]
 
-    ADMIN --> QA[/admin/quick?id=xxx\n通知タップ → 即承認]
+    ADMIN --> QA["/admin/quick?id=xxx<br/>通知タップ → 即承認"]
 
     ADMIN -->|ログアウト GET /api/auth/logout| HOME
 ```
