@@ -199,3 +199,180 @@ Vercel CLI が必要です（`npm install -g vercel`）。`setup-aws.sh` で Ver
 |----------|--------------------------------------------------------------------|
 | `/`      | メインページ（ログイン・タスク申請・報酬交換）。ユーザー0人の場合は初期設定画面 |
 | `/admin` | 管理画面（申請管理・タスク管理・報酬管理・ユーザー管理）。管理者のみ     |
+| `/admin/quick?id=xxx` | 通知タップからの即承認画面。管理者のみ |
+| `/lp` | ランディングページ |
+
+## 基本設計
+
+### システム全体構成
+
+```mermaid
+graph TB
+    subgraph Client["クライアント (ブラウザ / iOS PWA)"]
+        SW[Service Worker<br/>静的アセットキャッシュ<br/>Push通知受信]
+        Pages[Next.js Pages]
+        TQ[TanStack Query<br/>キャッシュ・フェッチ]
+    end
+
+    subgraph Server["サーバー (Vercel)"]
+        MW[Middleware<br/>セッション認証ガード]
+        SC[Server Components<br/>SSR データ取得]
+        API[API Route Handlers]
+        IS[iron-session<br/>暗号化Cookie]
+    end
+
+    subgraph AWS["AWS"]
+        DB[(DynamoDB<br/>5テーブル)]
+        WP[Web Push<br/>web-push]
+    end
+
+    Client -->|HTTPS| MW
+    MW --> SC
+    MW --> API
+    SC --> DB
+    API --> DB
+    API --> IS
+    IS -->|Set-Cookie| Client
+    API -->|Push通知| WP
+    WP -->|FCM/APNs| SW
+```
+
+### ページ構成と認証フロー
+
+```mermaid
+flowchart TD
+    START([アクセス]) --> LP[/lp\nランディングページ]
+    START --> HOME
+
+    HOME[/ \nメインページ]
+    HOME --> MW{Middleware}
+    MW -->|管理者セッションあり| ADMIN
+    MW -->|セッションなし / 子ユーザー| HOME_RENDER
+
+    HOME_RENDER --> LOGIN[LoginForm\nPINログイン]
+    LOGIN -->|子ユーザー| TASK[TaskForm\nタスク申請・報酬交換]
+    LOGIN -->|管理者| ADMIN_NAV[location.replace]
+    ADMIN_NAV --> ADMIN
+
+    ADMIN[/admin\n管理画面]
+    ADMIN --> TABS[Tabs]
+    TABS --> SM[申請管理]
+    TABS --> TM[タスク管理]
+    TABS --> RM[報酬管理]
+    TABS --> UM[ユーザー管理]
+
+    ADMIN --> QA[/admin/quick?id=xxx\n通知タップ → 即承認]
+
+    ADMIN -->|ログアウト GET /api/auth/logout| HOME
+```
+
+### データモデル（DynamoDB）
+
+```mermaid
+erDiagram
+    Users {
+        string id PK
+        string user
+        string authority "admin / user"
+        string pin "ハッシュ"
+    }
+    Tasks {
+        string id PK
+        string task
+        string point
+        string whose "担当ユーザーID"
+    }
+    Submissions {
+        string id PK
+        string whatYouDid
+        string whoDid "ユーザーID"
+        string point
+        string status "pending / approved / rejected"
+        string createdAt
+        string submissionType "oneTimeTask / taskRequest"
+    }
+    Rewards {
+        string id PK
+        string name
+        string point
+        string whose "担当ユーザーID"
+    }
+    PushSubscriptions {
+        string endpoint PK
+        string subscription "JSON文字列"
+    }
+
+    Users ||--o{ Submissions : "申請する"
+    Users ||--o{ Tasks : "担当"
+    Users ||--o{ Rewards : "担当"
+    Submissions }o--|| Tasks : "参照"
+```
+
+### コンポーネント設計（Atomic Design）
+
+```mermaid
+graph BT
+    subgraph Atoms
+        Button; Card; SelectInput; TextInput; Tabs; Skeleton
+    end
+    subgraph Molecules
+        SubmissionCard; TaskCard; RewardCard
+        UserCard; PointsBadge; UserPointsSummary; AdminTable
+    end
+    subgraph Organisms
+        LoginForm; TaskForm; ManagerPanel; PushNotificationToggle
+    end
+    subgraph Pages
+        PageClient["PageClient\n(子ユーザー画面)"]
+        AdminPage["AdminPage\n(管理画面)"]
+    end
+
+    Atoms --> Molecules --> Organisms --> Pages
+```
+
+### タスク申請〜承認フロー
+
+```mermaid
+sequenceDiagram
+    actor Child as 子ユーザー
+    participant App as アプリ (/)
+    participant API as /api/submissions
+    participant DB as DynamoDB
+    participant Push as Web Push
+    actor Admin as 管理者
+
+    Child->>App: タスク選択・申請ボタン
+    App->>API: POST {type:"register", ...}
+    API->>DB: Submission 作成 (status:pending)
+    API->>Push: 管理者へ Push通知
+    Push-->>Admin: 「申請が届きました」通知
+    Admin->>API: POST {type:"approve", id}
+    API->>DB: status を approved に更新
+    App->>App: TanStack Query invalidate → 再フェッチ
+    App-->>Child: ポイント反映
+```
+
+### 状態管理
+
+```mermaid
+flowchart LR
+    SSR["Server Component\n(SSR初期データ)"] -->|initialData| TQ
+
+    subgraph TQ["TanStack Query キャッシュ"]
+        tasks["tasks[]"]
+        submissions["submissions[]"]
+        rewards["rewards[]"]
+    end
+
+    TQ -->|isFetching| Skeleton
+    TQ -->|data| UI[UI コンポーネント]
+
+    UI -->|mutation| API[API Route]
+    API -->|invalidateQueries| TQ
+
+    subgraph Local["ローカル State (useState)"]
+        loggedInUser["loggedInUser\n(LoginForm)"]
+    end
+
+    iron-session["iron-session\n(HttpOnly Cookie)"] -->|sessionUser prop| loggedInUser
+```
