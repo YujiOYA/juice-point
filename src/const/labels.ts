@@ -70,6 +70,8 @@ export const LABELS = {
     labelPoints:      "💰 もらえるポイント",
     buttonSubmit:     "✅ 申請する",
     pendingCount: (n: number) => `⏳ 承認待ち（${n}件）`,
+    remind:       "🔔",
+    remindDone:   "✓",
 
     labelTaskName:           "タスク名",
     placeholderTaskName:     "例: 🧺洗濯物をたたむ",
@@ -157,6 +159,8 @@ export const LABELS = {
     setupError: (e: unknown) => `作成に失敗しました: ${e}`,
 
     // タスク申請
+    remindSuccess:          "リマインドを送りました！",
+    remindError:            "リマインドの送信に失敗しました",
     submitSuccess:          "申請しました！🎉",
     submitError:            "エラーが発生しました",
     requestSuccess:         "申請しました！",
