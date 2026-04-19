@@ -1,10 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 
 import Button from "@atom/Button";
-import { Submission } from "@type/submission";
+import { Submission, SubmissionType } from "@type/submission";
 import { User } from "@type/user";
 import { API } from "@const/apiEndpoint";
 import { LABELS } from "@const/labels";
@@ -15,28 +14,32 @@ interface Props {
 }
 
 export default function QuickApproveClient({ submission, users }: Props) {
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
   const userName = users.find((u) => u.id === submission.whoDid)?.user ?? submission.whoDid;
+  const isTaskRequest = submission.submissionType === SubmissionType.TaskRequest;
 
-  const handleAction = async (type: "approve" | "disapprove") => {
+  const handleAction = async (action: "approve" | "disapprove") => {
     setIsLoading(true);
     try {
+      const body =
+        action === "approve" && isTaskRequest
+          ? { type: "approveTaskRequest", id: submission.id, taskName: submission.whatYouDid, point: submission.point, whoDid: submission.whoDid }
+          : { type: action, id: submission.id };
       await fetch(API.submissions.path, {
         method: API.submissions.method.POST,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type, id: submission.id }),
+        body: JSON.stringify(body),
       });
     } finally {
-      router.push("/admin");
+      location.replace("/admin");
     }
   };
 
   return (
     <div className="container" style={{ maxWidth: "480px", paddingTop: "2rem" }}>
       <h1 className="page-title" style={{ fontSize: "1.4rem" }}>
-        {LABELS.manager.titlePending}
+        {isTaskRequest ? LABELS.manager.titleTaskRequests : LABELS.manager.titlePending}
       </h1>
 
       <div className="card" style={{ marginBottom: "2rem", padding: "1.5rem" }}>
@@ -47,7 +50,7 @@ export default function QuickApproveClient({ submission, users }: Props) {
           「{submission.whatYouDid}」
         </p>
         <p style={{ color: "#ff9800", fontWeight: "bold", fontSize: "1.2rem" }}>
-          {submission.point}pt
+          {isTaskRequest ? `希望ポイント: ${submission.point}pt` : `${submission.point}pt`}
         </p>
       </div>
 
@@ -58,7 +61,7 @@ export default function QuickApproveClient({ submission, users }: Props) {
           onClick={() => handleAction("approve")}
           style={{ flex: 1, padding: "1rem", fontSize: "1.1rem" }}
         >
-          {LABELS.common.approve}
+          {isTaskRequest ? "タスクとして登録" : LABELS.common.approve}
         </Button>
         <Button
           variant="disapprove"
