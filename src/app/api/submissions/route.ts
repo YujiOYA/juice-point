@@ -58,16 +58,16 @@ export async function POST(req: NextRequest) {
     }
 
     if (body.type === "registerOneTimeTask") {
-      await createSubmission({ whatYouDid: body.whatYouDid, whoDid: user.id, point: body.point, submissionType: SubmissionType.OneTimeTask });
+      const submissionId = await createSubmission({ whatYouDid: body.whatYouDid, whoDid: user.id, point: body.point, submissionType: SubmissionType.OneTimeTask });
       const userName = body.whoDidName ?? user.user;
-      await notifyAdmins("📋 一度きりタスクの申請が届きました", `${userName} が「${body.whatYouDid}」（${body.point}pt）を申請しました`);
+      await notifyAdmins("📋 一度きりタスクの申請が届きました", `${userName} が「${body.whatYouDid}」（${body.point}pt）を申請しました`, { submissionId });
       return NextResponse.json({ ok: true });
     }
 
     if (body.type === "requestTask") {
-      await createSubmission({ whatYouDid: body.whatYouDid, whoDid: user.id, point: body.point, submissionType: SubmissionType.TaskRequest });
+      const submissionId = await createSubmission({ whatYouDid: body.whatYouDid, whoDid: user.id, point: body.point, submissionType: SubmissionType.TaskRequest });
       const userName = body.whoDidName ?? user.user;
-      await notifyAdmins("💡 タスク追加リクエストが届きました", `${userName} が「${body.whatYouDid}」のタスク登録をリクエストしました`);
+      await notifyAdmins("💡 タスク追加リクエストが届きました", `${userName} が「${body.whatYouDid}」のタスク登録をリクエストしました`, { submissionId });
       return NextResponse.json({ ok: true });
     }
 
@@ -79,7 +79,8 @@ export async function POST(req: NextRequest) {
 
     if (body.type === "approveTaskRequest") {
       await createTask({ task: body.taskName, point: body.point, whose: body.whoDid });
-      await updateSubmissionStatus(body.id, "承認");
+      // タスクリクエストはタスク登録依頼のため、ポイント付与せず申請を削除
+      await deleteSubmission(body.id);
       return NextResponse.json({ ok: true });
     }
 
@@ -110,11 +111,14 @@ export async function POST(req: NextRequest) {
 
     if (body.type === "remind") {
       const userName = body.whoDidName ?? user.user;
-      await notifyAdmins(
-        "⏰ リマインド：承認待ちのお手伝いがあります",
-        `${userName} が「${body.whatYouDid}」（${body.point}pt）の承認を待っています`,
-        { submissionId: body.id },
-      );
+      const isTaskRequest = body.submissionType === SubmissionType.TaskRequest;
+      const title = isTaskRequest
+        ? "⏰ リマインド：タスク追加リクエストが承認待ちです"
+        : "⏰ リマインド：承認待ちのお手伝いがあります";
+      const notifyBody = isTaskRequest
+        ? `${userName} が「${body.whatYouDid}」のタスク登録を待っています`
+        : `${userName} が「${body.whatYouDid}」（${body.point}pt）の承認を待っています`;
+      await notifyAdmins(title, notifyBody, { submissionId: body.id });
       return NextResponse.json({ ok: true });
     }
 

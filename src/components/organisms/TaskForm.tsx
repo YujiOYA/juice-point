@@ -57,7 +57,7 @@ export default function TaskForm({ user, initialTasks, initialSubmissions, initi
       const res = await fetch(API.submissions.path, {
         method: API.submissions.method.POST,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "remind", id: s.id, whatYouDid: s.whatYouDid, point: s.point, whoDidName: user.user }),
+        body: JSON.stringify({ type: "remind", id: s.id, whatYouDid: s.whatYouDid, point: s.point, whoDidName: user.user, submissionType: s.submissionType }),
       });
       if (res.ok) toast.success(LABELS.toast.remindSuccess);
       else toast.error(LABELS.toast.remindError);
