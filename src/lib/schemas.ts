@@ -66,6 +66,7 @@ export const submissionPostSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("delete"),              id }),
   z.object({ type: z.literal("updatePoint"),         id, newPoint: nonEmpty }),
   z.object({ type: z.literal("usePoints"), userId: nonEmpty, point: z.number() }),
+  z.object({ type: z.literal("remind"), id, whatYouDid: nonEmpty, point: nonEmpty, whoDidName: z.string().optional() }),
 ]);
 
 // ===== push-subscription =====

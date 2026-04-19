@@ -108,6 +108,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: true });
     }
 
+    if (body.type === "remind") {
+      const userName = body.whoDidName ?? user.user;
+      await notifyAdmins(
+        "⏰ リマインド：承認待ちのお手伝いがあります",
+        `${userName} が「${body.whatYouDid}」（${body.point}pt）の承認を待っています`,
+        { submissionId: body.id },
+      );
+      return NextResponse.json({ ok: true });
+    }
+
     if (body.type === "usePoints") {
       const all = await getSubmissions();
       const usable = all

@@ -5,7 +5,8 @@ import SelectInput from "@atom/SelectInput";
 import Tabs from "@atom/Tabs";
 import TextInput from "@atom/TextInput";
 import FormField from "@molecule/FormField";
-import { useState } from "react";
+import { useState, useCallback } from "react";
+import { toast } from "sonner";
 import { useTaskForm } from "@hook/useTaskForm";
 import { useSubmissions } from "@hook/queries/useSubmissions";
 import { Reward } from "@type/reward";
@@ -13,6 +14,7 @@ import { Submission, SubmissionType } from "@type/submission";
 import { Task } from "@type/task";
 import { User } from "@type/user";
 import { SUBMISSION_STATUS } from "@const/constDefinition";
+import { API } from "@const/apiEndpoint";
 import { LABELS } from "@const/labels";
 
 const L = LABELS.taskForm;
@@ -45,6 +47,25 @@ export default function TaskForm({ user, initialTasks, initialSubmissions, initi
   const userPending = submissions.filter((s) => s.whoDid === user.id && s.status === SUBMISSION_STATUS.pending);
   const pendingSubmit  = userPending.filter((s) => s.submissionType !== SubmissionType.TaskRequest);
   const pendingRequest = userPending.filter((s) => s.submissionType === SubmissionType.TaskRequest);
+
+  // リマインド送信済みIDを5秒間保持（連打防止）
+  const [remindedIds, setRemindedIds] = useState<Set<string>>(new Set());
+  const handleRemind = useCallback(async (s: Submission) => {
+    if (remindedIds.has(s.id)) return;
+    setRemindedIds((prev) => new Set(prev).add(s.id));
+    try {
+      const res = await fetch(API.submissions.path, {
+        method: API.submissions.method.POST,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: "remind", id: s.id, whatYouDid: s.whatYouDid, point: s.point, whoDidName: user.user }),
+      });
+      if (res.ok) toast.success(LABELS.toast.remindSuccess);
+      else toast.error(LABELS.toast.remindError);
+    } catch {
+      toast.error(LABELS.toast.remindError);
+    }
+    setTimeout(() => setRemindedIds((prev) => { const next = new Set(prev); next.delete(s.id); return next; }), 5000);
+  }, [remindedIds, user.user]);
 
   const tabSubmit = (
     <form onSubmit={handleSubmit}>
@@ -83,9 +104,18 @@ export default function TaskForm({ user, initialTasks, initialSubmissions, initi
           <div style={{ overflow: "hidden", maxHeight: pendingOpen ? "500px" : "0", transition: "max-height 0.3s ease" }}>
             <ul style={{ listStyle: "none", padding: 0, margin: "0.5rem 0 0", display: "flex", flexDirection: "column", gap: "0.25rem" }}>
               {pendingSubmit.map((s) => (
-                <li key={s.id} style={{ display: "flex", justifyContent: "space-between", color: "#444" }}>
-                  <span style={{ textAlign: "left" }}>{s.whatYouDid}</span>
+                <li key={s.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", color: "#444" }}>
+                  <span style={{ textAlign: "left", flex: 1 }}>{s.whatYouDid}</span>
                   <span style={{ color: "#f59e0b", fontWeight: "bold", marginLeft: "0.5rem" }}>{s.point}pt</span>
+                  <button
+                    type="button"
+                    onClick={() => handleRemind(s)}
+                    disabled={remindedIds.has(s.id)}
+                    title="リマインドを送る"
+                    style={{ marginLeft: "0.5rem", background: "none", border: "none", cursor: remindedIds.has(s.id) ? "default" : "pointer", fontSize: "1rem", opacity: remindedIds.has(s.id) ? 0.4 : 1 }}
+                  >
+                    {remindedIds.has(s.id) ? L.remindDone : L.remind}
+                  </button>
                 </li>
               ))}
             </ul>
@@ -151,9 +181,18 @@ export default function TaskForm({ user, initialTasks, initialSubmissions, initi
           <div style={{ overflow: "hidden", maxHeight: pendingRequestOpen ? "500px" : "0", transition: "max-height 0.3s ease" }}>
             <ul style={{ listStyle: "none", padding: 0, margin: "0.5rem 0 0", display: "flex", flexDirection: "column", gap: "0.25rem" }}>
               {pendingRequest.map((s) => (
-                <li key={s.id} style={{ display: "flex", justifyContent: "space-between", color: "#444" }}>
-                  <span style={{ textAlign: "left" }}>{s.whatYouDid}</span>
+                <li key={s.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", color: "#444" }}>
+                  <span style={{ textAlign: "left", flex: 1 }}>{s.whatYouDid}</span>
                   <span style={{ color: "#f59e0b", fontWeight: "bold", marginLeft: "0.5rem" }}>{s.point}pt</span>
+                  <button
+                    type="button"
+                    onClick={() => handleRemind(s)}
+                    disabled={remindedIds.has(s.id)}
+                    title="リマインドを送る"
+                    style={{ marginLeft: "0.5rem", background: "none", border: "none", cursor: remindedIds.has(s.id) ? "default" : "pointer", fontSize: "1rem", opacity: remindedIds.has(s.id) ? 0.4 : 1 }}
+                  >
+                    {remindedIds.has(s.id) ? L.remindDone : L.remind}
+                  </button>
                 </li>
               ))}
             </ul>
