@@ -55,7 +55,7 @@ export default function UserPointsSummary({ users, submissions }: Props) {
 
   const rows = users
     .map((u) => {
-      const approved = submissions.filter((s) => s.whoDid === u.id && s.status === "承認");
+      const approved = submissions.filter((s) => s.whoDid === u.id && s.status === "承認").sort((a, b) => b.createdAt.localeCompare(a.createdAt));
       return {
         user: u,
         point: approved.reduce((sum, s) => sum + (Number(s.point) || 0), 0),
