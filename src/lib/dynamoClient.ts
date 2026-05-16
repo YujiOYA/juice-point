@@ -3,10 +3,10 @@ import { awsCredentialsProvider } from "@vercel/functions/oidc";
 import { ENV } from "@const/constDefinition";
 
 const credentials = awsCredentialsProvider({
-  roleArn: ENV.awsRoleArn,
+    roleArn: ENV.awsRoleArn,
 });
 
 export const dynamo = new DynamoDBClient({
-  region: ENV.awsRegion,
-  credentials: ENV.isVercel ? credentials : undefined,
+    region: ENV.awsRegion,
+    credentials: ENV.isVercel ? credentials : undefined,
 });

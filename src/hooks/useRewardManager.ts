@@ -10,30 +10,30 @@ type RewardSortKey = "name" | "point";
 const emptyForm = { name: "", point: "", whose: "" };
 
 const sortKeyExtractor = (r: Reward, key: RewardSortKey): string | number =>
-  key === "point" ? Number(r[key]) : r[key];
+    key === "point" ? Number(r[key]) : r[key];
 
 const startEditForm = (r: Reward) => ({ name: r.name, point: r.point, whose: r.whose });
 
 export function useRewardManager(initialRewards: Reward[]) {
-  const { data: rewards = [], isFetching } = useRewards(initialRewards);
-  const mutations = useRewardMutations();
+    const { data: rewards = [], isFetching } = useRewards(initialRewards);
+    const mutations = useRewardMutations();
 
-  const { items, ...rest } = useTableManager<Reward, RewardSortKey, typeof emptyForm>({
-    items: rewards,
-    mutations,
-    defaultSortKey: "name",
-    sortKeyExtractor,
-    emptyForm,
-    startEditForm,
-    messages: {
-      addSuccess:    T.rewardAddSuccess,
-      addError:      T.rewardAddError,
-      editSuccess:   T.rewardEditSuccess,
-      editError:     T.rewardEditError,
-      deleteConfirm: T.rewardDeleteConfirm,
-      deleteSuccess: T.rewardDeleteSuccess,
-    },
-  });
+    const { items, ...rest } = useTableManager<Reward, RewardSortKey, typeof emptyForm>({
+        items: rewards,
+        mutations,
+        defaultSortKey: "name",
+        sortKeyExtractor,
+        emptyForm,
+        startEditForm,
+        messages: {
+            addSuccess: T.rewardAddSuccess,
+            addError: T.rewardAddError,
+            editSuccess: T.rewardEditSuccess,
+            editError: T.rewardEditError,
+            deleteConfirm: T.rewardDeleteConfirm,
+            deleteSuccess: T.rewardDeleteSuccess,
+        },
+    });
 
-  return { rewards: items, isFetching, ...rest };
+    return { rewards: items, isFetching, ...rest };
 }

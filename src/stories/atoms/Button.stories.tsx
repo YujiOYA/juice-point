@@ -2,17 +2,17 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import Button from "@atom/Button";
 
 const meta: Meta<typeof Button> = {
-  title: "Atoms/Button",
-  component: Button,
-  tags: ["autodocs"],
-  parameters: { containerClass: false },
-  argTypes: {
-    variant: {
-      control: "select",
-      options: ["primary", "approve", "disapprove", "logout"],
+    title: "Atoms/Button",
+    component: Button,
+    tags: ["autodocs"],
+    parameters: { containerClass: false },
+    argTypes: {
+        variant: {
+            control: "select",
+            options: ["primary", "approve", "disapprove", "logout"],
+        },
     },
-  },
-  args: { children: "ボタン" },
+    args: { children: "ボタン" },
 };
 
 export default meta;

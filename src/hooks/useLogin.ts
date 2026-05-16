@@ -8,73 +8,73 @@ import { ROUTES } from "@const/routesConfig";
 import { LABELS } from "@const/labels";
 
 const calcUserPoint = (userId: string, submissions: Submission[]): number =>
-  submissions
-    .filter((s) => s.whoDid === userId && s.status === SUBMISSION_STATUS.approved)
-    .map((s) => Number(s.point) || 0)
-    .reduce((sum, point) => sum + point, 0);
+    submissions
+        .filter((s) => s.whoDid === userId && s.status === SUBMISSION_STATUS.approved)
+        .map((s) => Number(s.point) || 0)
+        .reduce((sum, point) => sum + point, 0);
 
 interface Args {
-  loggedInUser: User | null;
-  setLoggedInUser: (user: User | null) => void;
-  submissions: Submission[];
-  next?: string | null;
+    loggedInUser: User | null;
+    setLoggedInUser: (user: User | null) => void;
+    submissions: Submission[];
+    next?: string | null;
 }
 
 export function useLogin({ loggedInUser, setLoggedInUser, submissions, next }: Args) {
-  const [selectedId, setSelectedId] = useState("");
-  const [pin, setPin] = useState("");
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+    const [selectedId, setSelectedId] = useState("");
+    const [pin, setPin] = useState("");
+    const [error, setError] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
-  const userPoint = loggedInUser ? calcUserPoint(loggedInUser.id, submissions) : 0;
+    const userPoint = loggedInUser ? calcUserPoint(loggedInUser.id, submissions) : 0;
 
-  /** PIN でログイン。成功時は true、失敗時は false を返す */
-  const loginWithPin = async (id: string, pinToUse: string): Promise<boolean> => {
-    setIsLoading(true);
-    try {
-      const res = await fetch(API.auth.login.path, {
-        method: API.auth.login.method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id, pin: pinToUse }),
-      });
-      if (!res.ok) return false;
-      const user: User = await res.json();
-      // 管理者の場合は setLoggedInUser を呼ばずにナビゲーション
-      // (React再レンダリングとナビゲーションの競合を避ける: iOS PWA対策)
-      if (user.authority === AUTHORITY.admin) {
-        location.replace(next ?? ROUTES.admin);
-        return true;
-      }
-      setLoggedInUser(user);
-      return true;
-    } catch {
-      return false;
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    /** PIN でログイン。成功時は true、失敗時は false を返す */
+    const loginWithPin = async (id: string, pinToUse: string): Promise<boolean> => {
+        setIsLoading(true);
+        try {
+            const res = await fetch(API.auth.login.path, {
+                method: API.auth.login.method,
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id, pin: pinToUse }),
+            });
+            if (!res.ok) return false;
+            const user: User = await res.json();
+            // 管理者の場合は setLoggedInUser を呼ばずにナビゲーション
+            // (React再レンダリングとナビゲーションの競合を避ける: iOS PWA対策)
+            if (user.authority === AUTHORITY.admin) {
+                location.replace(next ?? ROUTES.admin);
+                return true;
+            }
+            setLoggedInUser(user);
+            return true;
+        } catch {
+            return false;
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
-  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedId(e.target.value);
-    setPin("");
-    setError("");
-  };
+    const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedId(e.target.value);
+        setPin("");
+        setError("");
+    };
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!selectedId || !pin) return;
-    setError("");
-    const ok = await loginWithPin(selectedId, pin);
-    if (!ok) setError(LABELS.login.errorWrongPin);
-  };
+    const handleLogin = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!selectedId || !pin) return;
+        setError("");
+        const ok = await loginWithPin(selectedId, pin);
+        if (!ok) setError(LABELS.login.errorWrongPin);
+    };
 
-  const handleLogout = async () => {
-    setLoggedInUser(null);
-    setSelectedId("");
-    setPin("");
-    setError("");
-    await fetch(API.auth.logout.path, { method: API.auth.logout.method });
-  };
+    const handleLogout = async () => {
+        setLoggedInUser(null);
+        setSelectedId("");
+        setPin("");
+        setError("");
+        await fetch(API.auth.logout.path, { method: API.auth.logout.method });
+    };
 
-  return { selectedId, pin, setPin, error, isLoading, userPoint, handleSelectChange, handleLogin, handleLogout };
+    return { selectedId, pin, setPin, error, isLoading, userPoint, handleSelectChange, handleLogin, handleLogout };
 }
