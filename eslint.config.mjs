@@ -1,3 +1,5 @@
+import storybook from "eslint-plugin-storybook";
+
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 import { FlatCompat } from "@eslint/eslintrc";
@@ -77,4 +79,9 @@ export default [
       "no-multiple-empty-lines": ["error", { "max": 1, "maxEOF": 0 }]
     },
   },
+
+  /**
+   * Storybook 推奨設定
+   */
+  ...storybook.configs["flat/recommended"],
 ];
