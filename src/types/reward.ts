@@ -1,6 +1,6 @@
 export type Reward = {
-  id: string;
-  name: string;
-  point: string;
-  whose: string;
+    id: string;
+    name: string;
+    point: string;
+    whose: string;
 };

@@ -13,42 +13,49 @@ import { AUTHORITY } from "@const/constDefinition";
 import { LABELS } from "@const/labels";
 
 interface Props {
-  users: User[];
-  tasks: Task[];
-  submissions: Submission[];
-  rewards: Reward[];
-  sessionUser: User | null;
-  next?: string | null;
+    users: User[];
+    tasks: Task[];
+    submissions: Submission[];
+    rewards: Reward[];
+    sessionUser: User | null;
+    next?: string | null;
 }
 
-export default function PageClient({ users, tasks, submissions: initialSubmissions, rewards, sessionUser, next }: Props) {
-  const [loggedInUser, setLoggedInUser] = useState<User | null>(sessionUser);
-  const { data: submissions = [] } = useSubmissions(initialSubmissions);
+export default function PageClient({
+    users,
+    tasks,
+    submissions: initialSubmissions,
+    rewards,
+    sessionUser,
+    next,
+}: Props) {
+    const [loggedInUser, setLoggedInUser] = useState<User | null>(sessionUser);
+    const { data: submissions = [] } = useSubmissions(initialSubmissions);
 
-  const isAdmin = loggedInUser?.authority === AUTHORITY.admin;
+    const isAdmin = loggedInUser?.authority === AUTHORITY.admin;
 
-  return (
-    <div className="container">
-      <h1 className="page-title">{LABELS.app.title}</h1>
-      <Card>
-        <LoginForm
-          users={users}
-          loggedInUser={loggedInUser}
-          setLoggedInUser={setLoggedInUser}
-          submissions={submissions}
-          next={next}
-        />
-      </Card>
-      {loggedInUser && !isAdmin && (
-        <Card>
-          <TaskForm
-            user={loggedInUser}
-            initialTasks={tasks}
-            initialSubmissions={initialSubmissions}
-            initialRewards={rewards}
-          />
-        </Card>
-      )}
-    </div>
-  );
+    return (
+        <div className="container">
+            <h1 className="page-title">{LABELS.app.title}</h1>
+            <Card>
+                <LoginForm
+                    users={users}
+                    loggedInUser={loggedInUser}
+                    setLoggedInUser={setLoggedInUser}
+                    submissions={submissions}
+                    next={next}
+                />
+            </Card>
+            {loggedInUser && !isAdmin && (
+                <Card>
+                    <TaskForm
+                        user={loggedInUser}
+                        initialTasks={tasks}
+                        initialSubmissions={initialSubmissions}
+                        initialRewards={rewards}
+                    />
+                </Card>
+            )}
+        </div>
+    );
 }

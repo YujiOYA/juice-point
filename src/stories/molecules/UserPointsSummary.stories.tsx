@@ -5,31 +5,31 @@ import { mockUsers, mockSubmissions } from "../mockData";
 const nonAdminUsers = mockUsers.filter((u) => u.authority !== "admin");
 
 const meta: Meta<typeof UserPointsSummary> = {
-  title: "Molecules/UserPointsSummary",
-  component: UserPointsSummary,
-  tags: ["autodocs"],
+    title: "Molecules/UserPointsSummary",
+    component: UserPointsSummary,
+    tags: ["autodocs"],
 };
 
 export default meta;
 type Story = StoryObj<typeof UserPointsSummary>;
 
 export const Default: Story = {
-  args: {
-    users: nonAdminUsers,
-    submissions: mockSubmissions,
-  },
+    args: {
+        users: nonAdminUsers,
+        submissions: mockSubmissions,
+    },
 };
 
 export const Empty: Story = {
-  args: {
-    users: [],
-    submissions: [],
-  },
+    args: {
+        users: [],
+        submissions: [],
+    },
 };
 
 export const SingleUser: Story = {
-  args: {
-    users: [mockUsers[0]],
-    submissions: mockSubmissions.filter((s) => s.whoDid === "user-1"),
-  },
+    args: {
+        users: [mockUsers[0]],
+        submissions: mockSubmissions.filter((s) => s.whoDid === "user-1"),
+    },
 };

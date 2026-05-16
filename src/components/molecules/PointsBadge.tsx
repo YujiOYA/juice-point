@@ -1,11 +1,11 @@
 interface Props {
-  points: number;
+    points: number;
 }
 
 export default function PointsBadge({ points }: Props) {
-  return (
-    <div className="points-badge">
-      💰 {points} <span className="points-label">ポイント</span>
-    </div>
-  );
+    return (
+        <div className="points-badge">
+            💰 {points} <span className="points-label">ポイント</span>
+        </div>
+    );
 }

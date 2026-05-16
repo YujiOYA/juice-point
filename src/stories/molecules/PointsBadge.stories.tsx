@@ -2,9 +2,9 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import PointsBadge from "@molecule/PointsBadge";
 
 const meta: Meta<typeof PointsBadge> = {
-  title: "Molecules/PointsBadge",
-  component: PointsBadge,
-  tags: ["autodocs"],
+    title: "Molecules/PointsBadge",
+    component: PointsBadge,
+    tags: ["autodocs"],
 };
 
 export default meta;
