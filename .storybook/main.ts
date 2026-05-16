@@ -27,6 +27,7 @@ const config: StorybookConfig = {
       "@lib":      path.resolve(__dirname, "../src/lib"),
       "@type":     path.resolve(__dirname, "../src/types"),
       "@const":    path.resolve(__dirname, "../src/const"),
+      "@providers": path.resolve(__dirname, "../src/providers"),
     };
     return cfg;
   },
