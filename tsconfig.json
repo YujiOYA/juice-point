@@ -26,7 +26,9 @@
       "@lib/*": ["src/lib/*"],
       "@type/*":  ["src/types/*"],
       "@const/*": ["src/const/*"],
-      "@providers/*": ["src/providers/*"]
+      "@providers/*": ["src/providers/*"],
+      "@stories/*": ["src/stories/*"],
+      "@mocks/*": ["src/mocks/*"]
     }
   },
   "include": [
