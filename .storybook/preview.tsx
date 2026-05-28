@@ -6,7 +6,10 @@ import { initialize, mswLoader } from "msw-storybook-addon";
 import { handlers } from "../src/mocks/handlers";
 import "../src/app/globals.css";
 
-initialize({ onUnhandledRequest: "bypass" }, handlers);
+initialize({
+    onUnhandledRequest: "bypass",
+    serviceWorker: { url: `${import.meta.env.BASE_URL}mockServiceWorker.js` },
+}, handlers);
 
 const withQueryClient: Decorator = (Story) => {
   const qc = new QueryClient({

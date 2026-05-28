@@ -16,6 +16,9 @@ const config: StorybookConfig = {
   framework: "@storybook/nextjs-vite",
   staticDirs: ["../public"],
   viteFinal: async (cfg) => {
+    if (process.env.NODE_ENV === "production") {
+      cfg.base = "/juice-point/";
+    }
     cfg.resolve ??= {};
     cfg.resolve.alias = {
       ...(cfg.resolve.alias as Record<string, string>),
