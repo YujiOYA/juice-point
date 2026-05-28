@@ -28,6 +28,8 @@ const config: StorybookConfig = {
       "@type":     path.resolve(__dirname, "../src/types"),
       "@const":    path.resolve(__dirname, "../src/const"),
       "@providers": path.resolve(__dirname, "../src/providers"),
+      "@stories":  path.resolve(__dirname, "../src/stories"),
+      "@mocks":    path.resolve(__dirname, "../src/mocks"),
     };
     return cfg;
   },

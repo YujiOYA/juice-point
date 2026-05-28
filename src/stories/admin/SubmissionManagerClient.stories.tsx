@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import SubmissionManagerClient from "@app/admin/SubmissionManagerClient";
 import { mockUsers, mockSubmissions } from "../mockData";
 import { SubmissionType } from "@type/submission";
+import { http, HttpResponse } from "msw";
 
 const meta: Meta<typeof SubmissionManagerClient> = {
     title: "Admin/SubmissionManagerClient",
@@ -63,4 +64,47 @@ export const WithTaskRequests: Story = {
 
 export const Empty: Story = {
     args: { initialSubmissions: [] },
+};
+
+// ── MSW シナリオ ──────────────────────────────────────────
+// ボタン操作後のサーバーエラー（500）をシミュレート
+export const MutationError: Story = {
+    name: "承認操作 → サーバーエラー",
+    args: { initialSubmissions: mockSubmissions },
+    parameters: {
+        msw: {
+            handlers: [
+                http.post("/api/submissions", () =>
+                    HttpResponse.json({ error: "Internal Server Error" }, { status: 500 })
+                ),
+            ],
+        },
+    },
+};
+
+// ネットワーク切断（fetch 自体が失敗）をシミュレート
+export const NetworkError: Story = {
+    name: "承認操作 → ネットワークエラー",
+    args: { initialSubmissions: mockSubmissions },
+    parameters: {
+        msw: {
+            handlers: [
+                http.post("/api/submissions", () => HttpResponse.error()),
+            ],
+        },
+    },
+};
+
+// 再フェッチ後のデータが空になるシナリオ（全件処理済みを想定）
+export const RefetchEmpty: Story = {
+    name: "承認操作 → 再フェッチで空",
+    args: { initialSubmissions: mockSubmissions },
+    parameters: {
+        msw: {
+            handlers: [
+                http.post("/api/submissions", () => HttpResponse.json({ ok: true })),
+                http.get("/api/submissions", () => HttpResponse.json([])),
+            ],
+        },
+    },
 };

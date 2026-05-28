@@ -2,7 +2,11 @@ import type { Preview, Decorator } from "@storybook/nextjs-vite";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "sonner";
 import React from "react";
+import { initialize, mswLoader } from "msw-storybook-addon";
+import { handlers } from "../src/mocks/handlers";
 import "../src/app/globals.css";
+
+initialize({ onUnhandledRequest: "bypass" }, handlers);
 
 const withQueryClient: Decorator = (Story) => {
   const qc = new QueryClient({
@@ -43,6 +47,7 @@ export const globalTypes = {
 
 const preview: Preview = {
   decorators: [withQueryClient, withContainer],
+  loaders: [mswLoader],
   parameters: {
     controls: {
       matchers: {
