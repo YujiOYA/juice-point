@@ -78,7 +78,7 @@
 
 UIコンポーネントのカタログは GitHub Pages で公開しています。
 
-- **Storybook**: https://yujiooya.github.io/juice-point/
+- **Storybook**: [https://yujiooya.github.io/juice-point/](https://yujioya.github.io/juice-point/?path=/docs/admin-rewardmanagerclient--docs)
 
 ## 技術スタック
 
