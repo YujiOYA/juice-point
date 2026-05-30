@@ -74,6 +74,12 @@
 | プッシュ通知（管理者） | お手伝い申請が届いたときに通知を受け取れる |
 | ホーム画面アイコン | ブックマークより素早くアクセスできる |
 
+## Storybook
+
+UIコンポーネントのカタログは GitHub Pages で公開しています。
+
+- **Storybook**: https://yujiooya.github.io/juice-point/
+
 ## 技術スタック
 
 - **フレームワーク**: [Next.js](https://nextjs.org/) 16 (App Router)
