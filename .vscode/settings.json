@@ -5,6 +5,9 @@
   ],
   "editor.tabSize": 4,
   "editor.insertSpaces": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
   "[typescript]": {
     "editor.tabSize": 4
   },
