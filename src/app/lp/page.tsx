@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import AppScreenCarousel from "@app/lp/AppScreenCarousel";
 
 export const metadata = {
@@ -13,9 +15,9 @@ export default function LpPage() {
             <header className="lp-header">
                 <div className="lp-header__inner">
                     <span className="lp-header__logo">🏠 おてつだいポイント</span>
-                    <a href="/" className="lp-header__cta">
+                    <Link href="/" className="lp-header__cta">
                         無料で始める
-                    </a>
+                    </Link>
                 </div>
             </header>
 
@@ -35,9 +37,9 @@ export default function LpPage() {
                         <br />
                         シンプルな仕組みで、お手伝いを続ける習慣を。
                     </p>
-                    <a href="/" className="lp-btn lp-btn--primary lp-btn--lg">
+                    <Link href="/" className="lp-btn lp-btn--primary lp-btn--lg">
                         無料で始める →
-                    </a>
+                    </Link>
                     <div className="lp-hero__trust">
                         <span>✓ 登録不要</span>
                         <span className="lp-hero__trust-sep" aria-hidden="true" />
@@ -219,9 +221,9 @@ export default function LpPage() {
                             <li>✅ タスクリクエスト機能</li>
                             <li>✅ 管理者・一般ユーザー 権限管理</li>
                         </ul>
-                        <a href="/" className="lp-btn lp-btn--primary lp-btn--lg">
+                        <Link href="/" className="lp-btn lp-btn--primary lp-btn--lg">
                             今すぐ始める →
-                        </a>
+                        </Link>
                     </div>
                 </div>
             </section>
@@ -235,9 +237,9 @@ export default function LpPage() {
                         ちゃんと残そう。
                     </h2>
                     <p className="lp-cta__sub">登録不要。ブラウザからすぐ使えます。</p>
-                    <a href="/" className="lp-btn lp-btn--white lp-btn--lg">
+                    <Link href="/" className="lp-btn lp-btn--white lp-btn--lg">
                         無料で始める →
-                    </a>
+                    </Link>
                 </div>
             </section>
 
