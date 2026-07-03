@@ -5,7 +5,7 @@ import SelectInput from "@atom/SelectInput";
 import Tabs from "@atom/Tabs";
 import TextInput from "@atom/TextInput";
 import FormField from "@molecule/FormField";
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { useTaskForm } from "@hook/useTaskForm";
 import { useSubmissions } from "@hook/queries/useSubmissions";
@@ -54,40 +54,37 @@ export default function TaskForm({ user, initialTasks, initialSubmissions, initi
 
     // リマインド送信済みIDを5秒間保持（連打防止）
     const [remindedIds, setRemindedIds] = useState<Set<string>>(new Set());
-    const handleRemind = useCallback(
-        async (s: Submission) => {
-            if (remindedIds.has(s.id)) return;
-            setRemindedIds((prev) => new Set(prev).add(s.id));
-            try {
-                const res = await fetch(API.submissions.path, {
-                    method: API.submissions.method.POST,
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        type: "remind",
-                        id: s.id,
-                        whatYouDid: s.whatYouDid,
-                        point: s.point,
-                        whoDidName: user.user,
-                        submissionType: s.submissionType,
-                    }),
-                });
-                if (res.ok) toast.success(LABELS.toast.remindSuccess);
-                else toast.error(LABELS.toast.remindError);
-            } catch {
-                toast.error(LABELS.toast.remindError);
-            }
-            setTimeout(
-                () =>
-                    setRemindedIds((prev) => {
-                        const next = new Set(prev);
-                        next.delete(s.id);
-                        return next;
-                    }),
-                5000,
-            );
-        },
-        [remindedIds, user.user],
-    );
+    const handleRemind = async (s: Submission) => {
+        if (remindedIds.has(s.id)) return;
+        setRemindedIds((prev) => new Set(prev).add(s.id));
+        try {
+            const res = await fetch(API.submissions.path, {
+                method: API.submissions.method.POST,
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    type: "remind",
+                    id: s.id,
+                    whatYouDid: s.whatYouDid,
+                    point: s.point,
+                    whoDidName: user.user,
+                    submissionType: s.submissionType,
+                }),
+            });
+            if (res.ok) toast.success(LABELS.toast.remindSuccess);
+            else toast.error(LABELS.toast.remindError);
+        } catch {
+            toast.error(LABELS.toast.remindError);
+        }
+        setTimeout(
+            () =>
+                setRemindedIds((prev) => {
+                    const next = new Set(prev);
+                    next.delete(s.id);
+                    return next;
+                }),
+            5000,
+        );
+    };
 
     const tabSubmit = (
         <form onSubmit={handleSubmit}>
