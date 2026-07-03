@@ -1,33 +1,25 @@
+import { defineConfig } from "eslint/config";
+import nextCoreWebVitals from "eslint-config-next/core-web-vitals";
+import nextTypescript from "eslint-config-next/typescript";
 import storybook from "eslint-plugin-storybook";
 
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
-import importPlugin from "eslint-plugin-import";
+export default defineConfig([
+    {
+        ignores: ["storybook-static/**", ".claude/**"],
+    },
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const compat = new FlatCompat({
-    baseDirectory: __dirname,
-});
-
-// eslint-disable-next-line import/no-anonymous-default-export
-export default [
     /**
      * Next.js 推奨設定（維持する）
+     * eslint-config-next v16 はネイティブ flat config（import プラグインも登録済み）
      */
-    ...compat.extends("next/core-web-vitals", "next/typescript"),
+    ...nextCoreWebVitals,
+    ...nextTypescript,
 
     /**
      * 追加ルール（あなた用）
      */
     {
         files: ["**/*.{js,jsx,ts,tsx}"],
-
-        plugins: {
-            import: importPlugin,
-        },
 
         rules: {
             /**
@@ -84,4 +76,4 @@ export default [
      * Storybook 推奨設定
      */
     ...storybook.configs["flat/recommended"],
-];
+]);
