@@ -7,11 +7,15 @@ import { ENV } from "@const/constDefinition";
 
 export type PushStatus = "unsupported" | "denied" | "subscribed" | "unsubscribed" | "loading";
 
-function urlBase64ToUint8Array(base64String: string): Uint8Array {
+function urlBase64ToUint8Array(base64String: string): Uint8Array<ArrayBuffer> {
     const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
     const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
     const rawData = atob(base64);
-    return Uint8Array.from([...rawData].map((c) => c.charCodeAt(0)));
+    const output = new Uint8Array(new ArrayBuffer(rawData.length));
+    for (let i = 0; i < rawData.length; i++) {
+        output[i] = rawData.charCodeAt(i);
+    }
+    return output;
 }
 
 export function usePushNotification() {
@@ -19,23 +23,29 @@ export function usePushNotification() {
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
     useEffect(() => {
-        if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
-            setStatus("unsupported");
-            return;
-        }
-        if (Notification.permission === "denied") {
-            setStatus("denied");
-            return;
-        }
-        navigator.serviceWorker.ready
-            .then(async (reg) => {
+        let cancelled = false;
+        const detect = async (): Promise<PushStatus> => {
+            if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
+                return "unsupported";
+            }
+            if (Notification.permission === "denied") {
+                return "denied";
+            }
+            try {
+                const reg = await navigator.serviceWorker.ready;
                 const existing = await reg.pushManager.getSubscription();
-                setStatus(existing ? "subscribed" : "unsubscribed");
-            })
-            .catch((e) => {
-                setErrorMsg("SW準備エラー: " + String(e));
-                setStatus("unsubscribed");
-            });
+                return existing ? "subscribed" : "unsubscribed";
+            } catch (e) {
+                if (!cancelled) setErrorMsg("SW準備エラー: " + String(e));
+                return "unsubscribed";
+            }
+        };
+        detect().then((s) => {
+            if (!cancelled) setStatus(s);
+        });
+        return () => {
+            cancelled = true;
+        };
     }, []);
 
     const subscribe = async () => {
