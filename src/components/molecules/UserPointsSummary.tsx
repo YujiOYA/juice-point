@@ -2,6 +2,7 @@
 
 import { useState, Fragment } from "react";
 import { toast } from "sonner";
+
 import Button from "@atom/Button";
 import { useSubmissionMutations } from "@hook/queries/useSubmissions";
 import { Submission } from "@type/submission";
@@ -14,6 +15,36 @@ interface Props {
 
 type SortKey = "user" | "point";
 type SortDir = "asc" | "desc";
+
+interface SortBtnProps {
+    k: SortKey;
+    label: string;
+    sortKey: SortKey;
+    sortDir: SortDir;
+    onSort: (key: SortKey) => void;
+}
+
+const SortBtn = ({ k, label, sortKey, sortDir, onSort }: SortBtnProps) => (
+    <button
+        type="button"
+        onClick={() => onSort(k)}
+        style={{
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            fontWeight: sortKey === k ? 700 : 400,
+            color: sortKey === k ? "#e65100" : "#757575",
+            display: "flex",
+            alignItems: "center",
+            gap: "0.2rem",
+            fontSize: "inherit",
+            padding: 0,
+        }}
+    >
+        {label}
+        {sortKey === k && <span>{sortDir === "asc" ? "↑" : "↓"}</span>}
+    </button>
+);
 
 export default function UserPointsSummary({ users, submissions }: Props) {
     const [sortKey, setSortKey] = useState<SortKey>("user");
@@ -74,28 +105,6 @@ export default function UserPointsSummary({ users, submissions }: Props) {
             if (av > bv) return sortDir === "asc" ? 1 : -1;
             return 0;
         });
-
-    const SortBtn = ({ k, label }: { k: SortKey; label: string }) => (
-        <button
-            type="button"
-            onClick={() => handleSort(k)}
-            style={{
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                fontWeight: sortKey === k ? 700 : 400,
-                color: sortKey === k ? "#e65100" : "#757575",
-                display: "flex",
-                alignItems: "center",
-                gap: "0.2rem",
-                fontSize: "inherit",
-                padding: 0,
-            }}
-        >
-            {label}
-            {sortKey === k && <span>{sortDir === "asc" ? "↑" : "↓"}</span>}
-        </button>
-    );
 
     const toggle = (id: string) => {
         setEditingId(null);
@@ -227,8 +236,8 @@ export default function UserPointsSummary({ users, submissions }: Props) {
             {/* ソートバー */}
             <div className="task-sort-bar">
                 <span className="task-sort-label">並び替え</span>
-                <SortBtn k="user" label="担当者" />
-                <SortBtn k="point" label="ポイント" />
+                <SortBtn k="user" label="担当者" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} />
+                <SortBtn k="point" label="ポイント" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} />
             </div>
 
             {/* スマホ: カード */}
@@ -274,10 +283,10 @@ export default function UserPointsSummary({ users, submissions }: Props) {
                 <thead>
                     <tr>
                         <th>
-                            <SortBtn k="user" label="担当者" />
+                            <SortBtn k="user" label="担当者" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} />
                         </th>
                         <th>
-                            <SortBtn k="point" label="未使用ポイント" />
+                            <SortBtn k="point" label="未使用ポイント" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} />
                         </th>
                         <th>内訳</th>
                     </tr>

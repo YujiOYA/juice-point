@@ -1,11 +1,11 @@
 "use client";
 
-import ManagerPanel from "@organism/ManagerPanel";
+import { SUBMISSION_STATUS } from "@const/constDefinition";
 import { useSubmissions } from "@hook/queries/useSubmissions";
 import { useBadge } from "@hook/useBadge";
+import ManagerPanel from "@organism/ManagerPanel";
 import { Submission } from "@type/submission";
 import { User } from "@type/user";
-import { SUBMISSION_STATUS } from "@const/constDefinition";
 
 interface Props {
     initialSubmissions: Submission[];

@@ -1,7 +1,7 @@
-import { useTasks, useTaskMutations } from "@hook/queries/useTasks";
-import { Task } from "@type/task";
-import { useTableManager } from "@hook/useTableManager";
 import { LABELS } from "@const/labels";
+import { useTasks, useTaskMutations } from "@hook/queries/useTasks";
+import { useTableManager } from "@hook/useTableManager";
+import { Task } from "@type/task";
 
 const T = LABELS.toast;
 

@@ -1,13 +1,13 @@
 "use client";
 
 import Button from "@atom/Button";
-import SubmissionCard from "@molecule/SubmissionCard";
-import UserPointsSummary from "@molecule/UserPointsSummary";
-import { useManagerPanel } from "@hook/useManagerPanel";
-import { Submission, SubmissionType } from "@type/submission";
-import { User } from "@type/user";
 import { AUTHORITY } from "@const/constDefinition";
 import { LABELS } from "@const/labels";
+import { useManagerPanel } from "@hook/useManagerPanel";
+import SubmissionCard from "@molecule/SubmissionCard";
+import UserPointsSummary from "@molecule/UserPointsSummary";
+import { Submission, SubmissionType } from "@type/submission";
+import { User } from "@type/user";
 
 const L = LABELS.manager;
 const C = LABELS.common;

@@ -1,7 +1,7 @@
 "use client";
 
-import { usePushNotification } from "@hook/usePushNotification";
 import { LABELS } from "@const/labels";
+import { usePushNotification } from "@hook/usePushNotification";
 
 const L = LABELS.push;
 

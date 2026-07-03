@@ -1,8 +1,11 @@
-import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import SubmissionManagerClient from "@app/admin/SubmissionManagerClient";
-import { mockUsers, mockSubmissions } from "../mockData";
-import { SubmissionType } from "@type/submission";
 import { http, HttpResponse } from "msw";
+
+import SubmissionManagerClient from "@app/admin/SubmissionManagerClient";
+import { SubmissionType } from "@type/submission";
+
+import { mockUsers, mockSubmissions } from "../mockData";
+
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
 const meta: Meta<typeof SubmissionManagerClient> = {
     title: "Admin/SubmissionManagerClient",
@@ -75,7 +78,7 @@ export const MutationError: Story = {
         msw: {
             handlers: [
                 http.post("/api/submissions", () =>
-                    HttpResponse.json({ error: "Internal Server Error" }, { status: 500 })
+                    HttpResponse.json({ error: "Internal Server Error" }, { status: 500 }),
                 ),
             ],
         },

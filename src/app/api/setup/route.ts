@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
 import { ConditionalCheckFailedException } from "@aws-sdk/client-dynamodb";
+import { NextRequest, NextResponse } from "next/server";
 
 import { createUser, getUsers } from "@lib/dynamoDbApi";
 import { setupSchema } from "@lib/schemas";

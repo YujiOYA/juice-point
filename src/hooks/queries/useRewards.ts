@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Reward } from "@type/reward";
+
 import { API } from "@const/apiEndpoint";
+import { Reward } from "@type/reward";
 
 export const REWARDS_KEY = ["rewards"] as const;
 

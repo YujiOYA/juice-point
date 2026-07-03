@@ -2,15 +2,15 @@
 import { useState } from "react";
 
 import Card from "@atom/Card";
+import { AUTHORITY } from "@const/constDefinition";
+import { LABELS } from "@const/labels";
+import { useSubmissions } from "@hook/queries/useSubmissions";
 import LoginForm from "@organism/LoginForm";
 import TaskForm from "@organism/TaskForm";
-import { useSubmissions } from "@hook/queries/useSubmissions";
 import { Reward } from "@type/reward";
 import { Submission } from "@type/submission";
 import { Task } from "@type/task";
 import { User } from "@type/user";
-import { AUTHORITY } from "@const/constDefinition";
-import { LABELS } from "@const/labels";
 
 interface Props {
     users: User[];

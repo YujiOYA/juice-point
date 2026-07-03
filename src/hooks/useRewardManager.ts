@@ -1,7 +1,7 @@
-import { useRewards, useRewardMutations } from "@hook/queries/useRewards";
-import { Reward } from "@type/reward";
-import { useTableManager } from "@hook/useTableManager";
 import { LABELS } from "@const/labels";
+import { useRewards, useRewardMutations } from "@hook/queries/useRewards";
+import { useTableManager } from "@hook/useTableManager";
+import { Reward } from "@type/reward";
 
 const T = LABELS.toast;
 

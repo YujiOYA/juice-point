@@ -1,6 +1,5 @@
 import { randomUUID } from "crypto";
 
-import bcrypt from "bcryptjs";
 import {
     AttributeValue,
     ScanCommand,
@@ -10,13 +9,14 @@ import {
     UpdateItemCommand,
     DeleteItemCommand,
 } from "@aws-sdk/client-dynamodb";
+import bcrypt from "bcryptjs";
 
+import { ENV } from "@const/constDefinition";
 import { dynamo } from "@lib/dynamoClient";
 import { Reward } from "@type/reward";
 import { Submission, SubmissionType } from "@type/submission";
 import { Task } from "@type/task";
 import { User } from "@type/user";
-import { ENV } from "@const/constDefinition";
 
 const TABLE_USER = ENV.tableUser;
 const TABLE_TASK = ENV.tableTask;

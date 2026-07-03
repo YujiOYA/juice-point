@@ -1,8 +1,9 @@
-import type { User } from "@type/user";
-import type { Task } from "@type/task";
-import type { Submission } from "@type/submission";
-import type { Reward } from "@type/reward";
 import { SubmissionType } from "@type/submission";
+
+import type { Reward } from "@type/reward";
+import type { Submission } from "@type/submission";
+import type { Task } from "@type/task";
+import type { User } from "@type/user";
 
 export const mockUsers: User[] = [
     { id: "user-1", user: "たろう", authority: "user" },

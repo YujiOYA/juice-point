@@ -3,10 +3,10 @@
 import { useState } from "react";
 
 import Button from "@atom/Button";
-import { Submission, SubmissionType } from "@type/submission";
-import { User } from "@type/user";
 import { API } from "@const/apiEndpoint";
 import { LABELS } from "@const/labels";
+import { Submission, SubmissionType } from "@type/submission";
+import { User } from "@type/user";
 
 interface Props {
     submission: Submission;
@@ -25,12 +25,12 @@ export default function QuickApproveClient({ submission, users }: Props) {
             const body =
                 action === "approve" && isTaskRequest
                     ? {
-                          type: "approveTaskRequest",
-                          id: submission.id,
-                          taskName: submission.whatYouDid,
-                          point: submission.point,
-                          whoDid: submission.whoDid,
-                      }
+                        type: "approveTaskRequest",
+                        id: submission.id,
+                        taskName: submission.whatYouDid,
+                        point: submission.point,
+                        whoDid: submission.whoDid,
+                    }
                     : { type: action, id: submission.id };
             await fetch(API.submissions.path, {
                 method: API.submissions.method.POST,

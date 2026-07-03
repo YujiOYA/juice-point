@@ -3,13 +3,13 @@
 import { useEffect } from "react";
 import { Toaster, toast, useSonner } from "sonner";
 
+const dismissAll = () => {
+    toast.dismiss();
+};
+
 function Backdrop() {
     const { toasts } = useSonner();
     const isActive = toasts.some((t) => !t.delete);
-
-    const dismissAll = () => {
-        toasts.forEach((t) => toast.dismiss(t.id));
-    };
 
     useEffect(() => {
         if (!isActive) return;
@@ -21,7 +21,7 @@ function Backdrop() {
         };
         window.addEventListener("keydown", onKeyDown);
         return () => window.removeEventListener("keydown", onKeyDown);
-    }, [isActive, toasts]);
+    }, [isActive]);
 
     return <div className={`toast-backdrop${isActive ? " toast-backdrop--visible" : ""}`} onClick={dismissAll} />;
 }

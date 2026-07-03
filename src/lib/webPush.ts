@@ -1,4 +1,5 @@
 import webpush from "web-push";
+
 import { ENV } from "@const/constDefinition";
 
 export async function sendPushNotification(

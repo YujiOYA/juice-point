@@ -1,10 +1,10 @@
 import { useState, useMemo } from "react";
 import { toast } from "sonner";
 
-import { useUsers, useUserMutations } from "@hook/queries/useUsers";
-import { User } from "@type/user";
 import { AUTHORITY } from "@const/constDefinition";
 import { LABELS } from "@const/labels";
+import { useUsers, useUserMutations } from "@hook/queries/useUsers";
+import { User } from "@type/user";
 
 const T = LABELS.toast;
 const C = LABELS.common;

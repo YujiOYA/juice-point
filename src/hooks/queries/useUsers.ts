@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { User } from "@type/user";
+
 import { API } from "@const/apiEndpoint";
+import { User } from "@type/user";
 
 export const USERS_KEY = ["users"] as const;
 

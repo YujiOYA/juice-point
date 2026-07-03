@@ -1,15 +1,15 @@
 import { useState } from "react";
 import { toast } from "sonner";
 
-import { useTasks } from "@hook/queries/useTasks";
-import { useSubmissions, useSubmissionMutations } from "@hook/queries/useSubmissions";
+import { SUBMISSION_STATUS } from "@const/constDefinition";
+import { LABELS } from "@const/labels";
 import { useRewards } from "@hook/queries/useRewards";
+import { useSubmissions, useSubmissionMutations } from "@hook/queries/useSubmissions";
+import { useTasks } from "@hook/queries/useTasks";
 import { Reward } from "@type/reward";
 import { Submission } from "@type/submission";
 import { Task } from "@type/task";
 import { User } from "@type/user";
-import { SUBMISSION_STATUS } from "@const/constDefinition";
-import { LABELS } from "@const/labels";
 
 const T = LABELS.toast;
 

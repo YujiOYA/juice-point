@@ -1,7 +1,9 @@
-import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import ManagerPanel from "@organism/ManagerPanel";
-import { mockUsers, mockSubmissions } from "../mockData";
 import { SubmissionType } from "@type/submission";
+
+import { mockUsers, mockSubmissions } from "../mockData";
+
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
 const meta: Meta<typeof ManagerPanel> = {
     title: "Organisms/ManagerPanel",
