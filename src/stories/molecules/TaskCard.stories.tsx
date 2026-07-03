@@ -1,7 +1,10 @@
-import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { fn } from "storybook/test";
+
 import TaskCard from "@molecule/TaskCard";
+
 import { mockTasks, mockUsers } from "../mockData";
+
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
 const meta: Meta<typeof TaskCard> = {
     title: "Molecules/TaskCard",

@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { createUser, deleteUser, getUsers, updateUser } from "@lib/dynamoDbApi";
-import { forbidden, getSessionUser, unauthorized } from "@lib/authGuard";
-import { userPostSchema } from "@lib/schemas";
 import { AUTHORITY } from "@const/constDefinition";
+import { forbidden, getSessionUser, unauthorized } from "@lib/authGuard";
+import { createUser, deleteUser, getUsers, updateUser } from "@lib/dynamoDbApi";
+import { userPostSchema } from "@lib/schemas";
 
 export async function GET() {
     const user = await getSessionUser();

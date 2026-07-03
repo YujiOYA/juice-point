@@ -1,11 +1,11 @@
-import { getRewards, getSubmissions, getTasks, getUsers } from "@lib/dynamoDbApi";
-import Tabs from "@atom/Tabs";
-import PushNotificationToggle from "@organism/PushNotificationToggle";
+import AdminLogoutButton from "@app/admin/AdminLogoutButton";
 import RewardManagerClient from "@app/admin/RewardManagerClient";
 import SubmissionManagerClient from "@app/admin/SubmissionManagerClient";
 import TaskManagerClient from "@app/admin/TaskManagerClient";
 import UserManagerClient from "@app/admin/UserManagerClient";
-import AdminLogoutButton from "@app/admin/AdminLogoutButton";
+import Tabs from "@atom/Tabs";
+import { getRewards, getSubmissions, getTasks, getUsers } from "@lib/dynamoDbApi";
+import PushNotificationToggle from "@organism/PushNotificationToggle";
 
 export const dynamic = "force-dynamic";
 

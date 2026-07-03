@@ -1,15 +1,15 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { toast } from "sonner";
 
 import Button from "@atom/Button";
 import Card from "@atom/Card";
 import TextInput from "@atom/TextInput";
 import { API } from "@const/apiEndpoint";
-import { ROUTES } from "@const/routesConfig";
 import { LABELS } from "@const/labels";
+import { ROUTES } from "@const/routesConfig";
 
 const L = LABELS.setup;
 const T = LABELS.toast;

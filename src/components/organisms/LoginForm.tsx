@@ -1,14 +1,15 @@
 "use client";
 
 import { useRef } from "react";
+
 import Button from "@atom/Button";
 import SelectInput from "@atom/SelectInput";
-import PointsBadge from "@molecule/PointsBadge";
-import { useLogin } from "@hook/useLogin";
-import { Submission } from "@type/submission";
-import { User } from "@type/user";
 import { AUTHORITY } from "@const/constDefinition";
 import { LABELS } from "@const/labels";
+import { useLogin } from "@hook/useLogin";
+import PointsBadge from "@molecule/PointsBadge";
+import { Submission } from "@type/submission";
+import { User } from "@type/user";
 
 const L = LABELS.login;
 

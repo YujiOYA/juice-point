@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { createReward, deleteReward, getRewards, updateReward } from "@lib/dynamoDbApi";
-import { forbidden, getSessionUser, unauthorized } from "@lib/authGuard";
-import { rewardPostSchema } from "@lib/schemas";
 import { AUTHORITY } from "@const/constDefinition";
+import { forbidden, getSessionUser, unauthorized } from "@lib/authGuard";
+import { createReward, deleteReward, getRewards, updateReward } from "@lib/dynamoDbApi";
+import { rewardPostSchema } from "@lib/schemas";
 
 export async function GET() {
     const user = await getSessionUser();

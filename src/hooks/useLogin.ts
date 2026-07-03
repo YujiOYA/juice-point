@@ -1,11 +1,11 @@
 import { useState } from "react";
 
-import { Submission } from "@type/submission";
-import { User } from "@type/user";
 import { API } from "@const/apiEndpoint";
 import { AUTHORITY, SUBMISSION_STATUS } from "@const/constDefinition";
-import { ROUTES } from "@const/routesConfig";
 import { LABELS } from "@const/labels";
+import { ROUTES } from "@const/routesConfig";
+import { Submission } from "@type/submission";
+import { User } from "@type/user";
 
 const calcUserPoint = (userId: string, submissions: Submission[]): number =>
     submissions

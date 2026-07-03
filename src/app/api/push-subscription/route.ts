@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { deletePushSubscription, savePushSubscription } from "@lib/dynamoDbApi";
 import { getSessionUser, unauthorized } from "@lib/authGuard";
+import { deletePushSubscription, savePushSubscription } from "@lib/dynamoDbApi";
 import { pushSubscriptionDeleteSchema, pushSubscriptionPostSchema } from "@lib/schemas";
 
 export async function POST(req: NextRequest) {

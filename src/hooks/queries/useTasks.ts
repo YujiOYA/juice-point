@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Task } from "@type/task";
+
 import { API } from "@const/apiEndpoint";
+import { Task } from "@type/task";
 
 export const TASKS_KEY = ["tasks"] as const;
 

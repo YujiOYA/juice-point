@@ -1,6 +1,8 @@
-import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import UserPointsSummary from "@molecule/UserPointsSummary";
+
 import { mockUsers, mockSubmissions } from "../mockData";
+
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
 const nonAdminUsers = mockUsers.filter((u) => u.authority !== "admin");
 

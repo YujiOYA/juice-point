@@ -1,5 +1,6 @@
-import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import PointsBadge from "@molecule/PointsBadge";
+
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
 const meta: Meta<typeof PointsBadge> = {
     title: "Molecules/PointsBadge",

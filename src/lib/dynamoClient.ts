@@ -1,5 +1,6 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { awsCredentialsProvider } from "@vercel/functions/oidc";
+
 import { ENV } from "@const/constDefinition";
 
 const credentials = awsCredentialsProvider({

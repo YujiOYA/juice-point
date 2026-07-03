@@ -1,16 +1,16 @@
 "use client";
 
-import AdminTable from "@molecule/AdminTable";
 import Button from "@atom/Button";
 import Card from "@atom/Card";
 import SelectInput from "@atom/SelectInput";
 import Skeleton from "@atom/Skeleton";
 import TextInput from "@atom/TextInput";
-import RewardCard from "@molecule/RewardCard";
+import { LABELS } from "@const/labels";
 import { useRewardManager } from "@hook/useRewardManager";
+import AdminTable from "@molecule/AdminTable";
+import RewardCard from "@molecule/RewardCard";
 import { Reward } from "@type/reward";
 import { User } from "@type/user";
-import { LABELS } from "@const/labels";
 
 const L = LABELS.rewardManager;
 const C = LABELS.common;
@@ -149,41 +149,41 @@ export default function RewardManagerClient({ users, initialRewards }: Props) {
                 <div className="task-list">
                     {isFetching
                         ? Array.from({ length: SKELETON_COUNT }, (_, i) => (
-                              <div
-                                  key={i}
-                                  className="card"
-                                  style={{ padding: "1rem", display: "flex", flexDirection: "column", gap: "0.75rem" }}
-                              >
-                                  <Skeleton height="1.1rem" width="55%" />
-                                  <Skeleton height="0.9rem" width="25%" />
-                                  <Skeleton height="0.9rem" width="35%" />
-                              </div>
-                          ))
+                            <div
+                                key={i}
+                                className="card"
+                                style={{ padding: "1rem", display: "flex", flexDirection: "column", gap: "0.75rem" }}
+                            >
+                                <Skeleton height="1.1rem" width="55%" />
+                                <Skeleton height="0.9rem" width="25%" />
+                                <Skeleton height="0.9rem" width="35%" />
+                            </div>
+                        ))
                         : rewards.map((r) =>
-                              editingId === r.id ? (
-                                  <RewardCard
-                                      key={r.id}
-                                      isEditing={true}
-                                      reward={r}
-                                      editForm={editForm}
-                                      users={users}
-                                      isLoading={isLoading}
-                                      onChangeForm={setEditForm}
-                                      onSave={handleUpdate}
-                                      onCancel={() => setEditingId(null)}
-                                  />
-                              ) : (
-                                  <RewardCard
-                                      key={r.id}
-                                      isEditing={false}
-                                      reward={r}
-                                      users={users}
-                                      isLoading={isLoading}
-                                      onEdit={startEdit}
-                                      onDelete={handleDelete}
-                                  />
-                              ),
-                          )}
+                            editingId === r.id ? (
+                                <RewardCard
+                                    key={r.id}
+                                    isEditing={true}
+                                    reward={r}
+                                    editForm={editForm}
+                                    users={users}
+                                    isLoading={isLoading}
+                                    onChangeForm={setEditForm}
+                                    onSave={handleUpdate}
+                                    onCancel={() => setEditingId(null)}
+                                />
+                            ) : (
+                                <RewardCard
+                                    key={r.id}
+                                    isEditing={false}
+                                    reward={r}
+                                    users={users}
+                                    isLoading={isLoading}
+                                    onEdit={startEdit}
+                                    onDelete={handleDelete}
+                                />
+                            ),
+                        )}
                 </div>
 
                 {/* PC: テーブル */}
@@ -203,88 +203,88 @@ export default function RewardManagerClient({ users, initialRewards }: Props) {
                 >
                     {isFetching
                         ? Array.from({ length: SKELETON_COUNT }, (_, i) => (
-                              <tr key={i}>
-                                  <td>
-                                      <Skeleton height="1rem" />
-                                  </td>
-                                  <td>
-                                      <Skeleton height="1rem" width="60px" />
-                                  </td>
-                                  <td>
-                                      <Skeleton height="1rem" width="80px" />
-                                  </td>
-                                  <td />
-                              </tr>
-                          ))
+                            <tr key={i}>
+                                <td>
+                                    <Skeleton height="1rem" />
+                                </td>
+                                <td>
+                                    <Skeleton height="1rem" width="60px" />
+                                </td>
+                                <td>
+                                    <Skeleton height="1rem" width="80px" />
+                                </td>
+                                <td />
+                            </tr>
+                        ))
                         : rewards.map((r) => (
-                              <tr key={r.id}>
-                                  {editingId === r.id ? (
-                                      <>
-                                          <td>
-                                              <TextInput
-                                                  value={editForm.name}
-                                                  onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-                                              />
-                                          </td>
-                                          <td>
-                                              <TextInput
-                                                  type="number"
-                                                  min="1"
-                                                  value={editForm.point}
-                                                  onChange={(e) => setEditForm({ ...editForm, point: e.target.value })}
-                                                  style={{ width: "100px" }}
-                                              />
-                                          </td>
-                                          <td>
-                                              <SelectInput
-                                                  value={editForm.whose}
-                                                  onChange={(e) => setEditForm({ ...editForm, whose: e.target.value })}
-                                              >
-                                                  {users.map((u) => (
-                                                      <option key={u.id} value={u.id}>
-                                                          {u.user}
-                                                      </option>
-                                                  ))}
-                                              </SelectInput>
-                                          </td>
-                                          <td className="task-table__actions">
-                                              <Button
-                                                  variant="approve"
-                                                  disabled={isLoading}
-                                                  onClick={() => handleUpdate(r.id)}
-                                              >
-                                                  {C.save}
-                                              </Button>
-                                              <Button variant="logout" onClick={() => setEditingId(null)}>
-                                                  {C.cancel}
-                                              </Button>
-                                          </td>
-                                      </>
-                                  ) : (
-                                      <>
-                                          <td>{r.name}</td>
-                                          <td>{r.point}pt</td>
-                                          <td>{userName(r.whose)}</td>
-                                          <td className="task-table__actions">
-                                              <Button
-                                                  variant="primary"
-                                                  disabled={isLoading}
-                                                  onClick={() => startEdit(r)}
-                                              >
-                                                  {C.edit}
-                                              </Button>
-                                              <Button
-                                                  variant="disapprove"
-                                                  disabled={isLoading}
-                                                  onClick={() => handleDelete(r.id)}
-                                              >
-                                                  {C.delete}
-                                              </Button>
-                                          </td>
-                                      </>
-                                  )}
-                              </tr>
-                          ))}
+                            <tr key={r.id}>
+                                {editingId === r.id ? (
+                                    <>
+                                        <td>
+                                            <TextInput
+                                                value={editForm.name}
+                                                onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                                            />
+                                        </td>
+                                        <td>
+                                            <TextInput
+                                                type="number"
+                                                min="1"
+                                                value={editForm.point}
+                                                onChange={(e) => setEditForm({ ...editForm, point: e.target.value })}
+                                                style={{ width: "100px" }}
+                                            />
+                                        </td>
+                                        <td>
+                                            <SelectInput
+                                                value={editForm.whose}
+                                                onChange={(e) => setEditForm({ ...editForm, whose: e.target.value })}
+                                            >
+                                                {users.map((u) => (
+                                                    <option key={u.id} value={u.id}>
+                                                        {u.user}
+                                                    </option>
+                                                ))}
+                                            </SelectInput>
+                                        </td>
+                                        <td className="task-table__actions">
+                                            <Button
+                                                variant="approve"
+                                                disabled={isLoading}
+                                                onClick={() => handleUpdate(r.id)}
+                                            >
+                                                {C.save}
+                                            </Button>
+                                            <Button variant="logout" onClick={() => setEditingId(null)}>
+                                                {C.cancel}
+                                            </Button>
+                                        </td>
+                                    </>
+                                ) : (
+                                    <>
+                                        <td>{r.name}</td>
+                                        <td>{r.point}pt</td>
+                                        <td>{userName(r.whose)}</td>
+                                        <td className="task-table__actions">
+                                            <Button
+                                                variant="primary"
+                                                disabled={isLoading}
+                                                onClick={() => startEdit(r)}
+                                            >
+                                                {C.edit}
+                                            </Button>
+                                            <Button
+                                                variant="disapprove"
+                                                disabled={isLoading}
+                                                onClick={() => handleDelete(r.id)}
+                                            >
+                                                {C.delete}
+                                            </Button>
+                                        </td>
+                                    </>
+                                )}
+                            </tr>
+                        ))}
                 </AdminTable>
             </section>
         </div>

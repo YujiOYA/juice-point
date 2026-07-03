@@ -1,8 +1,9 @@
 import { redirect } from "next/navigation";
 
-import { getSubmissionById, getUsers } from "@lib/dynamoDbApi";
-import { getSessionUser } from "@lib/authGuard";
 import { AUTHORITY, SUBMISSION_STATUS } from "@const/constDefinition";
+import { getSessionUser } from "@lib/authGuard";
+import { getSubmissionById, getUsers } from "@lib/dynamoDbApi";
+
 import QuickApproveClient from "./QuickApproveClient";
 
 export const dynamic = "force-dynamic";

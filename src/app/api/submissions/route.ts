@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import { AUTHORITY } from "@const/constDefinition";
+import { forbidden, getSessionUser, unauthorized } from "@lib/authGuard";
 import {
     createSubmission,
     createTask,
@@ -9,10 +11,8 @@ import {
     updateSubmissionPoint,
     updateSubmissionStatus,
 } from "@lib/dynamoDbApi";
-import { sendPushNotification } from "@lib/webPush";
-import { forbidden, getSessionUser, unauthorized } from "@lib/authGuard";
 import { submissionPostSchema } from "@lib/schemas";
-import { AUTHORITY } from "@const/constDefinition";
+import { sendPushNotification } from "@lib/webPush";
 import { SubmissionType } from "@type/submission";
 
 const ADMIN_ONLY_TYPES = new Set([

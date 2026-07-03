@@ -1,10 +1,11 @@
 import { redirect } from "next/navigation";
-import PageClient from "@app/PageClient";
+
 import InitialSetupClient from "@app/InitialSetupClient";
-import { getUsers, getTasks, getSubmissions, getRewards } from "@lib/dynamoDbApi";
-import { getSessionUser } from "@lib/authGuard";
+import PageClient from "@app/PageClient";
 import { AUTHORITY } from "@const/constDefinition";
 import { ROUTES } from "@const/routesConfig";
+import { getSessionUser } from "@lib/authGuard";
+import { getUsers, getTasks, getSubmissions, getRewards } from "@lib/dynamoDbApi";
 
 export const dynamic = "force-dynamic";
 

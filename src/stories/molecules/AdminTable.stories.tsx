@@ -1,6 +1,8 @@
-import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { fn } from "storybook/test";
+
 import AdminTable, { type Column } from "@molecule/AdminTable";
+
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
 const columns: Column[] = [
     { key: "task", label: "タスク名", sortable: true },

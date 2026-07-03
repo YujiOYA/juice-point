@@ -1,7 +1,8 @@
 import { Geist, Geist_Mono } from "next/font/google";
+
 import ToasterClient from "@atom/ToasterClient";
-import QueryProvider from "@providers/QueryProvider";
 import PwaRegister from "@providers/PwaRegister";
+import QueryProvider from "@providers/QueryProvider";
 
 import type { Metadata, Viewport } from "next";
 import "./globals.css";

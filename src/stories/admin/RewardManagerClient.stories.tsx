@@ -1,6 +1,8 @@
-import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import RewardManagerClient from "@app/admin/RewardManagerClient";
+
 import { mockUsers, mockRewards } from "../mockData";
+
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
 const meta: Meta<typeof RewardManagerClient> = {
     title: "Admin/RewardManagerClient",
