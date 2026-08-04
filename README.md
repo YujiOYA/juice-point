@@ -474,3 +474,15 @@ flowchart LR
 
     iron-session["iron-session<br/>(HttpOnly Cookie)"] -->|sessionUser prop| loggedInUser
 ```
+
+### 画面遷移 × 状態管理（統合ビュー）
+
+上記の「ページ構成と認証フロー」と「状態管理」を画面単位で統合し、各画面が呼ぶ API と、その結果が **TanStack Query キャッシュ更新 / SSR 全体リロード / ローカル state** のどこで反映されるかを1枚にまとめたインタラクティブ図。
+
+📊 **[画面遷移 × 状態管理（インタラクティブ版）](https://claude.ai/code/artifact/da8eae22-fb1d-4dee-ba32-668408f8932d)**
+
+画面（ノード）にカーソルを合わせると、その画面が呼ぶ API 一覧と更新経路が表示される。特に以下はコードを読まないと気づきにくいので、変更時は注意すること。
+
+- 管理者ログインと Quick Approve（`/admin/quick`）は TanStack Query を使わず、`location.replace` による全画面リロードで最新化している
+- `approveTaskRequest`（タスク追加リクエストの承認）だけ `submissions` と `tasks` の2キーを同時に invalidate する
+- `remind`（リマインド送信）はミューテーションだが、どのキャッシュも invalidate しない（トースト通知のみ）
