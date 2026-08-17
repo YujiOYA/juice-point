@@ -28,7 +28,10 @@
   "overrides": {
     "postcss": "^8.5.10",
     "sharp": "^0.35.3",
-    "valibot": "^1.4.2"
+    "valibot": "^1.4.2",
+    "minimatch@3.1.5": {
+      "brace-expansion": "^1.1.18"
+    }
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^5.2.1",
