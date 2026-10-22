@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { AUTHORITY } from "@const/constDefinition";
+import { AUTHORITY, SUBMISSION_STATUS } from "@const/constDefinition";
 import { forbidden, getSessionUser, unauthorized } from "@lib/authGuard";
 import {
     createSubmission,
     createTask,
     deleteSubmission,
     getPushSubscriptions,
+    getSubmissionById,
     getSubmissions,
     updateSubmissionPoint,
     updateSubmissionStatus,
@@ -63,10 +64,9 @@ export async function POST(req: NextRequest) {
                 whoDid: user.id,
                 point: body.point,
             });
-            const userName = body.whoDidName ?? user.user;
             await notifyAdmins(
                 "📋 お手伝い申請が届きました",
-                `${userName} が「${body.whatYouDid}」（${body.point}pt）を申請しました`,
+                `${user.user} が「${body.whatYouDid}」（${body.point}pt）を申請しました`,
                 { submissionId },
             );
             return NextResponse.json({ ok: true });
@@ -79,10 +79,9 @@ export async function POST(req: NextRequest) {
                 point: body.point,
                 submissionType: SubmissionType.OneTimeTask,
             });
-            const userName = body.whoDidName ?? user.user;
             await notifyAdmins(
                 "📋 一度きりタスクの申請が届きました",
-                `${userName} が「${body.whatYouDid}」（${body.point}pt）を申請しました`,
+                `${user.user} が「${body.whatYouDid}」（${body.point}pt）を申請しました`,
                 { submissionId },
             );
             return NextResponse.json({ ok: true });
@@ -95,10 +94,9 @@ export async function POST(req: NextRequest) {
                 point: body.point,
                 submissionType: SubmissionType.TaskRequest,
             });
-            const userName = body.whoDidName ?? user.user;
             await notifyAdmins(
                 "💡 タスク追加リクエストが届きました",
-                `${userName} が「${body.whatYouDid}」のタスク登録をリクエストしました`,
+                `${user.user} が「${body.whatYouDid}」のタスク登録をリクエストしました`,
                 { submissionId },
             );
             return NextResponse.json({ ok: true });
@@ -143,22 +141,30 @@ export async function POST(req: NextRequest) {
         }
 
         if (body.type === "remind") {
-            const userName = body.whoDidName ?? user.user;
-            const isTaskRequest = body.submissionType === SubmissionType.TaskRequest;
+            // 自分の承認待ち申請だけリマインドできる。文面は DB の申請から作る
+            // （任意の id を通知に載せると、親が通知の「承認」ボタンで別の申請を承認してしまう）
+            const submission = await getSubmissionById(body.id);
+            if (!submission || submission.status !== SUBMISSION_STATUS.pending) {
+                return NextResponse.json({ error: "Not found" }, { status: 404 });
+            }
+            if (submission.whoDid !== user.id) return forbidden();
+            const isTaskRequest = submission.submissionType === SubmissionType.TaskRequest;
             const title = isTaskRequest
                 ? "⏰ リマインド：タスク追加リクエストが承認待ちです"
                 : "⏰ リマインド：承認待ちのお手伝いがあります";
             const notifyBody = isTaskRequest
-                ? `${userName} が「${body.whatYouDid}」のタスク登録を待っています`
-                : `${userName} が「${body.whatYouDid}」（${body.point}pt）の承認を待っています`;
-            await notifyAdmins(title, notifyBody, { submissionId: body.id });
+                ? `${user.user} が「${submission.whatYouDid}」のタスク登録を待っています`
+                : `${user.user} が「${submission.whatYouDid}」（${submission.point}pt）の承認を待っています`;
+            await notifyAdmins(title, notifyBody, { submissionId: submission.id });
             return NextResponse.json({ ok: true });
         }
 
         if (body.type === "usePoints") {
+            // 子は自分のポイントしか使えない（他人の userId を指定した消費を防ぐ）
+            if (body.userId !== user.id && user.authority !== AUTHORITY.admin) return forbidden();
             const all = await getSubmissions();
             const usable = all
-                .filter((s) => s.whoDid === body.userId && s.status === "承認")
+                .filter((s) => s.whoDid === body.userId && s.status === SUBMISSION_STATUS.approved)
                 .sort((a, b) => a.createdAt.localeCompare(b.createdAt));
 
             let remaining = body.point;

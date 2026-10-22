@@ -1,15 +1,23 @@
+import { redirect } from "next/navigation";
+
 import AdminLogoutButton from "@app/admin/AdminLogoutButton";
 import RewardManagerClient from "@app/admin/RewardManagerClient";
 import SubmissionManagerClient from "@app/admin/SubmissionManagerClient";
 import TaskManagerClient from "@app/admin/TaskManagerClient";
 import UserManagerClient from "@app/admin/UserManagerClient";
 import Tabs from "@atom/Tabs";
+import { AUTHORITY } from "@const/constDefinition";
+import { getSessionUser } from "@lib/authGuard";
 import { getRewards, getSubmissions, getTasks, getUsers } from "@lib/dynamoDbApi";
 import PushNotificationToggle from "@organism/PushNotificationToggle";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminPage() {
+    // middleware に加え、DB 上の最新の権限でも確認する（権限を外されたユーザーの古いセッション対策）
+    const sessionUser = await getSessionUser();
+    if (sessionUser?.authority !== AUTHORITY.admin) redirect("/");
+
     const [users, tasks, rewards, submissions] = await Promise.all([
         getUsers(),
         getTasks(),

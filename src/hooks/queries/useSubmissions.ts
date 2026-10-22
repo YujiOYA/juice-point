@@ -70,19 +70,19 @@ export function useSubmissionMutations() {
     });
 
     const register = useMutation({
-        mutationFn: (data: { whatYouDid: string; whoDid: string; whoDidName: string; point: string }) =>
+        mutationFn: (data: { whatYouDid: string; whoDid: string; point: string }) =>
             post({ type: action.register, ...data }),
         onSuccess: invalidateSubs,
     });
 
     const registerOneTimeTask = useMutation({
-        mutationFn: (data: { whatYouDid: string; whoDid: string; whoDidName: string; point: string }) =>
+        mutationFn: (data: { whatYouDid: string; whoDid: string; point: string }) =>
             post({ type: action.registerOneTimeTask, ...data }),
         onSuccess: invalidateSubs,
     });
 
     const requestTask = useMutation({
-        mutationFn: (data: { whatYouDid: string; whoDid: string; whoDidName: string; point: string }) =>
+        mutationFn: (data: { whatYouDid: string; whoDid: string; point: string }) =>
             post({ type: action.requestTask, ...data }),
         onSuccess: invalidateSubs,
     });
