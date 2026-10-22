@@ -118,7 +118,16 @@ export async function deleteUser(id: string): Promise<void> {
     );
 }
 
-export async function verifyUserPin(id: string, pin: string): Promise<User | null> {
+// 連続でこの回数 PIN を間違えると一定時間ログインを止める（総当たり対策）
+const MAX_PIN_FAILURES = 5;
+const PIN_LOCK_MS = 15 * 60 * 1000;
+
+export type VerifyPinResult =
+    | { status: "ok"; user: User }
+    | { status: "invalid" }
+    | { status: "locked"; lockedUntil: string };
+
+export async function verifyUserPin(id: string, pin: string): Promise<VerifyPinResult> {
     const res = await dynamo.send(
         new QueryCommand({
             TableName: TABLE_USER,
@@ -128,12 +137,51 @@ export async function verifyUserPin(id: string, pin: string): Promise<User | nul
         }),
     );
     const item = res.Items?.[0];
-    if (!item) return null;
+    if (!item) return { status: "invalid" };
+
+    const lockedUntil = item.lockedUntil?.S;
+    if (lockedUntil && lockedUntil > new Date().toISOString()) return { status: "locked", lockedUntil };
 
     const storedPin = item.pin?.S ?? "";
     const match = await bcrypt.compare(pin, storedPin);
-    if (!match) return null;
-    return { id: item.id.S!, user: item.user.S!, authority: item.authority.S! };
+    if (!match) {
+        await recordPinFailure(id);
+        return { status: "invalid" };
+    }
+
+    if (item.failedCount || lockedUntil) {
+        await dynamo.send(
+            new UpdateItemCommand({
+                TableName: TABLE_USER,
+                Key: { id: { S: id } },
+                UpdateExpression: "REMOVE failedCount, lockedUntil",
+            }),
+        );
+    }
+    return { status: "ok", user: { id: item.id.S!, user: item.user.S!, authority: item.authority.S! } };
+}
+
+async function recordPinFailure(id: string): Promise<void> {
+    const res = await dynamo.send(
+        new UpdateItemCommand({
+            TableName: TABLE_USER,
+            Key: { id: { S: id } },
+            UpdateExpression: "ADD failedCount :one",
+            ExpressionAttributeValues: { ":one": { N: "1" } },
+            ReturnValues: "UPDATED_NEW",
+        }),
+    );
+    const failedCount = Number(res.Attributes?.failedCount?.N ?? 0);
+    if (failedCount < MAX_PIN_FAILURES) return;
+
+    await dynamo.send(
+        new UpdateItemCommand({
+            TableName: TABLE_USER,
+            Key: { id: { S: id } },
+            UpdateExpression: "SET lockedUntil = :until REMOVE failedCount",
+            ExpressionAttributeValues: { ":until": { S: new Date(Date.now() + PIN_LOCK_MS).toISOString() } },
+        }),
+    );
 }
 
 export async function getTasks(): Promise<Task[]> {

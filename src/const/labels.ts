@@ -56,6 +56,7 @@ export const LABELS = {
         buttonLogin: "ログイン",
         buttonLogout: "ログアウト",
         errorWrongPin: "PINが違います",
+        errorLocked: "PINを続けて間違えたため、しばらくログインできません",
         loggedInAs: (name: string) => `👤 ${name} でログイン中`,
     },
 

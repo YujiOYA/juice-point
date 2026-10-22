@@ -57,7 +57,6 @@ export function useTaskForm(
                 whatYouDid: selectedTask.task,
                 point: selectedTask.point,
                 whoDid: user.id,
-                whoDidName: user.user,
             });
             setSubmittedTaskIds((prev) => new Set(prev).add(selectedTask.id));
             toast.success(T.submitSuccess);
@@ -93,7 +92,6 @@ export function useTaskForm(
                     whatYouDid: requestTaskName.trim(),
                     point: requestPoint,
                     whoDid: user.id,
-                    whoDidName: user.user,
                 }),
             ];
             if (registerTaskAlso) {
@@ -102,7 +100,6 @@ export function useTaskForm(
                         whatYouDid: requestTaskName.trim(),
                         point: requestPoint,
                         whoDid: user.id,
-                        whoDidName: user.user,
                     }),
                 );
             }

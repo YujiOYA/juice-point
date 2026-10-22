@@ -7,6 +7,12 @@ import { ROUTES } from "@const/routesConfig";
 import { Submission } from "@type/submission";
 import { User } from "@type/user";
 
+type LoginResult = "ok" | "invalid" | "locked";
+
+/** ログイン後の遷移先。オープンリダイレクト・javascript: URL を防ぐため同一オリジンの相対パスのみ許可 */
+const safeNextPath = (next: string | null | undefined): string =>
+    next && next.startsWith("/") && !next.startsWith("//") && !next.startsWith("/\\") ? next : ROUTES.admin;
+
 const calcUserPoint = (userId: string, submissions: Submission[]): number =>
     submissions
         .filter((s) => s.whoDid === userId && s.status === SUBMISSION_STATUS.approved)
@@ -28,8 +34,8 @@ export function useLogin({ loggedInUser, setLoggedInUser, submissions, next }: A
 
     const userPoint = loggedInUser ? calcUserPoint(loggedInUser.id, submissions) : 0;
 
-    /** PIN でログイン。成功時は true、失敗時は false を返す */
-    const loginWithPin = async (id: string, pinToUse: string): Promise<boolean> => {
+    /** PIN でログインし、結果を返す */
+    const loginWithPin = async (id: string, pinToUse: string): Promise<LoginResult> => {
         setIsLoading(true);
         try {
             const res = await fetch(API.auth.login.path, {
@@ -37,18 +43,19 @@ export function useLogin({ loggedInUser, setLoggedInUser, submissions, next }: A
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ id, pin: pinToUse }),
             });
-            if (!res.ok) return false;
+            if (res.status === 429) return "locked";
+            if (!res.ok) return "invalid";
             const user: User = await res.json();
             // 管理者の場合は setLoggedInUser を呼ばずにナビゲーション
             // (React再レンダリングとナビゲーションの競合を避ける: iOS PWA対策)
             if (user.authority === AUTHORITY.admin) {
-                location.replace(next ?? ROUTES.admin);
-                return true;
+                location.replace(safeNextPath(next));
+                return "ok";
             }
             setLoggedInUser(user);
-            return true;
+            return "ok";
         } catch {
-            return false;
+            return "invalid";
         } finally {
             setIsLoading(false);
         }
@@ -64,8 +71,9 @@ export function useLogin({ loggedInUser, setLoggedInUser, submissions, next }: A
         e.preventDefault();
         if (!selectedId || !pin) return;
         setError("");
-        const ok = await loginWithPin(selectedId, pin);
-        if (!ok) setError(LABELS.login.errorWrongPin);
+        const result = await loginWithPin(selectedId, pin);
+        if (result === "locked") setError(LABELS.login.errorLocked);
+        else if (result === "invalid") setError(LABELS.login.errorWrongPin);
     };
 
     const handleLogout = async () => {

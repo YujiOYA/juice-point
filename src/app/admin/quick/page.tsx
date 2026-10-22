@@ -13,7 +13,7 @@ export default async function QuickApprovePage({ searchParams }: { searchParams:
     if (!id) redirect("/admin");
 
     const sessionUser = await getSessionUser();
-    if (!sessionUser) redirect(`/?next=/admin/quick?id=${id}`);
+    if (!sessionUser) redirect(`/?next=${encodeURIComponent(`/admin/quick?id=${encodeURIComponent(id)}`)}`);
     if (sessionUser.authority !== AUTHORITY.admin) redirect("/");
 
     const [submission, users] = await Promise.all([getSubmissionById(id), getUsers()]);

@@ -6,6 +6,18 @@ import { COOKIE_NAME, SessionData } from "@lib/session";
 
 // 認証不要のAPIパス
 const PUBLIC_API_PATHS = ["/api/auth", "/api/setup"];
+const SAFE_METHODS = new Set(["GET", "HEAD", "OPTIONS"]);
+
+function isSameOrigin(request: NextRequest): boolean {
+    if (request.headers.get("sec-fetch-site") === "cross-site") return false;
+    const origin = request.headers.get("origin");
+    if (!origin) return true;
+    try {
+        return new URL(origin).host === request.headers.get("host");
+    } catch {
+        return false;
+    }
+}
 
 export async function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
@@ -32,6 +44,11 @@ export async function middleware(request: NextRequest) {
     // /api/* 以外はスルー
     if (!pathname.startsWith("/api/")) {
         return NextResponse.next();
+    }
+
+    // 状態を変えるリクエストは同一オリジンからのみ受け付ける（CSRF 対策。SameSite=Lax の補強）
+    if (!SAFE_METHODS.has(request.method) && !isSameOrigin(request)) {
+        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
     // 公開エンドポイントはスルー
